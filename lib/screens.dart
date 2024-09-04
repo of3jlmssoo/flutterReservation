@@ -26,10 +26,7 @@ class MainScreen extends ConsumerWidget {
     // return Text('this is the main screen');
     return Scaffold(
       appBar: BaseAppBar(
-        title: Text(
-          '施設予約システム',
-          style: TextStyle(color: brightFontColor),
-        ),
+        title: '施設予約システム',
         appBar: AppBar(),
         widgets: <Widget>[Icon(Icons.more_vert)],
       ),
@@ -94,10 +91,7 @@ class LoginScreen extends ConsumerWidget {
     // return Text('this is the login screen');
     return Scaffold(
       appBar: BaseAppBar(
-        title: Text(
-          'this is the login screen',
-          style: TextStyle(color: brightFontColor),
-        ),
+        title: 'this is the login screen',
         appBar: AppBar(),
         widgets: <Widget>[Icon(Icons.more_vert)],
       ),
@@ -144,10 +138,7 @@ class NewReservationScreen extends ConsumerWidget {
     // return const Text('NewReserationScreen');
     return Scaffold(
       appBar: BaseAppBar(
-        title: Text(
-          '新規予約：施設選択',
-          style: TextStyle(color: brightFontColor),
-        ),
+        title: '新規予約：施設選択',
         appBar: AppBar(),
         widgets: <Widget>[Icon(Icons.more_vert)],
       ),
@@ -223,7 +214,7 @@ class FacilitySelectionScreen extends ConsumerWidget {
       ],
       home: Scaffold(
         appBar: BaseAppBar(
-            title: Text('施設選択画面'),
+            title: '施設選択画面',
             appBar: AppBar(),
             widgets: <Widget>[Icon(Icons.more_vert)]),
         body: showDatePickerWidget(),

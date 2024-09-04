@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
+import 'package:reservations2/appbarcomp.dart';
 import 'package:reservations2/datepickerapp.dart';
 import 'package:reservations2/screens.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -34,6 +35,7 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/newreservation')) return '/newreservation';
         if (path.startsWith('/facilityselection')) return '/facilityselection';
         if (path.startsWith('/datetimepickerapp')) return '/datetimepickerapp';
+        if (path.startsWith('/firestorework')) return '/firestorework';
 
         return '/main';
       } else {
@@ -68,6 +70,10 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/datetimepickerapp',
         builder: (context, state) => DatePickerApp(),
+      ),
+      GoRoute(
+        path: '/firestorework',
+        builder: (context, state) => firestorework(),
       ),
     ],
     errorPageBuilder: (context, state) => const NoTransitionPage(

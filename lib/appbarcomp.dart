@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/firebase_auth_repository.dart';
 
@@ -9,7 +10,7 @@ final log = Logger('BaseAppBar');
 
 class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final Color backgroundColor = commonBackgroundColor;
-  final Text title;
+  final String title;
   final AppBar appBar;
   final List<Widget> widgets;
 
@@ -34,13 +35,16 @@ class commonAppBarWidget extends ConsumerWidget {
     required this.backgroundColor,
   });
 
-  final Text title;
+  final String title;
   final Color backgroundColor;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return AppBar(
-      title: title,
+      title: Text(
+        title,
+        style: TextStyle(color: brightFontColor),
+      ),
       backgroundColor: backgroundColor,
       actions: <Widget>[
         MenuAnchor(
@@ -74,13 +78,36 @@ class commonAppBarWidget extends ConsumerWidget {
             MenuItemButton(
               onPressed: () {
                 log.info('BaseAppBar user info pressed');
-                log.info(ref.read(authRepository))
+                log.info(ref.read(authRepositoryProvider).currentUser);
               },
               child: const Text('log.info user info'),
+            ),
+            MenuItemButton(
+              onPressed: () {
+                log.info('BaseAppBar firestore pressed');
+                log.info(ref.read(authRepositoryProvider).currentUser);
+                context.go('/firestorework');
+              },
+              child: const Text('firestore!'),
             )
           ],
         )
       ],
+    );
+  }
+}
+
+class firestorework extends ConsumerWidget {
+  const firestorework({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: BaseAppBar(
+          title: 'firestore work',
+          appBar: AppBar(),
+          widgets: <Widget>[Icon(Icons.more_vert)]),
+      body: Text('abc'),
     );
   }
 }
