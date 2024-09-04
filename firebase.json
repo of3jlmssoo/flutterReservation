@@ -1,0 +1,34 @@
+{
+  "flutter": {
+    "platforms": {
+      "android": {
+        "default": {
+          "projectId": "reservations-5fda7",
+          "appId": "1:345533996772:android:911b3b4be17461c21e16f1",
+          "fileOutput": "android/app/google-services.json"
+        }
+      },
+      "dart": {
+        "lib/firebase_options.dart": {
+          "projectId": "reservations-5fda7",
+          "configurations": {
+            "android": "1:345533996772:android:911b3b4be17461c21e16f1",
+            "web": "1:345533996772:web:855d45e06723232f1e16f1"
+          }
+        }
+      }
+    }
+  },
+  "emulators": {
+    "auth": {
+      "port": 9099
+    },
+    "firestore": {
+      "port": 8080
+    },
+    "ui": {
+      "enabled": true
+    },
+    "singleProjectMode": true
+  }
+}
