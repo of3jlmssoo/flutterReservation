@@ -1,0 +1,86 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
+import 'package:reservations2/firebase_auth_repository.dart';
+
+import 'consts.dart';
+
+final log = Logger('BaseAppBar');
+
+class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
+  final Color backgroundColor = commonBackgroundColor;
+  final Text title;
+  final AppBar appBar;
+  final List<Widget> widgets;
+
+  /// you can add more fields that meet your needs
+
+  const BaseAppBar(
+      {required this.title, required this.appBar, required this.widgets});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return commonAppBarWidget(title: title, backgroundColor: backgroundColor);
+  }
+
+  @override
+  Size get preferredSize => new Size.fromHeight(appBar.preferredSize.height);
+}
+
+class commonAppBarWidget extends ConsumerWidget {
+  const commonAppBarWidget({
+    super.key,
+    required this.title,
+    required this.backgroundColor,
+  });
+
+  final Text title;
+  final Color backgroundColor;
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return AppBar(
+      title: title,
+      backgroundColor: backgroundColor,
+      actions: <Widget>[
+        MenuAnchor(
+          builder:
+              (BuildContext context, MenuController controller, Widget? child) {
+            return IconButton(
+              onPressed: () {
+                if (controller.isOpen) {
+                  controller.close();
+                } else {
+                  controller.open();
+                }
+              },
+              icon: const Icon(
+                Icons.density_medium,
+                // Icons.access_alarm_outlined,
+                color: brightFontColor,
+              ),
+              tooltip: 'Show menu',
+            );
+          },
+          menuChildren: [
+            MenuItemButton(
+              onPressed: () {
+                log.info('BaseAppBar logoug pressed');
+                ref.read(firebaseAuthProvider).signOut();
+                // ref.read(firebaseAuthProvider).sign;
+              },
+              child: const Text('logout'),
+            ),
+            MenuItemButton(
+              onPressed: () {
+                log.info('BaseAppBar user info pressed');
+                log.info(ref.read(authRepository))
+              },
+              child: const Text('log.info user info'),
+            )
+          ],
+        )
+      ],
+    );
+  }
+}
