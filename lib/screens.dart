@@ -12,8 +12,8 @@ import 'firebase_auth_repository.dart';
 final log = Logger('Screens');
 
 List<String> strunselectable2 = [
-  DateFormat.yMd().format(DateTime.now().add(Duration(days: 2))),
-  DateFormat.yMd().format(DateTime.now().add(Duration(days: 3))),
+  DateFormat.yMd().format(DateTime.now().add(const Duration(days: 2))),
+  DateFormat.yMd().format(DateTime.now().add(const Duration(days: 3))),
   // DateFormat.yMd().format(DateTime.now())
 ];
 
@@ -28,7 +28,7 @@ class MainScreen extends ConsumerWidget {
       appBar: BaseAppBar(
         title: '施設予約システム',
         appBar: AppBar(),
-        widgets: <Widget>[Icon(Icons.more_vert)],
+        widgets: const <Widget>[Icon(Icons.more_vert)],
       ),
       // body: Container(
       //     child: Text(
@@ -37,8 +37,8 @@ class MainScreen extends ConsumerWidget {
         children: [
           colDivider,
           Text(
-            'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}',
-            style: TextStyle(fontSize: 18),
+            'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName ?? ref.read(authRepositoryProvider).currentUser!.email}',
+            style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
           colDivider,
@@ -48,10 +48,10 @@ class MainScreen extends ConsumerWidget {
                 log.info('MainScreen ListTile Tapped(新規予約)');
                 context.go('/newreservation');
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('予約しよう！'),
-              subtitle: Text('新規予約'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('予約しよう！'),
+              subtitle: const Text('新規予約'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
           Card(
@@ -59,10 +59,10 @@ class MainScreen extends ConsumerWidget {
               onTap: () {
                 log.info('MainScreen ListTile Tapped(予約状況)');
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('予約どうなった?'),
-              subtitle: Text('予約状況確認'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('予約どうなった?'),
+              subtitle: const Text('予約状況確認'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
           Card(
@@ -70,10 +70,10 @@ class MainScreen extends ConsumerWidget {
               onTap: () {
                 log.info('MainScreen ListTile Tapped(利用実績)');
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('使ってよかった！'),
-              subtitle: Text('利用実績'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('使ってよかった！'),
+              subtitle: const Text('利用実績'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
         ],
@@ -93,7 +93,7 @@ class LoginScreen extends ConsumerWidget {
       appBar: BaseAppBar(
         title: 'this is the login screen',
         appBar: AppBar(),
-        widgets: <Widget>[Icon(Icons.more_vert)],
+        widgets: const <Widget>[Icon(Icons.more_vert)],
       ),
       body: Center(
           child: Column(
@@ -125,7 +125,7 @@ class NotFoundScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // TODO: implement build
-    return Text('this is the not found screen');
+    return const Text('this is the not found screen');
   }
 }
 
@@ -140,7 +140,7 @@ class NewReservationScreen extends ConsumerWidget {
       appBar: BaseAppBar(
         title: '新規予約：施設選択',
         appBar: AppBar(),
-        widgets: <Widget>[Icon(Icons.more_vert)],
+        widgets: const <Widget>[Icon(Icons.more_vert)],
       ),
       // body: Container(
       //     child: Text(
@@ -149,8 +149,8 @@ class NewReservationScreen extends ConsumerWidget {
         children: [
           colDivider,
           Text(
-            'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}',
-            style: TextStyle(fontSize: 18),
+            'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName ?? ref.read(authRepositoryProvider).currentUser!.email}',
+            style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
           colDivider,
@@ -160,10 +160,10 @@ class NewReservationScreen extends ConsumerWidget {
                 log.info('NewReservationScreen ListTile Tapped(台所)');
                 context.push('/facilityselection', extra: "台所");
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('みんなで美味しく！'),
-              subtitle: Text('台所'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('みんなで美味しく！'),
+              subtitle: const Text('台所'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
           Card(
@@ -172,10 +172,10 @@ class NewReservationScreen extends ConsumerWidget {
                 log.info('NewReservationScreen ListTile Tapped(会議室1)');
                 context.push('/facilityselection', extra: "会議室1");
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('熱く語り合う'),
-              subtitle: Text('会議室1'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('熱く語り合う'),
+              subtitle: const Text('会議室1'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
           Card(
@@ -184,10 +184,10 @@ class NewReservationScreen extends ConsumerWidget {
                 log.info('NewReservationScreen ListTile Tapped(会議室2)');
                 context.push('/facilityselection', extra: "会議室2");
               },
-              leading: FlutterLogo(size: 56.0),
-              title: Text('お茶会で使って！'),
-              subtitle: Text('会議室2'),
-              trailing: Icon(Icons.more_vert),
+              leading: const FlutterLogo(size: 56.0),
+              title: const Text('お茶会で使って！'),
+              subtitle: const Text('会議室2'),
+              trailing: const Icon(Icons.more_vert),
             ),
           ),
         ],
@@ -204,27 +204,27 @@ class FacilitySelectionScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return MaterialApp(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale("en"),
-        const Locale("ja"),
+      supportedLocales: const [
+        Locale("en"),
+        Locale("ja"),
       ],
       home: Scaffold(
         appBar: BaseAppBar(
             title: '施設選択画面',
             appBar: AppBar(),
-            widgets: <Widget>[Icon(Icons.more_vert)]),
-        body: showDatePickerWidget(),
+            widgets: const <Widget>[Icon(Icons.more_vert)]),
+        body: const ShowDatePickerWidget(),
       ),
     );
   }
 }
 
-class showDatePickerWidget extends StatelessWidget {
-  const showDatePickerWidget({
+class ShowDatePickerWidget extends StatelessWidget {
+  const ShowDatePickerWidget({
     super.key,
   });
 
@@ -242,7 +242,7 @@ class showDatePickerWidget extends StatelessWidget {
                 confirmText: '確定',
                 initialDate: DateTime.now(),
                 firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(Duration(days: 20)),
+                lastDate: DateTime.now().add(const Duration(days: 20)),
                 selectableDayPredicate: (DateTime val) {
                   return !strunselectable2
                       .contains(DateFormat.yMd().format(val));
@@ -256,12 +256,12 @@ class showDatePickerWidget extends StatelessWidget {
 
               // context.push('/datetimepickerapp');
             },
-            child: Text('日付')),
+            child: const Text('日付')),
         ElevatedButton(
             onPressed: () async {
               context.pop();
             },
-            child: Text('戻る'))
+            child: const Text('戻る'))
       ],
     );
   }

@@ -1,7 +1,9 @@
-import 'package:reservations2/main.dart';
+import 'package:logging/logging.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'riverpods.g.dart';
+
+final log = Logger('riverpods');
 
 @Riverpod(keepAlive: true)
 class Example extends _$Example {
@@ -13,13 +15,13 @@ class Example extends _$Example {
   // Add methods to mutate the state
   int setToOne() {
     state = 1;
-    print(state);
+    log.info(state);
     return state;
   }
 
   int setToZero() {
     state = 0;
-    print(state);
+    log.info(state);
     return state;
   }
 }

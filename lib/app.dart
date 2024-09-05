@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:logging/logging.dart';
 import 'package:reservations2/riverpods.dart';
 
 import 'app_router.dart';
 import 'consts.dart';
 
+final log = Logger('app');
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -13,13 +15,13 @@ class MyApp extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final goRouter = ref.watch(goRouterProvider);
     return MaterialApp.router(
-      localizationsDelegates: [
+      localizationsDelegates: const [
         GlobalMaterialLocalizations.delegate,
         GlobalWidgetsLocalizations.delegate,
       ],
-      supportedLocales: [
-        const Locale("en"),
-        const Locale("ja"),
+      supportedLocales: const [
+        Locale("en"),
+        Locale("ja"),
       ],
       routerConfig: goRouter,
       title: 'Flutter Demo',
@@ -68,14 +70,14 @@ class MyHomePage extends ConsumerWidget {
               MenuItemButton(
                 onPressed: () {
                   ref.read(exampleProvider.notifier).setToZero();
-                  print(ref.watch(exampleProvider));
+                  log.info(ref.watch(exampleProvider));
                 },
                 child: const Text('set to 0'),
               ),
               MenuItemButton(
                 onPressed: () {
                   ref.read(exampleProvider.notifier).setToOne();
-                  print(ref.watch(exampleProvider));
+                  log.info(ref.watch(exampleProvider));
                 },
                 child: const Text('set to 1'),
               ),
@@ -93,7 +95,7 @@ class MyHomePage extends ConsumerWidget {
 
         backgroundColor:
             commonBackgroundColor, // Theme.of(context).colorScheme.inversePrimary,
-        title: Text(
+        title: const Text(
           "widget.title",
           style: TextStyle(color: brightFontColor),
         ),
@@ -103,11 +105,11 @@ class MyHomePage extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             userStatus == 1
-                ? Text(
+                ? const Text(
                     'You have pushed the button this many times:',
                   )
-                : Text('abc'),
-            Text(
+                : const Text('abc'),
+            const Text(
               '7',
               // '$_counter',
               // style: Theme.of(context).textTheme.headlineMedium,

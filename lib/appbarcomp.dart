@@ -18,19 +18,22 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   /// you can add more fields that meet your needs
 
   const BaseAppBar(
-      {required this.title, required this.appBar, required this.widgets});
+      {super.key,
+      required this.title,
+      required this.appBar,
+      required this.widgets});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return commonAppBarWidget(title: title, backgroundColor: backgroundColor);
+    return CommonAppBarWidget(title: title, backgroundColor: backgroundColor);
   }
 
   @override
-  Size get preferredSize => new Size.fromHeight(appBar.preferredSize.height);
+  Size get preferredSize => Size.fromHeight(appBar.preferredSize.height);
 }
 
-class commonAppBarWidget extends ConsumerWidget {
-  const commonAppBarWidget({
+class CommonAppBarWidget extends ConsumerWidget {
+  const CommonAppBarWidget({
     super.key,
     required this.title,
     required this.backgroundColor,
@@ -44,7 +47,7 @@ class commonAppBarWidget extends ConsumerWidget {
     return AppBar(
       title: Text(
         title,
-        style: TextStyle(color: brightFontColor),
+        style: const TextStyle(color: brightFontColor),
       ),
       backgroundColor: backgroundColor,
       actions: <Widget>[
@@ -114,9 +117,9 @@ class commonAppBarWidget extends ConsumerWidget {
                         '---> ${user["name"]}  ${user["email"]}  ${user["password"]}');
                     try {
                       log.info('in try! ${user["email"]} ${user["password"]}');
-                      userCreate(user).then((credential) async {
+                      await userCreate(user).then((credential) async {
                         log.info('user creation ${credential.user}');
-                        await credential.user!.updateDisplayName(user["name"]);
+                        credential.user!.updateDisplayName(user["name"]);
                       });
                     } on FirebaseAuthException catch (e) {
                       if (e.code == 'weak-password') {
@@ -149,8 +152,8 @@ class commonAppBarWidget extends ConsumerWidget {
   }
 }
 
-class firestorework extends ConsumerWidget {
-  const firestorework({super.key});
+class Firestorework extends ConsumerWidget {
+  const Firestorework({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -158,10 +161,10 @@ class firestorework extends ConsumerWidget {
       appBar: BaseAppBar(
           title: 'firestore work',
           appBar: AppBar(),
-          widgets: <Widget>[Icon(Icons.more_vert)]),
+          widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
-          Text('abc'),
+          const Text('abc'),
           OutlinedButton(
               onPressed: () {
                 context.pop();

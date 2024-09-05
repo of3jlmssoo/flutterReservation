@@ -2,8 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 List<String> strunselectable = [
-  DateFormat.yMd().format(DateTime.now().add(Duration(days: 2))),
-  DateFormat.yMd().format(DateTime.now().add(Duration(days: 3))),
+  DateFormat.yMd().format(DateTime.now().add(const Duration(days: 2))),
+  DateFormat.yMd().format(DateTime.now().add(const Duration(days: 3))),
   // DateFormat.yMd().format(DateTime.now())
 ];
 
@@ -65,7 +65,7 @@ class _DatePickerExampleState extends State<DatePickerExample>
           // initialDate: unselectableDates[1],
           initialDate: DateTime.now(),
           firstDate: DateTime.now(),
-          lastDate: DateTime.now().add(Duration(days: 20)),
+          lastDate: DateTime.now().add(const Duration(days: 20)),
           selectableDayPredicate: (DateTime val) {
             // print('---------> ${DateFormat.yMd().format(val)}');
             // print("$val,  and  ${unselectableDates.contains(val)}");

@@ -47,19 +47,19 @@ GoRouter goRouter(GoRouterRef ref) {
     routes: [
       GoRoute(
         path: '/main',
-        builder: (context, state) => MainScreen(),
+        builder: (context, state) => const MainScreen(),
       ),
       GoRoute(
         path: '/',
-        builder: (context, state) => LoginScreen(),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/login',
-        builder: (context, state) => LoginScreen(),
+        builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
         path: '/newreservation',
-        builder: (context, state) => NewReservationScreen(),
+        builder: (context, state) => const NewReservationScreen(),
       ),
       GoRoute(
         path: '/facilityselection',
@@ -69,11 +69,11 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
       GoRoute(
         path: '/datetimepickerapp',
-        builder: (context, state) => DatePickerApp(),
+        builder: (context, state) => const DatePickerApp(),
       ),
       GoRoute(
         path: '/firestorework',
-        builder: (context, state) => firestorework(),
+        builder: (context, state) => const Firestorework(),
       ),
     ],
     errorPageBuilder: (context, state) => const NoTransitionPage(
