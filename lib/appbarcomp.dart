@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
@@ -86,14 +87,65 @@ class commonAppBarWidget extends ConsumerWidget {
               onPressed: () {
                 log.info('BaseAppBar firestore pressed');
                 log.info(ref.read(authRepositoryProvider).currentUser);
-                context.go('/firestorework');
+                context.push('/firestorework');
               },
               child: const Text('firestore!'),
+            ),
+            MenuItemButton(
+              onPressed: () async {
+                log.info('BaseAppBar create users pressed');
+
+                List<Map<String, String>> users = [
+                  {
+                    "name": "dummy1",
+                    "email": "dummy1@dummy.com",
+                    "password": "dummy1dummy1"
+                  },
+                  {
+                    "name": "dummy2",
+                    "email": "dummy2@dummy.com",
+                    "password": "dummy2dummy2"
+                  }
+                ];
+
+                users.forEach(
+                  (user) async {
+                    log.info(
+                        '---> ${user["name"]}  ${user["email"]}  ${user["password"]}');
+                    try {
+                      log.info('in try! ${user["email"]} ${user["password"]}');
+                      userCreate(user).then((credential) async {
+                        log.info('user creation ${credential.user}');
+                        await credential.user!.updateDisplayName(user["name"]);
+                      });
+                    } on FirebaseAuthException catch (e) {
+                      if (e.code == 'weak-password') {
+                        log.warning('The password provided is too weak.');
+                      } else if (e.code == 'email-already-in-use') {
+                        log.warning(
+                            'The account already exists for that email.');
+                      }
+                    } catch (e) {
+                      log.warning(e);
+                    }
+                  },
+                );
+              },
+              child: const Text('create users'),
             )
           ],
         )
       ],
     );
+  }
+
+  Future<UserCredential> userCreate(Map<String, String> user) async {
+    final credential =
+        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: user["email"]!,
+      password: user["password"]!,
+    );
+    return credential;
   }
 }
 
@@ -107,7 +159,16 @@ class firestorework extends ConsumerWidget {
           title: 'firestore work',
           appBar: AppBar(),
           widgets: <Widget>[Icon(Icons.more_vert)]),
-      body: Text('abc'),
+      body: Column(
+        children: [
+          Text('abc'),
+          OutlinedButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('戻る'))
+        ],
+      ),
     );
   }
 }
