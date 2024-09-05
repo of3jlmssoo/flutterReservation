@@ -108,31 +108,61 @@ class CommonAppBarWidget extends ConsumerWidget {
                     "name": "dummy2",
                     "email": "dummy2@dummy.com",
                     "password": "dummy2dummy2"
+                  },
+                  {
+                    "name": "dummy3",
+                    "email": "dummy3@dummy.com",
+                    "password": "dummy3dummy3"
                   }
                 ];
 
-                users.forEach(
-                  (user) async {
-                    log.info(
-                        '---> ${user["name"]}  ${user["email"]}  ${user["password"]}');
-                    try {
-                      log.info('in try! ${user["email"]} ${user["password"]}');
-                      await userCreate(user).then((credential) async {
-                        log.info('user creation ${credential.user}');
-                        credential.user!.updateDisplayName(user["name"]);
-                      });
-                    } on FirebaseAuthException catch (e) {
-                      if (e.code == 'weak-password') {
-                        log.warning('The password provided is too weak.');
-                      } else if (e.code == 'email-already-in-use') {
-                        log.warning(
-                            'The account already exists for that email.');
-                      }
-                    } catch (e) {
-                      log.warning(e);
+                for (var user in users) {
+                  try {
+                    log.info('in try! ${user["email"]} ${user["password"]}');
+                    var credential = await userCreate(user);
+                    log.info('credential : $credential');
+                  } on FirebaseAuthException catch (e) {
+                    if (e.code == 'weak-password') {
+                      log.warning('The password provided is too weak.');
+                    } else if (e.code == 'email-already-in-use') {
+                      log.warning('The account already exists for that email.');
                     }
-                  },
-                );
+                  } catch (e) {
+                    log.warning(e);
+                  }
+
+                  try {
+                    final credential = await FirebaseAuth.instance
+                        .signInWithEmailAndPassword(
+                            email: user["email"]!, password: user["password"]!);
+                    credential.user!.updateDisplayName(user["name"]);
+                  } catch (e) {
+                    log.warning(e);
+                  }
+                }
+
+                // users.forEach(
+                //   (user) async {
+                //     log.info(
+                //         '---> ${user["name"]}  ${user["email"]}  ${user["password"]}');
+                //     try {
+                //       log.info('in try! ${user["email"]} ${user["password"]}');
+                //       await userCreate(user).then((credential) async {
+                //         log.info('user creation ${credential.user}');
+                //         credential.user!.updateDisplayName(user["name"]);
+                //       });
+                //     } on FirebaseAuthException catch (e) {
+                //       if (e.code == 'weak-password') {
+                //         log.warning('The password provided is too weak.');
+                //       } else if (e.code == 'email-already-in-use') {
+                //         log.warning(
+                //             'The account already exists for that email.');
+                //       }
+                //     } catch (e) {
+                //       log.warning(e);
+                //     }
+                //   },
+                // );
               },
               child: const Text('create users'),
             )
