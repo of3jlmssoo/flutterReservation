@@ -30,9 +30,6 @@ class MainScreen extends ConsumerWidget {
         appBar: AppBar(),
         widgets: const <Widget>[Icon(Icons.more_vert)],
       ),
-      // body: Container(
-      //     child: Text(
-      //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
       body: ListView(
         children: [
           colDivider,
@@ -46,7 +43,7 @@ class MainScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('MainScreen ListTile Tapped(新規予約)');
-                context.go('/newreservation');
+                context.go('/facilityselection');
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('予約しよう！'),
@@ -91,26 +88,28 @@ class LoginScreen extends ConsumerWidget {
     // return Text('this is the login screen');
     return Scaffold(
       appBar: BaseAppBar(
-        title: 'this is the login screen',
+        title: 'ログイン',
         appBar: AppBar(),
         widgets: const <Widget>[Icon(Icons.more_vert)],
       ),
       body: Center(
           child: Column(
         children: [
-          Text('please login ${ref.read(firebaseAuthProvider).currentUser}'),
+          const Text(
+            'ログインするかID登録してください',
+            style: TextStyle(fontSize: 18),
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: ElevatedButton(
               onPressed: () async {
                 log.info('Log in pressed');
-                ref.read(firebaseAuthProvider).signInWithEmailAndPassword(
-                    email: "dummy1@dummy.com", password: "dummy1dummy1");
-                // ref.read(firebaseAuthProvider).signInWEP();
-                log.info(
-                    'current User is ${ref.read(firebaseAuthProvider).currentUser}');
+                ref
+                    .read(firebaseAuthProvider)
+                    .signInWithEmailAndPassword(email: "dummy1@dummy.com", password: "dummy1dummy1");
+                log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
               },
-              child: const Text('Log In'),
+              child: const Text('ログイン'),
             ),
           ),
         ],
@@ -158,7 +157,7 @@ class NewReservationScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('NewReservationScreen ListTile Tapped(台所)');
-                context.push('/facilityselection', extra: "台所");
+                context.push('/dateselection', extra: "台所");
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('みんなで美味しく！'),
@@ -170,7 +169,7 @@ class NewReservationScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('NewReservationScreen ListTile Tapped(会議室1)');
-                context.push('/facilityselection', extra: "会議室1");
+                context.push('/dateselection', extra: "会議室1");
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('熱く語り合う'),
@@ -182,7 +181,7 @@ class NewReservationScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('NewReservationScreen ListTile Tapped(会議室2)');
-                context.push('/facilityselection', extra: "会議室2");
+                context.push('/dateselection', extra: "会議室2");
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('お茶会で使って！'),
@@ -196,8 +195,8 @@ class NewReservationScreen extends ConsumerWidget {
   }
 }
 
-class FacilitySelectionScreen extends ConsumerWidget {
-  const FacilitySelectionScreen({super.key, required this.facility});
+class DateSelectionScreen extends ConsumerWidget {
+  const DateSelectionScreen({super.key, required this.facility});
 
   final String facility;
 
@@ -213,10 +212,7 @@ class FacilitySelectionScreen extends ConsumerWidget {
         Locale("ja"),
       ],
       home: Scaffold(
-        appBar: BaseAppBar(
-            title: '施設選択画面',
-            appBar: AppBar(),
-            widgets: const <Widget>[Icon(Icons.more_vert)]),
+        appBar: BaseAppBar(title: '施設選択画面', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
         body: const ShowDatePickerWidget(),
       ),
     );
@@ -244,8 +240,7 @@ class ShowDatePickerWidget extends StatelessWidget {
                 firstDate: DateTime.now(),
                 lastDate: DateTime.now().add(const Duration(days: 20)),
                 selectableDayPredicate: (DateTime val) {
-                  return !strunselectable2
-                      .contains(DateFormat.yMd().format(val));
+                  return !strunselectable2.contains(DateFormat.yMd().format(val));
                 },
               );
               // final selectedDate = await DatePickerDialog(

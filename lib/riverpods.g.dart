@@ -6,7 +6,7 @@ part of 'riverpods.dart';
 // RiverpodGenerator
 // **************************************************************************
 
-String _$exampleHash() => r'8e9f80f969bea65b6be41b3d92e9077a5567cac1';
+String _$exampleHash() => r'25c059815d82f6e1617ab7216a8fceed6abb2c70';
 
 /// See also [Example].
 @ProviderFor(Example)

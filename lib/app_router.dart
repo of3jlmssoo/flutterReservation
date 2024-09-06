@@ -28,12 +28,10 @@ GoRouter goRouter(GoRouterRef ref) {
       final path = state.uri.path;
 
       final isLoggedIn = authRepository.currentUser != null;
-      log.info('isLoggedIn $isLoggedIn');
-      log.info('currentUser ${authRepository.currentUser}');
-      log.info('path is $path');
+      log.info('isLoggedIn $isLoggedIn currentUser ${authRepository.currentUser}  path is $path');
       if (isLoggedIn) {
-        if (path.startsWith('/newreservation')) return '/newreservation';
         if (path.startsWith('/facilityselection')) return '/facilityselection';
+        if (path.startsWith('/dateselection')) return '/dateselection';
         if (path.startsWith('/datetimepickerapp')) return '/datetimepickerapp';
         if (path.startsWith('/firestorework')) return '/firestorework';
 
@@ -58,12 +56,12 @@ GoRouter goRouter(GoRouterRef ref) {
         builder: (context, state) => const LoginScreen(),
       ),
       GoRoute(
-        path: '/newreservation',
+        path: '/facilityselection',
         builder: (context, state) => const NewReservationScreen(),
       ),
       GoRoute(
-        path: '/facilityselection',
-        builder: (context, state) => FacilitySelectionScreen(
+        path: '/dateselection',
+        builder: (context, state) => DateSelectionScreen(
           facility: state.extra! as String,
         ),
       ),
