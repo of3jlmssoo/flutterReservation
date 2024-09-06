@@ -57,7 +57,7 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
       GoRoute(
         path: '/facilityselection',
-        builder: (context, state) => const NewReservationScreen(),
+        builder: (context, state) => const FacilitySelectionScreen(),
       ),
       GoRoute(
         path: '/dateselection',

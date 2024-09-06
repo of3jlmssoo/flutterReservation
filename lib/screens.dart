@@ -128,8 +128,8 @@ class NotFoundScreen extends StatelessWidget {
   }
 }
 
-class NewReservationScreen extends ConsumerWidget {
-  const NewReservationScreen({super.key});
+class FacilitySelectionScreen extends ConsumerWidget {
+  const FacilitySelectionScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
