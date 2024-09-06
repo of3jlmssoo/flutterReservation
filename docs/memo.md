@@ -1,4 +1,4 @@
-## Getting Started
+# Getting Started
 
 This project is a starting point for a Flutter application.
 
@@ -11,18 +11,18 @@ For help getting started with Flutter development, view the
 [online documentation](https://docs.flutter.dev/), which offers tutorials,
 samples, guidance on mobile development, and a full API reference.
 
-# memo
+## memo
 
 - theme
 - go_router_builder
 - freezedでfirestore関連情報を固める
-    - jsonの位置付け確認する
-    - 日付型問題確認する
+  - jsonの位置付け確認する
+  - 日付型問題確認する
 - riverpod
   collection毎にriverpod providerを作成
-  https://parthpanchal53.medium.com/flutter-firebase-firestore-crud-app-using-riverpod-981811e2a73d
-- https://zenn.dev/kisia_flutter/articles/c9720c41c9ceff
-- https://qiita.com/kurogoma939/items/0b60418497b2f0eb7db0
+  <https://parthpanchal53.medium.com/flutter-firebase-firestore-crud-app-using-riverpod-981811e2a73d>
+- <https://zenn.dev/kisia_flutter/articles/c9720c41c9ceff>
+- <https://qiita.com/kurogoma939/items/0b60418497b2f0eb7db0>
 - routerで画面制御
 
 ## 画面
@@ -30,16 +30,17 @@ samples, guidance on mobile development, and a full API reference.
 - ログイン画面 login screen
 - メイン画面 main screen
 - 新規予約画面 new reservation screen
-    - 施設詳細画面 facility selection screen
-    - 予約画面-日付選択 (select date)
-    - 予約画面-必要情報入力 reservation input screen
-    - 案内表示画面 reservation confirmation screen
+  - 施設詳細画面 facility selection screen
+  - 予約画面-日付選択 (select date)
+  - 予約画面-必要情報入力 reservation input screen
+  - 案内表示画面 reservation confirmation screen
 - 予約状況画面 reservation status screen
-    - 予約詳細画面 reservation details screen
+  - 予約詳細画面 reservation details screen
 - 利用実績画面
 - ユーザー情報画面 user information screen
-    - ユーザー詳細情報画面 user information update screen
+  - ユーザー詳細情報画面 user information update screen
 
+```text
 @riverpod
 ./src/features/jobs/presentation/jobs_screen/jobs_screen_controller.dart:@riverpod
 ./src/features/jobs/presentation/job_entries_screen/job_entries_list_controller.dart:@riverpod
@@ -102,7 +103,7 @@ $jobsScreenControllerHash,
 
 collection
 ./lib/src/features/jobs/data/jobs_repository.dart:      _firestore.collection(jobsPath(uid)).add({
-./lib/src/features/jobs/data/jobs_repository.dart:    final entriesRef = _firestore.collection(
+./lib/src/features/jobs/data/jobs_repository.dart:    final entriesRef = firestore.collection(
 entriesPath(uid));
 ./lib/src/features/jobs/data/jobs_repository.dart:      _firestore.collection(jobsPath(uid))
 .withConverter(
@@ -126,4 +127,4 @@ flutter pub run build_runner watch
 
 cd projects/flutter-work/reservations2
 firebase emulators:start --import ./emulators_data --export-on-exit
-
+```
