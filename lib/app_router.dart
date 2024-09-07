@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -36,6 +37,12 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/datetimepickerapp')) return '/datetimepickerapp';
         if (path.startsWith('/reservationinput')) return '/reservationinput';
         if (path.startsWith('/reservationconfirmation')) return '/reservationconfirmation';
+        if (path.startsWith('/reservationstatus')) return '/reservationstatus';
+        if (path.startsWith('/reservationdetails')) return '/reservationdetails';
+        if (path.startsWith('/usagestatus')) return '/usagestatus';
+        if (path.startsWith('/usagedetails')) return '/usagedetails';
+        if (path.startsWith('/userinformation')) return '/userinformation';
+        if (path.startsWith('/userinformationupdate')) return '/userinformationupdate';
         if (path.startsWith('/firestorework')) return '/firestorework';
         return '/main';
       } else {
@@ -85,6 +92,27 @@ GoRouter goRouter(GoRouterRef ref) {
         path: '/reservationconfirmation',
         builder: (context, state) => ReservationConfirmationScreen(
           rext: state.extra! as ReservationInputsExt,
+        ),
+      ),
+      GoRoute(path: '/reservationstatus', builder: (context, state) => const UsageStatusScreen()),
+      GoRoute(
+        path: '/reservationdetails',
+        builder: (context, state) => UsageDetailsScreen(
+          id: state.extra! as String,
+        ),
+      ),
+      GoRoute(path: '/usagestatus', builder: (context, state) => const UsageStatusScreen()),
+      GoRoute(
+        path: '/usagedetails',
+        builder: (context, state) => UsageDetailsScreen(
+          id: state.extra! as String,
+        ),
+      ),
+      GoRoute(path: '/userinformation', builder: (context, state) => UserInformationScreen(user: state.extra! as User)),
+      GoRoute(
+        path: '/userinformationupdate',
+        builder: (context, state) => UserInformationUpdateScreen(
+          user: state.extra! as User,
         ),
       ),
     ],

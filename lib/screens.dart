@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -56,6 +57,7 @@ class MainScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('MainScreen ListTile Tapped(予約状況)');
+                context.go('/reservationstatus');
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('予約どうなった?'),
@@ -67,6 +69,7 @@ class MainScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () {
                 log.info('MainScreen ListTile Tapped(利用実績)');
+                context.go('/usagestatus');
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('使ってよかった！'),
@@ -361,7 +364,7 @@ class ReservationConfirmationScreen extends StatelessWidget {
                   // ),
                 ),
               );
-              context.go('main');
+              context.go('/main');
             },
             child: const Text('進む'),
           ),
@@ -376,37 +379,165 @@ class ReservationStatusScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('ReservationStatusScreen');
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: '予約確認',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          const Text('ReservationStatus'),
+          OutlinedButton(
+              onPressed: () {
+                context.push('/reservationdetails', extra: "1234567");
+              },
+              child: const Text('詳細')),
+        ],
+      ),
+    );
   }
 }
 
 class ReservationDetailsScreen extends StatelessWidget {
-  const ReservationDetailsScreen({super.key});
+  const ReservationDetailsScreen({super.key, required this.id});
+
+  final String id;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('ReservationDetailsScreen');
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: '予約詳細',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          Text('Reservation details for $id'),
+          OutlinedButton(
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('更新しました！'),
+                    // action: SnackBarAction(
+                    //   label: 'Action',
+                    //   onPressed: () {
+                    //     // Code to execute.
+                    //   },
+                    // ),
+                  ),
+                );
+                context.go('/reservationstatus');
+              },
+              child: const Text('詳細')),
+        ],
+      ),
+    );
+  }
+}
+
+class UsageStatusScreen extends StatelessWidget {
+  const UsageStatusScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: '利用実績確認',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          const Text('Usage Status'),
+          OutlinedButton(
+              onPressed: () {
+                context.push('/usagedetails', extra: '1234567');
+              },
+              child: const Text('詳細')),
+        ],
+      ),
+    );
+  }
+}
+
+class UsageDetailsScreen extends StatelessWidget {
+  const UsageDetailsScreen({super.key, required this.id});
+
+  final String id;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: '利用実績詳細',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          Text('Usage details for $id'),
+          OutlinedButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('詳細')),
+        ],
+      ),
+    );
   }
 }
 
 class UserInformationScreen extends StatelessWidget {
-  const UserInformationScreen({super.key});
+  const UserInformationScreen({super.key, required this.user});
 
+  final User user;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('UserInformationScreen');
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: 'ユーザー情報',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          Text('User information for ${user.displayName}'),
+          OutlinedButton(
+              onPressed: () {
+                context.push('/reservationupdate', extra: user);
+              },
+              child: const Text('更新')),
+        ],
+      ),
+    );
   }
 }
 
 class UserInformationUpdateScreen extends StatelessWidget {
-  const UserInformationUpdateScreen({super.key});
+  const UserInformationUpdateScreen({super.key, required this.user});
+
+  final User user;
 
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('UserInformationUpdateScreen');
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: 'ユーザー情報更新',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      body: Column(
+        children: [
+          Text('User information update for ${user.displayName}'),
+          OutlinedButton(
+              onPressed: () {
+                context.push('/userinformation', extra: user);
+              },
+              child: const Text('更新')),
+        ],
+      ),
+    );
   }
 }

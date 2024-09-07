@@ -17,11 +17,7 @@ class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
 
   /// you can add more fields that meet your needs
 
-  const BaseAppBar(
-      {super.key,
-      required this.title,
-      required this.appBar,
-      required this.widgets});
+  const BaseAppBar({super.key, required this.title, required this.appBar, required this.widgets});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -52,8 +48,7 @@ class CommonAppBarWidget extends ConsumerWidget {
       backgroundColor: backgroundColor,
       actions: <Widget>[
         MenuAnchor(
-          builder:
-              (BuildContext context, MenuController controller, Widget? child) {
+          builder: (BuildContext context, MenuController controller, Widget? child) {
             return IconButton(
               onPressed: () {
                 if (controller.isOpen) {
@@ -99,21 +94,9 @@ class CommonAppBarWidget extends ConsumerWidget {
                 log.info('BaseAppBar create users pressed');
 
                 List<Map<String, String>> users = [
-                  {
-                    "name": "dummy1",
-                    "email": "dummy1@dummy.com",
-                    "password": "dummy1dummy1"
-                  },
-                  {
-                    "name": "dummy2",
-                    "email": "dummy2@dummy.com",
-                    "password": "dummy2dummy2"
-                  },
-                  {
-                    "name": "dummy3",
-                    "email": "dummy3@dummy.com",
-                    "password": "dummy3dummy3"
-                  }
+                  {"name": "dummy1", "email": "dummy1@dummy.com", "password": "dummy1dummy1"},
+                  {"name": "dummy2", "email": "dummy2@dummy.com", "password": "dummy2dummy2"},
+                  {"name": "dummy3", "email": "dummy3@dummy.com", "password": "dummy3dummy3"}
                 ];
 
                 for (var user in users) {
@@ -133,8 +116,7 @@ class CommonAppBarWidget extends ConsumerWidget {
 
                   try {
                     final credential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(
-                            email: user["email"]!, password: user["password"]!);
+                        .signInWithEmailAndPassword(email: user["email"]!, password: user["password"]!);
                     credential.user!.updateDisplayName(user["name"]);
                   } catch (e) {
                     log.warning(e);
@@ -165,7 +147,14 @@ class CommonAppBarWidget extends ConsumerWidget {
                 // );
               },
               child: const Text('create users'),
-            )
+            ),
+            MenuItemButton(
+              onPressed: () {
+                log.info('BaseAppBar user info pressed');
+                context.push('/userinformation');
+              },
+              child: const Text('ユーザー情報'),
+            ),
           ],
         )
       ],
@@ -173,8 +162,7 @@ class CommonAppBarWidget extends ConsumerWidget {
   }
 
   Future<UserCredential> userCreate(Map<String, String> user) async {
-    final credential =
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+    final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
       email: user["email"]!,
       password: user["password"]!,
     );
@@ -188,10 +176,7 @@ class Firestorework extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: BaseAppBar(
-          title: 'firestore work',
-          appBar: AppBar(),
-          widgets: const <Widget>[Icon(Icons.more_vert)]),
+      appBar: BaseAppBar(title: 'firestore work', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
           const Text('abc'),
