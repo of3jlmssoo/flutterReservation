@@ -263,6 +263,12 @@ class ShowDatePickerWidget extends StatelessWidget {
               if (selectedDate.difference(justdate).inDays > 0) {
                 var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
                 if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('翌日以降を選んでください'),
+                  ),
+                );
               }
 
               // context.push('/datetimepickerapp');
@@ -366,7 +372,7 @@ class ReservationConfirmationScreen extends StatelessWidget {
               );
               context.go('/main');
             },
-            child: const Text('進む'),
+            child: const Text('確定'),
           ),
         ],
       ),
@@ -456,6 +462,11 @@ class UsageStatusScreen extends StatelessWidget {
                 context.push('/usagedetails', extra: '1234567');
               },
               child: const Text('詳細')),
+          OutlinedButton(
+              onPressed: () {
+                context.go('/main');
+              },
+              child: const Text('戻る')),
         ],
       ),
     );
@@ -482,7 +493,7 @@ class UsageDetailsScreen extends StatelessWidget {
               onPressed: () {
                 context.pop();
               },
-              child: const Text('詳細')),
+              child: const Text('戻る')),
         ],
       ),
     );
