@@ -214,7 +214,7 @@ class DateSelectionScreen extends ConsumerWidget {
       ],
       home: Scaffold(
         appBar: BaseAppBar(title: '日付選択画面', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
-        body: const ShowDatePickerWidget(),
+        body: ShowDatePickerWidget(facility: facility),
       ),
     );
   }
@@ -223,8 +223,10 @@ class DateSelectionScreen extends ConsumerWidget {
 class ShowDatePickerWidget extends StatelessWidget {
   const ShowDatePickerWidget({
     super.key,
+    required this.facility,
   });
 
+  final String facility;
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -256,7 +258,7 @@ class ShowDatePickerWidget extends StatelessWidget {
               log.info('${selectedDate!.difference(justdate).inDays}');
 
               if (selectedDate.difference(justdate).inDays > 0) {
-                var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: '台所');
+                var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
                 if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
               }
 
