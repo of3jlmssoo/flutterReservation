@@ -6,6 +6,7 @@ import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 
 import 'appbarcomp.dart';
+import 'commonclass.dart';
 import 'consts.dart';
 import 'firebase_auth_repository.dart';
 
@@ -212,7 +213,7 @@ class DateSelectionScreen extends ConsumerWidget {
         Locale("ja"),
       ],
       home: Scaffold(
-        appBar: BaseAppBar(title: '施設選択画面', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
+        appBar: BaseAppBar(title: '日付選択画面', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
         body: const ShowDatePickerWidget(),
       ),
     );
@@ -247,7 +248,17 @@ class ShowDatePickerWidget extends StatelessWidget {
               //   firstDate: DateTime.now(),
               //   lastDate: DateTime.now().add(Duration(days: 20)),
               // );
-              log.info('FacilitySelectionScreen $selectedDate');
+
+              var currentdate = DateTime.now();
+              var justdate = DateTime(currentdate.year, currentdate.month, currentdate.day);
+
+              log.info('FacilitySelectionScreen $selectedDate ${selectedDate.runtimeType} now $justdate');
+              log.info('${selectedDate!.difference(justdate).inDays}');
+
+              if (selectedDate.difference(justdate).inDays > 0) {
+                var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: '台所');
+                if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+              }
 
               // context.push('/datetimepickerapp');
             },
@@ -263,22 +274,98 @@ class ShowDatePickerWidget extends StatelessWidget {
 }
 
 class ReservationInputScreen extends StatelessWidget {
-  const ReservationInputScreen({super.key});
+  const ReservationInputScreen({super.key, required this.rbase});
 
+  final ReservationInputsBase rbase;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('ReservationInputScreen');
+    return Scaffold(
+        appBar: BaseAppBar(
+          title: '必要情報入力',
+          appBar: AppBar(),
+          widgets: const <Widget>[Icon(Icons.more_vert)],
+        ),
+        // body: Container(
+        //     child: Text(
+        //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
+        body: Column(
+          children: [
+            Text(rbase.reservationDate.toString()),
+            Text(rbase.facility),
+            FilledButton(
+              onPressed: () {
+                context.pop();
+              },
+              child: const Text('戻る'),
+            ),
+            FilledButton(
+              onPressed: () {
+                var rext = ReservationInputsExt(
+                  name: '名無し',
+                  emaill: 'dummyX@dummy.com',
+                  tel: '01-234-5678',
+                  reservationDate: rbase.reservationDate,
+                  facility: rbase.facility,
+                );
+                context.push('/reservationconfirmation', extra: rext);
+                // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+              },
+              child: const Text('進む'),
+            ),
+          ],
+        ));
   }
 }
 
 class ReservationConfirmationScreen extends StatelessWidget {
-  const ReservationConfirmationScreen({super.key});
+  const ReservationConfirmationScreen({super.key, required this.rext});
 
+  final ReservationInputsExt rext;
   @override
   Widget build(BuildContext context) {
-    // TODO: implement build
-    return const Text('ReservationConfirmationScreen');
+    return Scaffold(
+      appBar: BaseAppBar(
+        title: '予約確認',
+        appBar: AppBar(),
+        widgets: const <Widget>[Icon(Icons.more_vert)],
+      ),
+      // body: Container(
+      //     child: Text(
+      //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
+      body: Column(
+        children: [
+          const Text('以下で予約します。'),
+          Text(rext.name),
+          Text(rext.tel),
+          Text(rext.emaill),
+          Text(rext.facility),
+          Text(rext.reservationDate.toString()),
+          FilledButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text('戻る'),
+          ),
+          FilledButton(
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(
+                  content: Text('予約しました！'),
+                  // action: SnackBarAction(
+                  //   label: 'Action',
+                  //   onPressed: () {
+                  //     // Code to execute.
+                  //   },
+                  // ),
+                ),
+              );
+              context.go('main');
+            },
+            child: const Text('進む'),
+          ),
+        ],
+      ),
+    );
   }
 }
 

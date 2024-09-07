@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/appbarcomp.dart';
+import 'package:reservations2/commonclass.dart';
 import 'package:reservations2/datepickerapp.dart';
 import 'package:reservations2/screens.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -33,8 +34,9 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/facilityselection')) return '/facilityselection';
         if (path.startsWith('/dateselection')) return '/dateselection';
         if (path.startsWith('/datetimepickerapp')) return '/datetimepickerapp';
+        if (path.startsWith('/reservationinput')) return '/reservationinput';
+        if (path.startsWith('/reservationconfirmation')) return '/reservationconfirmation';
         if (path.startsWith('/firestorework')) return '/firestorework';
-
         return '/main';
       } else {
         return '/login';
@@ -72,6 +74,18 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/firestorework',
         builder: (context, state) => const Firestorework(),
+      ),
+      GoRoute(
+        path: '/reservationinput',
+        builder: (context, state) => ReservationInputScreen(
+          rbase: state.extra! as ReservationInputsBase,
+        ),
+      ),
+      GoRoute(
+        path: '/reservationconfirmation',
+        builder: (context, state) => ReservationConfirmationScreen(
+          rext: state.extra! as ReservationInputsExt,
+        ),
       ),
     ],
     errorPageBuilder: (context, state) => const NoTransitionPage(
