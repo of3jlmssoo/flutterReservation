@@ -44,3 +44,6 @@ https://codewithandrea.com/videos/starter-architecture-flutter-firebase/
   ReservationInputsExt extends ReservationInputsBase
 ```
 freezedでextendsは依然サポートされていないようなので簡易な対応とした(extendsを諦めた)。
+
+### firestore user ref
+Firebase Authに登録されたユーザーをrefすることはできないのuidを使う。

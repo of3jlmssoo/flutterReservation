@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -185,10 +186,57 @@ class Firestorework extends ConsumerWidget {
         children: [
           const Text('abc'),
           OutlinedButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('戻る'))
+            onPressed: () {
+              var db = FirebaseFirestore.instance;
+              final kitchen = <String, dynamic>{"name": "台所", "capacity": 10, "equipment": "IH。\n水道無し。外に井戸あり\nイス無し"};
+              final mtgR1 = <String, dynamic>{"name": "会議室1", "capacity": 2, "equipment": "畳部屋(1畳)"};
+              final mtgR2 = <String, dynamic>{"name": "会議室2", "capacity": 20, "equipment": "2500平米。床抜けあり注意"};
+              List<Map<String, dynamic>> facilityInfo = [kitchen, mtgR1, mtgR2];
+              List<String> facilityName = ["kitchen", "mtgR1", "mrgR2"];
+              for (int i = 0; i < facilityInfo.length; i++) {
+                try {
+                  db.collection("facilities").doc(facilityName[i]).set(facilityInfo[i]);
+                  // .onError((e, _) => log.info("Error writing document: $e"));
+                } catch (e) {
+                  log.info("Error writing document: $e");
+                }
+              }
+              // db
+              //     .collection("facilities")
+              //     .doc("kitchen")
+              //     .set(kitchen)
+              //     .onError((e, _) => log.info("Error writing document: $e"));
+            },
+            child: const Text('施設登録'),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              var db = FirebaseFirestore.instance;
+              final docRef = db.collection("facilities").doc("kitchen");
+
+              log.info("-----> $docRef");
+              log.info("-----> ${ref.read(authRepositoryProvider).currentUser}"); //.runtimeType}");
+              final reservation = <String, dynamic>{
+                "name": "Los Angeles",
+                "facility": docRef,
+                // "user": ref.read(authRepositoryProvider).currentUser
+              };
+
+              var setData = db
+                  .collection("reservations")
+                  .doc()
+                  .set(reservation)
+                  .onError((e, _) => log.info("Error writing document: $e"));
+              log.info("-----> $setData");
+            },
+            child: const Text('予約情報登録'),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text('戻る'),
+          ),
         ],
       ),
     );
