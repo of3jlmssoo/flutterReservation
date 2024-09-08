@@ -128,4 +128,7 @@ flutter pub run build_runner watch
 
 cd projects/flutter-work/reservations2
 firebase emulators:start --import ./emulators_data --export-on-exit
+
+flutter pub run build_runner watch
 ```
+
