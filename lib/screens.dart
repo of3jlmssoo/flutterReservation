@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -502,9 +501,10 @@ class UsageDetailsScreen extends StatelessWidget {
 }
 
 class UserInformationScreen extends StatelessWidget {
-  const UserInformationScreen({super.key, required this.user});
+  const UserInformationScreen({super.key, required this.uid});
 
-  final User user;
+  final String uid;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -515,12 +515,20 @@ class UserInformationScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('User information for ${user.displayName}'),
+          // Text('User information for ${user.displayName}'),
+          Text('User information for $uid'),
           OutlinedButton(
-              onPressed: () {
-                context.push('/reservationupdate', extra: user);
-              },
-              child: const Text('更新')),
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text('戻る'),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              context.push('/userinformationupdate', extra: uid);
+            },
+            child: const Text('更新画面へ'),
+          ),
         ],
       ),
     );
@@ -528,9 +536,9 @@ class UserInformationScreen extends StatelessWidget {
 }
 
 class UserInformationUpdateScreen extends StatelessWidget {
-  const UserInformationUpdateScreen({super.key, required this.user});
+  const UserInformationUpdateScreen({super.key, required this.uid});
 
-  final User user;
+  final String uid;
 
   @override
   Widget build(BuildContext context) {
@@ -542,10 +550,24 @@ class UserInformationUpdateScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
-          Text('User information update for ${user.displayName}'),
+          // Text('User information update for ${user.displayName}'),
+          Text('User information update for $uid'),
+          OutlinedButton(
+            onPressed: () {
+              context.pop();
+            },
+            child: const Text('戻る'),
+          ),
           OutlinedButton(
               onPressed: () {
-                context.push('/userinformation', extra: user);
+                if (!context.mounted) return;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('更新しました'),
+                  ),
+                );
+                // context.push('/userinformation', extra: user);
+                context.pop();
               },
               child: const Text('更新')),
         ],

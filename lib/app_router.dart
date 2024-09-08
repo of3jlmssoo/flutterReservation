@@ -1,4 +1,3 @@
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
@@ -41,7 +40,8 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/reservationdetails')) return '/reservationdetails';
         if (path.startsWith('/usagestatus')) return '/usagestatus';
         if (path.startsWith('/usagedetails')) return '/usagedetails';
-        if (path.startsWith('/userinformation')) return '/userinformation';
+        // if (path.startsWith('/userinformation')) return '/userinformation';
+        if (path.startsWith('/userinformation')) return path;
         if (path.startsWith('/userinformationupdate')) return '/userinformationupdate';
         if (path.startsWith('/firestorework')) return '/firestorework';
         return '/main';
@@ -108,11 +108,16 @@ GoRouter goRouter(GoRouterRef ref) {
           id: state.extra! as String,
         ),
       ),
-      GoRoute(path: '/userinformation', builder: (context, state) => UserInformationScreen(user: state.extra! as User)),
+      GoRoute(
+        // path: '/userinformation',
+        // builder: (context, state) => UserInformationScreen(user: state.extra as String),
+        path: '/userinformation/:userId',
+        builder: (context, state) => UserInformationScreen(uid: state.pathParameters['userId']!),
+      ),
       GoRoute(
         path: '/userinformationupdate',
         builder: (context, state) => UserInformationUpdateScreen(
-          user: state.extra! as User,
+          uid: state.extra! as String,
         ),
       ),
     ],

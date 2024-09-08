@@ -150,8 +150,12 @@ class CommonAppBarWidget extends ConsumerWidget {
             ),
             MenuItemButton(
               onPressed: () {
-                log.info('BaseAppBar user info pressed');
-                context.push('/userinformation');
+                log.info('BaseAppBar user info pressed ${ref.read(authRepositoryProvider).currentUser!.uid}');
+                if (ref.read(authRepositoryProvider).currentUser != null) {
+                  var uid = ref.read(authRepositoryProvider).currentUser!.uid;
+                  // context.push('/userinformation', extra: uid);
+                  context.push('/userinformation/$uid');
+                }
               },
               child: const Text('ユーザー情報'),
             ),
