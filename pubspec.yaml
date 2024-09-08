@@ -25,14 +25,18 @@ dependencies:
   flutter_localization: ^0.2.1
   flutter_localizations:
     sdk: flutter
+  freezed: ^2.5.7
+  freezed_annotation: ^2.4.4
+  json_annotation: ^4.9.0
 
 dev_dependencies:
 
   flutter_lints: ^4.0.0
   riverpod_generator: ^2.4.3
-  build_runner:
+  build_runner: ^2.4.12
   custom_lint:
   riverpod_lint: ^2.3.13
+  json_serializable: ^6.8.0
 
 flutter:
   uses-material-design: true
