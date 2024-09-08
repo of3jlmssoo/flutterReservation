@@ -264,6 +264,7 @@ class ShowDatePickerWidget extends StatelessWidget {
                 var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
                 if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
               } else {
+                if (!context.mounted) return;
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
                     content: Text('翌日以降を選んでください'),
