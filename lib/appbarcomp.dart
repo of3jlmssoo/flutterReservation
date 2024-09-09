@@ -131,23 +131,7 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               log.info('---> 予約情報登録1');
-
-              final reservation = Reservation(
-                reserveOn: DateTime.now(),
-                reserveMade: DateTime.now().add(const Duration(days: 1)),
-                facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
-                uid: ref.read(authRepositoryProvider).currentUser!.uid,
-                status: ReservationStatus.none,
-              );
-
-              final docRef = FirebaseFirestore.instance
-                  .collection("reservations")
-                  .withConverter(
-                    fromFirestore: Reservation.fromFirestore,
-                    toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
-                  )
-                  .doc();
-              await docRef.set(reservation);
+              Reservation reservation = await makeReservation(ref);
               log.info('---> 予約情報登録2 $reservation');
             },
             child: const Text('予約情報登録'),
@@ -155,24 +139,7 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
               onPressed: () async {
                 log.info('---> 予約情報照会1');
-                final ref =
-                    FirebaseFirestore.instance.collection("reservations").doc("KzSpyVTxicxDoojPUfL2").withConverter(
-                          fromFirestore: Reservation.fromFirestore,
-                          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-                        );
-                final docSnap = await ref.get();
-                final reservation = docSnap.data(); // Convert to City object
-                if (reservation != null) {
-                  log.info('--> reserveOn   ${reservation.reserveOn}');
-                  log.info('--> reserveMade ${reservation.reserveMade}');
-                  log.info('--> facility    ${reservation.facility}');
-                  log.info('--> uid         ${reservation.uid}');
-                  log.info('--> tel         ${reservation.tel}');
-                  log.info('--> email       ${reservation.email}');
-                  log.info('--> status      ${reservation.status.displayName}');
-                } else {
-                  log.info("No such document.");
-                }
+                await getReservationWithID("xFdutjXBDxGHWRpSbojI");
                 log.info('---> 予約情報照会2');
               },
               child: const Text('予約データ照会')),
@@ -228,6 +195,46 @@ class Firestorework extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> getReservationWithID(String id) async {
+    final ref = FirebaseFirestore.instance.collection("reservations").doc(id).withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        );
+    final docSnap = await ref.get();
+    final reservation = docSnap.data(); // Convert to City object
+    if (reservation != null) {
+      log.info('--> reserveOn   ${reservation.reserveOn}');
+      log.info('--> reserveMade ${reservation.reserveMade}');
+      log.info('--> facility    ${reservation.facility}');
+      log.info('--> uid         ${reservation.uid}');
+      log.info('--> tel         ${reservation.tel}');
+      log.info('--> email       ${reservation.email}');
+      log.info('--> status      ${reservation.status.displayName}');
+    } else {
+      log.info("No such document.");
+    }
+  }
+
+  Future<Reservation> makeReservation(WidgetRef ref) async {
+    final reservation = Reservation(
+      reserveOn: DateTime.now(),
+      reserveMade: DateTime.now().add(const Duration(days: 1)),
+      facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
+      uid: ref.read(authRepositoryProvider).currentUser!.uid,
+      status: ReservationStatus.none,
+    );
+
+    final docRef = FirebaseFirestore.instance
+        .collection("reservations")
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+        )
+        .doc();
+    await docRef.set(reservation);
+    return reservation;
   }
 
   Future<UserCredential> userCreate(Map<String, String> user) async {
