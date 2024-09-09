@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/firebase_auth_repository.dart';
+import 'package:reservations2/reservation.dart';
 
 import 'consts.dart';
 
@@ -73,14 +74,7 @@ class CommonAppBarWidget extends ConsumerWidget {
                 ref.read(firebaseAuthProvider).signOut();
                 // ref.read(firebaseAuthProvider).sign;
               },
-              child: const Text('logout'),
-            ),
-            MenuItemButton(
-              onPressed: () {
-                log.info('BaseAppBar user info pressed');
-                log.info(ref.read(authRepositoryProvider).currentUser);
-              },
-              child: const Text('log.info user info'),
+              child: const Text('ログアウト'),
             ),
             MenuItemButton(
               onPressed: () {
@@ -89,65 +83,6 @@ class CommonAppBarWidget extends ConsumerWidget {
                 context.push('/firestorework');
               },
               child: const Text('firestore!'),
-            ),
-            MenuItemButton(
-              onPressed: () async {
-                log.info('BaseAppBar create users pressed');
-
-                List<Map<String, String>> users = [
-                  {"name": "dummy1", "email": "dummy1@dummy.com", "password": "dummy1dummy1"},
-                  {"name": "dummy2", "email": "dummy2@dummy.com", "password": "dummy2dummy2"},
-                  {"name": "dummy3", "email": "dummy3@dummy.com", "password": "dummy3dummy3"}
-                ];
-
-                for (var user in users) {
-                  try {
-                    log.info('in try! ${user["email"]} ${user["password"]}');
-                    var credential = await userCreate(user);
-                    log.info('credential : $credential');
-                  } on FirebaseAuthException catch (e) {
-                    if (e.code == 'weak-password') {
-                      log.warning('The password provided is too weak.');
-                    } else if (e.code == 'email-already-in-use') {
-                      log.warning('The account already exists for that email.');
-                    }
-                  } catch (e) {
-                    log.warning(e);
-                  }
-
-                  try {
-                    final credential = await FirebaseAuth.instance
-                        .signInWithEmailAndPassword(email: user["email"]!, password: user["password"]!);
-                    credential.user!.updateDisplayName(user["name"]);
-                  } catch (e) {
-                    log.warning(e);
-                  }
-                }
-
-                // users.forEach(
-                //   (user) async {
-                //     log.info(
-                //         '---> ${user["name"]}  ${user["email"]}  ${user["password"]}');
-                //     try {
-                //       log.info('in try! ${user["email"]} ${user["password"]}');
-                //       await userCreate(user).then((credential) async {
-                //         log.info('user creation ${credential.user}');
-                //         credential.user!.updateDisplayName(user["name"]);
-                //       });
-                //     } on FirebaseAuthException catch (e) {
-                //       if (e.code == 'weak-password') {
-                //         log.warning('The password provided is too weak.');
-                //       } else if (e.code == 'email-already-in-use') {
-                //         log.warning(
-                //             'The account already exists for that email.');
-                //       }
-                //     } catch (e) {
-                //       log.warning(e);
-                //     }
-                //   },
-                // );
-              },
-              child: const Text('create users'),
             ),
             MenuItemButton(
               onPressed: () {
@@ -165,14 +100,6 @@ class CommonAppBarWidget extends ConsumerWidget {
       ],
     );
   }
-
-  Future<UserCredential> userCreate(Map<String, String> user) async {
-    final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
-      email: user["email"]!,
-      password: user["password"]!,
-    );
-    return credential;
-  }
 }
 
 class Firestorework extends ConsumerWidget {
@@ -188,48 +115,109 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () {
               var db = FirebaseFirestore.instance;
-              final kitchen = <String, dynamic>{"name": "台所", "capacity": 10, "equipment": "IH。\n水道無し。外に井戸あり\nイス無し"};
-              final mtgR1 = <String, dynamic>{"name": "会議室1", "capacity": 2, "equipment": "畳部屋(1畳)"};
-              final mtgR2 = <String, dynamic>{"name": "会議室2", "capacity": 20, "equipment": "2500平米。床抜けあり注意"};
-              List<Map<String, dynamic>> facilityInfo = [kitchen, mtgR1, mtgR2];
-              List<String> facilityName = ["kitchen", "mtgR1", "mrgR2"];
-              for (int i = 0; i < facilityInfo.length; i++) {
+
+              for (var ele in Facility.values) {
                 try {
-                  db.collection("facilities").doc(facilityName[i]).set(facilityInfo[i]);
+                  var doc = {"name": ele.displayName, "capacity": ele.capacity, "description": ele.description};
+                  db.collection("facilities").doc(ele.name).set(doc);
                   // .onError((e, _) => log.info("Error writing document: $e"));
                 } catch (e) {
                   log.info("Error writing document: $e");
                 }
               }
-              // db
-              //     .collection("facilities")
-              //     .doc("kitchen")
-              //     .set(kitchen)
-              //     .onError((e, _) => log.info("Error writing document: $e"));
             },
             child: const Text('施設登録'),
           ),
           OutlinedButton(
-            onPressed: () {
-              var db = FirebaseFirestore.instance;
-              final docRef = db.collection("facilities").doc("kitchen");
+            onPressed: () async {
+              log.info('---> 予約情報登録1');
+              // final reservation = Reservation(
+              //     reserveOn: DateTime.now(),
+              //     reserveMade: DateTime.now().add(Duration(days: 1)),
+              //     uid: ref.read(firebaseAuthProvider).currentUser!.uid);
+              // final rRepository = ReservationRepository(reservation: reservation, db: FirebaseFirestore.instance);
+              // rRepository.addReservation(reservation: reservation);
 
-              log.info("-----> $docRef");
-              log.info("-----> ${ref.read(authRepositoryProvider).currentUser}"); //.runtimeType}");
-              final reservation = <String, dynamic>{
-                "name": "Los Angeles",
-                "facility": docRef,
-                // "user": ref.read(authRepositoryProvider).currentUser
-              };
+              final reservation = Reservation(
+                reserveOn: DateTime.now(),
+                reserveMade: DateTime.now().add(const Duration(days: 1)),
+                facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
+                uid: ref.read(authRepositoryProvider).currentUser!.uid,
+                status: ReservationStatus.none,
+                // status: ReservationStatus.none,
+              );
 
-              var setData = db
+              final docRef = FirebaseFirestore.instance
                   .collection("reservations")
-                  .doc()
-                  .set(reservation)
-                  .onError((e, _) => log.info("Error writing document: $e"));
-              log.info("-----> $setData");
+                  .withConverter(
+                    fromFirestore: Reservation.fromFirestore,
+                    toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+                  )
+                  .doc();
+              await docRef.set(reservation);
+              log.info('---> 予約情報登録2 $reservation');
+              // var db = FirebaseFirestore.instance;
+              // final docRef = db.collection("facilities").doc("kitchen");
+
+              // log.info("-----> $docRef ---> ${docRef.runtimeType}");
+              // log.info("-----> ${ref.read(authRepositoryProvider).currentUser}"); //.runtimeType}");
+              // final reservation = <String, dynamic>{
+              //   "name": "Los Angeles",
+              //   "facility": docRef,
+              //   // "user": ref.read(authRepositoryProvider).currentUser
+              // };
+
+              // var setData = db
+              //     .collection("reservations")
+              //     .doc()
+              //     .set(reservation)
+              //     .onError((e, _) => log.info("Error writing document: $e"));
+              // log.info("-----> $setData");
             },
             child: const Text('予約情報登録'),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              log.info('BaseAppBar create users pressed');
+
+              List<Map<String, String>> users = [
+                {"name": "dummy1", "email": "dummy1@dummy.com", "password": "dummy1dummy1"},
+                {"name": "dummy2", "email": "dummy2@dummy.com", "password": "dummy2dummy2"},
+                {"name": "dummy3", "email": "dummy3@dummy.com", "password": "dummy3dummy3"}
+              ];
+
+              for (var user in users) {
+                try {
+                  log.info('in try! ${user["email"]} ${user["password"]}');
+                  var credential = await userCreate(user);
+                  log.info('credential : $credential');
+                } on FirebaseAuthException catch (e) {
+                  if (e.code == 'weak-password') {
+                    log.warning('The password provided is too weak.');
+                  } else if (e.code == 'email-already-in-use') {
+                    log.warning('The account already exists for that email.');
+                  }
+                } catch (e) {
+                  log.warning(e);
+                }
+
+                try {
+                  final credential = await FirebaseAuth.instance
+                      .signInWithEmailAndPassword(email: user["email"]!, password: user["password"]!);
+                  credential.user!.updateDisplayName(user["name"]);
+                } catch (e) {
+                  log.warning(e);
+                }
+              }
+            },
+            child: const Text('ユーザー登録'),
+          ),
+          OutlinedButton(
+            onPressed: () {
+              log.info('BaseAppBar user info pressed');
+              log.info(ref.read(authRepositoryProvider).currentUser);
+            },
+            child: const Text('ユーザー情報(ログ)'),
           ),
           OutlinedButton(
             onPressed: () {
@@ -240,5 +228,13 @@ class Firestorework extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<UserCredential> userCreate(Map<String, String> user) async {
+    final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
+      email: user["email"]!,
+      password: user["password"]!,
+    );
+    return credential;
   }
 }
