@@ -131,12 +131,6 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               log.info('---> 予約情報登録1');
-              // final reservation = Reservation(
-              //     reserveOn: DateTime.now(),
-              //     reserveMade: DateTime.now().add(Duration(days: 1)),
-              //     uid: ref.read(firebaseAuthProvider).currentUser!.uid);
-              // final rRepository = ReservationRepository(reservation: reservation, db: FirebaseFirestore.instance);
-              // rRepository.addReservation(reservation: reservation);
 
               final reservation = Reservation(
                 reserveOn: DateTime.now(),
@@ -144,7 +138,6 @@ class Firestorework extends ConsumerWidget {
                 facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
                 uid: ref.read(authRepositoryProvider).currentUser!.uid,
                 status: ReservationStatus.none,
-                // status: ReservationStatus.none,
               );
 
               final docRef = FirebaseFirestore.instance
@@ -156,26 +149,33 @@ class Firestorework extends ConsumerWidget {
                   .doc();
               await docRef.set(reservation);
               log.info('---> 予約情報登録2 $reservation');
-              // var db = FirebaseFirestore.instance;
-              // final docRef = db.collection("facilities").doc("kitchen");
-
-              // log.info("-----> $docRef ---> ${docRef.runtimeType}");
-              // log.info("-----> ${ref.read(authRepositoryProvider).currentUser}"); //.runtimeType}");
-              // final reservation = <String, dynamic>{
-              //   "name": "Los Angeles",
-              //   "facility": docRef,
-              //   // "user": ref.read(authRepositoryProvider).currentUser
-              // };
-
-              // var setData = db
-              //     .collection("reservations")
-              //     .doc()
-              //     .set(reservation)
-              //     .onError((e, _) => log.info("Error writing document: $e"));
-              // log.info("-----> $setData");
             },
             child: const Text('予約情報登録'),
           ),
+          OutlinedButton(
+              onPressed: () async {
+                log.info('---> 予約情報照会1');
+                final ref =
+                    FirebaseFirestore.instance.collection("reservations").doc("KzSpyVTxicxDoojPUfL2").withConverter(
+                          fromFirestore: Reservation.fromFirestore,
+                          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+                        );
+                final docSnap = await ref.get();
+                final reservation = docSnap.data(); // Convert to City object
+                if (reservation != null) {
+                  log.info('--> reserveOn   ${reservation.reserveOn}');
+                  log.info('--> reserveMade ${reservation.reserveMade}');
+                  log.info('--> facility    ${reservation.facility}');
+                  log.info('--> uid         ${reservation.uid}');
+                  log.info('--> tel         ${reservation.tel}');
+                  log.info('--> email       ${reservation.email}');
+                  log.info('--> status      ${reservation.status.displayName}');
+                } else {
+                  log.info("No such document.");
+                }
+                log.info('---> 予約情報照会2');
+              },
+              child: const Text('予約データ照会')),
           OutlinedButton(
             onPressed: () async {
               log.info('BaseAppBar create users pressed');

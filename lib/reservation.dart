@@ -106,9 +106,12 @@ class Reservation with _$Reservation {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
+    log.info('--> data $data');
     return Reservation(
-      reserveOn: data?['reservedOn'],
-      reserveMade: data?['reserveMade'],
+      reserveOn: data?["reserveOn"].toDate(),
+      reserveMade: data?['reserveMade'].toDate(),
+      // reserveOn: data?['reservedOn'],
+      // reserveMade: data?['reserveMade'],
       facility: data?['facility'],
       uid: data?['uid'],
       tel: data?['tel'],
@@ -120,8 +123,8 @@ class Reservation with _$Reservation {
 
   Map<String, dynamic> toFirestore() {
     return {
-      "reserveOn": reserveOn,
-      "state": reserveMade,
+      "reserveOn": Timestamp.fromDate(reserveOn),
+      "reserveMade": Timestamp.fromDate(reserveMade),
       if (facility != null) "facility": facility,
       "uid": uid,
       if (tel != null) "tel": tel,
