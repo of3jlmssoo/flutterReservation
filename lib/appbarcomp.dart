@@ -131,18 +131,45 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               log.info('---> 予約情報登録1');
-              Reservation reservation = await makeReservation(ref);
-              log.info('---> 予約情報登録2 $reservation');
+              // Reservation reservation = await makeReservation(ref);
+              ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+              rr.addReservation(
+                  reserveOn: DateTime.now(),
+                  reserveMade: DateTime.now().add(Duration(days: 2)),
+                  facility: Facility.kitchen,
+                  status: ReservationStatus.tentative,
+                  uid: ref.read(firebaseAuthProvider).currentUser!.uid);
+              rr.addReservation(
+                  reserveOn: DateTime.now(),
+                  reserveMade: DateTime.now().add(Duration(days: 4)),
+                  facility: Facility.mtgR1,
+                  status: ReservationStatus.reserved,
+                  uid: ref.read(firebaseAuthProvider).currentUser!.uid);
+              rr.addReservation(
+                  reserveOn: DateTime.now(),
+                  reserveMade: DateTime.now().add(Duration(days: 6)),
+                  facility: Facility.mtgR1,
+                  status: ReservationStatus.tentative,
+                  uid: ref.read(firebaseAuthProvider).currentUser!.uid);
+              log.info('---> 予約情報登録2');
             },
             child: const Text('予約情報登録'),
           ),
           OutlinedButton(
               onPressed: () async {
                 log.info('---> 予約情報照会1');
-                await getReservationWithID("xFdutjXBDxGHWRpSbojI");
+                await getReservationWithID("FDSn1I3TPS7POOzNsdri");
                 log.info('---> 予約情報照会2');
               },
               child: const Text('予約データ照会')),
+          OutlinedButton(
+              onPressed: () async {
+                log.info('---> 予約情報照会2-1');
+                ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+                rr.getDocument();
+                log.info('---> 予約情報照会2-2');
+              },
+              child: const Text('予約データ照会2')),
           OutlinedButton(
             onPressed: () async {
               log.info('BaseAppBar create users pressed');
@@ -217,25 +244,25 @@ class Firestorework extends ConsumerWidget {
     }
   }
 
-  Future<Reservation> makeReservation(WidgetRef ref) async {
-    final reservation = Reservation(
-      reserveOn: DateTime.now(),
-      reserveMade: DateTime.now().add(const Duration(days: 1)),
-      facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
-      uid: ref.read(authRepositoryProvider).currentUser!.uid,
-      status: ReservationStatus.none,
-    );
+  // Future<Reservation> makeReservation(WidgetRef ref) async {
+  //   final reservation = Reservation(
+  //     reserveOn: DateTime.now(),
+  //     reserveMade: DateTime.now().add(const Duration(days: 1)),
+  //     facility: FirebaseFirestore.instance.collection("facilities").doc("kitchen"),
+  //     uid: ref.read(authRepositoryProvider).currentUser!.uid,
+  //     status: ReservationStatus.none,
+  //   );
 
-    final docRef = FirebaseFirestore.instance
-        .collection("reservations")
-        .withConverter(
-          fromFirestore: Reservation.fromFirestore,
-          toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
-        )
-        .doc();
-    await docRef.set(reservation);
-    return reservation;
-  }
+  //   final docRef = FirebaseFirestore.instance
+  //       .collection("reservations")
+  //       .withConverter(
+  //         fromFirestore: Reservation.fromFirestore,
+  //         toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+  //       )
+  //       .doc();
+  //   await docRef.set(reservation);
+  //   return reservation;
+  // }
 
   Future<UserCredential> userCreate(Map<String, String> user) async {
     final credential = await FirebaseAuth.instance.createUserWithEmailAndPassword(

@@ -2,6 +2,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
 
+import 'consts.dart';
+
 part 'reservation.freezed.dart';
 // part 'reservation.g.dart';
 
@@ -142,12 +144,43 @@ class Reservation with _$Reservation {
 }
 
 class ReservationRepository {
-  ReservationRepository({required this.reservation, required this.db});
+  ReservationRepository({required this.db});
   final FirebaseFirestore db;
-  final Reservation reservation;
 
-  Future<void> addReservation({required Reservation reservation}) async {
+  Future<void> getDocument() async {
+    final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
+    db
+        .collection("reservations")
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+        )
+        .where("facility", isEqualTo: facilityRef)
+        .get()
+        .then(
+      (querySnapshot) {
+        log.info("Successfully completed ${querySnapshot.docs.length}");
+        for (var docSnapshot in querySnapshot.docs) {
+          log.info('${docSnapshot.id} ===> ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => log.info("Error completing: $e"),
+    );
+  }
+
+  Future<void> addReservation({
+    required DateTime reserveOn,
+    required DateTime reserveMade,
+    required Facility facility,
+    required ReservationStatus status,
+    required String uid,
+  }) async {
     log.info('--> addReservation1');
+    final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.name);
+
+    final reservation =
+        Reservation(reserveOn: reserveOn, reserveMade: reserveMade, facility: facilityRef, uid: uid, status: status);
+
     db
         .collection(collectionReservation)
         .withConverter(
