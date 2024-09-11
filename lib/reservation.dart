@@ -151,6 +151,43 @@ class ReservationRepository {
   ReservationRepository({required this.db});
   final FirebaseFirestore db;
 
+  DocumentReference facilityRef(Enum facility) {
+    return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
+  }
+
+  ReservationStatus reservationExist(DateTime t, Enum f) {
+    // if (ref.read(authRepositoryProvider).currentUser != null) {
+    //   ref.read(authRepositoryProvider).signOut();
+    // }
+    // ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+
+    final reserveRef = FirebaseFirestore.instance.collection("reservations");
+    final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
+
+    final formattedT = DateTime(t.year, t.month, t.day);
+
+    ReservationStatus result = ReservationStatus.notFound;
+
+    reserveRef.where("reserveOn", isEqualTo: formattedT).where("facility", isEqualTo: facilityRef).get().then(
+      (querySnapshot) {
+        log.info("レコード有無照会1    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
+        // there should be only one record for this query
+
+        // result = querySnapshot.docs[0]["status"];
+        // log.info('レコード有無照会2    ${querySnapshot.docs[0]["status"]} --- $result');
+
+        for (var docSnapshot in querySnapshot.docs) {
+          log.info('${docSnapshot.id} ====> ${docSnapshot.data()}');
+          log.info('${docSnapshot.id} ====> ${docSnapshot.data()["status"]}');
+          result = docSnapshot.data()["status"];
+        }
+      },
+      onError: (e) => log.info("Error completing: $e"),
+    );
+
+    return result;
+  }
+
   Future<void> getDocument() async {
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
     db

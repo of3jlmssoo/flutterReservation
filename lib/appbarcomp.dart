@@ -159,12 +159,30 @@ class Firestorework extends ConsumerWidget {
           ),
           OutlinedButton(
               onPressed: () {
-                if (ref.read(authRepositoryProvider).currentUser != null) {
-                  ref.read(authRepositoryProvider).signOut();
-                }
-                ref
-                    .read(firebaseAuthProvider)
-                    .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+                ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+                log.info('reservationExist-------> ${rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR1)}');
+                // if (ref.read(authRepositoryProvider).currentUser != null) {
+                //   ref.read(authRepositoryProvider).signOut();
+                // }
+                // ref
+                //     .read(firebaseAuthProvider)
+                //     .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+                // final reserveRef = FirebaseFirestore.instance.collection("reservations");
+                // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
+                // log.info('--------------------------------------------------> facilityRef ${facilityRef.toString()}');
+                // reserveRef
+                //     .where("reserveOn", isEqualTo: DateTime(2024, 9, 17))
+                //     .where("facility", isEqualTo: facilityRef)
+                //     .get()
+                //     .then(
+                //   (querySnapshot) {
+                //     log.info("レコード有無照会    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
+                //     for (var docSnapshot in querySnapshot.docs) {
+                //       log.info('${docSnapshot.id} ====> ${docSnapshot.data()}');
+                //     }
+                //   },
+                //   onError: (e) => log.info("Error completing: $e"),
+                // );
               },
               child: const Text('レコード有無照会')),
           OutlinedButton(
