@@ -24,6 +24,7 @@ mixin _$Reservation {
   String? get tel => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   ReservationStatus get status => throw _privateConstructorUsedError;
+  List<String>? get reservers => throw _privateConstructorUsedError;
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
@@ -45,7 +46,8 @@ abstract class $ReservationCopyWith<$Res> {
       String uid,
       String? tel,
       String? email,
-      ReservationStatus status});
+      ReservationStatus status,
+      List<String>? reservers});
 }
 
 /// @nodoc
@@ -70,6 +72,7 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
     Object? tel = freezed,
     Object? email = freezed,
     Object? status = null,
+    Object? reservers = freezed,
   }) {
     return _then(_value.copyWith(
       reserveOn: null == reserveOn
@@ -100,6 +103,10 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as ReservationStatus,
+      reservers: freezed == reservers
+          ? _value.reservers
+          : reservers // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ) as $Val);
   }
 }
@@ -119,7 +126,8 @@ abstract class _$$ReservationImplCopyWith<$Res>
       String uid,
       String? tel,
       String? email,
-      ReservationStatus status});
+      ReservationStatus status,
+      List<String>? reservers});
 }
 
 /// @nodoc
@@ -142,6 +150,7 @@ class __$$ReservationImplCopyWithImpl<$Res>
     Object? tel = freezed,
     Object? email = freezed,
     Object? status = null,
+    Object? reservers = freezed,
   }) {
     return _then(_$ReservationImpl(
       reserveOn: null == reserveOn
@@ -172,6 +181,10 @@ class __$$ReservationImplCopyWithImpl<$Res>
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
               as ReservationStatus,
+      reservers: freezed == reservers
+          ? _value._reservers
+          : reservers // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
     ));
   }
 }
@@ -186,8 +199,10 @@ class _$ReservationImpl extends _Reservation {
       required this.uid,
       this.tel,
       this.email,
-      this.status = ReservationStatus.none})
-      : super._();
+      this.status = ReservationStatus.none,
+      final List<String>? reservers})
+      : _reservers = reservers,
+        super._();
 
   @override
   final DateTime reserveOn;
@@ -204,10 +219,19 @@ class _$ReservationImpl extends _Reservation {
   @override
   @JsonKey()
   final ReservationStatus status;
+  final List<String>? _reservers;
+  @override
+  List<String>? get reservers {
+    final value = _reservers;
+    if (value == null) return null;
+    if (_reservers is EqualUnmodifiableListView) return _reservers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
 
   @override
   String toString() {
-    return 'Reservation(reserveOn: $reserveOn, reserveMade: $reserveMade, facility: $facility, uid: $uid, tel: $tel, email: $email, status: $status)';
+    return 'Reservation(reserveOn: $reserveOn, reserveMade: $reserveMade, facility: $facility, uid: $uid, tel: $tel, email: $email, status: $status, reservers: $reservers)';
   }
 
   @override
@@ -224,12 +248,14 @@ class _$ReservationImpl extends _Reservation {
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.tel, tel) || other.tel == tel) &&
             (identical(other.email, email) || other.email == email) &&
-            (identical(other.status, status) || other.status == status));
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other._reservers, _reservers));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, reserveOn, reserveMade, facility, uid, tel, email, status);
+  int get hashCode => Object.hash(runtimeType, reserveOn, reserveMade, facility,
+      uid, tel, email, status, const DeepCollectionEquality().hash(_reservers));
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
@@ -248,7 +274,8 @@ abstract class _Reservation extends Reservation {
       required final String uid,
       final String? tel,
       final String? email,
-      final ReservationStatus status}) = _$ReservationImpl;
+      final ReservationStatus status,
+      final List<String>? reservers}) = _$ReservationImpl;
   const _Reservation._() : super._();
 
   @override
@@ -265,6 +292,8 @@ abstract class _Reservation extends Reservation {
   String? get email;
   @override
   ReservationStatus get status;
+  @override
+  List<String>? get reservers;
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.

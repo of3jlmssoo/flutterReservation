@@ -5,6 +5,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/firebase_auth_repository.dart';
+import 'package:reservations2/make_data.dart';
 import 'package:reservations2/reservation.dart';
 
 import 'consts.dart';
@@ -134,20 +135,21 @@ class Firestorework extends ConsumerWidget {
               // Reservation reservation = await makeReservation(ref);
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
               rr.addReservation(
-                  reserveOn: DateTime.now(),
-                  reserveMade: DateTime.now().add(Duration(days: 2)),
-                  facility: Facility.kitchen,
-                  status: ReservationStatus.tentative,
-                  uid: ref.read(firebaseAuthProvider).currentUser!.uid);
+                reserveOn: DateTime.now().add(const Duration(days: 2)),
+                reserveMade: DateTime.now(),
+                facility: Facility.kitchen,
+                status: ReservationStatus.tentative,
+                uid: ref.read(firebaseAuthProvider).currentUser!.uid,
+              );
               rr.addReservation(
-                  reserveOn: DateTime.now(),
-                  reserveMade: DateTime.now().add(Duration(days: 4)),
+                  reserveOn: DateTime.now().add(const Duration(days: 4)),
+                  reserveMade: DateTime.now(),
                   facility: Facility.mtgR1,
                   status: ReservationStatus.reserved,
                   uid: ref.read(firebaseAuthProvider).currentUser!.uid);
               rr.addReservation(
-                  reserveOn: DateTime.now(),
-                  reserveMade: DateTime.now().add(Duration(days: 6)),
+                  reserveOn: DateTime.now().add(const Duration(days: 6)),
+                  reserveMade: DateTime.now(),
                   facility: Facility.mtgR1,
                   status: ReservationStatus.tentative,
                   uid: ref.read(firebaseAuthProvider).currentUser!.uid);
@@ -155,6 +157,40 @@ class Firestorework extends ConsumerWidget {
             },
             child: const Text('予約情報登録'),
           ),
+          OutlinedButton(
+              onPressed: () {
+                if (ref.read(authRepositoryProvider).currentUser != null) {
+                  ref.read(authRepositoryProvider).signOut();
+                }
+                ref
+                    .read(firebaseAuthProvider)
+                    .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+              },
+              child: const Text('レコード有無照会')),
+          OutlinedButton(
+              onPressed: () async {
+                log.info('---> 予約情報登録2-1');
+
+                var futureData = makeData();
+                updateData(futureData);
+                makeTentatives(futureData);
+                for (var v in futureData) {
+                  log.info(v);
+                }
+
+                final users = ["dummy1@dummy.com", "dummy2@dummy.com", "dummy3@dummy.com"];
+                final passwords = ["dummy1dummy1", "dummy2dummy2", "dummy3dummy3"];
+                if (ref.read(authRepositoryProvider).currentUser != null) {
+                  ref.read(authRepositoryProvider).signOut();
+                }
+
+                for (int i = 0; i < numUsers; i++) {
+                  ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: users[i], password: passwords[i]);
+                  log.info('--> log in as ${ref.read(authRepositoryProvider).currentUser!.displayName}');
+                }
+                log.info('---> 予約情報登録2-2');
+              },
+              child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
                 log.info('---> 予約情報照会1');

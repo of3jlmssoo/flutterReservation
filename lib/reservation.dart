@@ -15,7 +15,8 @@ const String collectionReservation = "reservations";
 enum ReservationStatus {
   none(displayName: "空"),
   tentative(displayName: "仮"),
-  reserved(displayName: "済"),
+  priority(displayName: "優"),
+  reserved(displayName: "確"),
   notFound(displayName: "不");
 
   const ReservationStatus({
@@ -93,6 +94,7 @@ class Reservation with _$Reservation {
     String? tel,
     String? email,
     @Default(ReservationStatus.none) ReservationStatus status,
+    List<String>? reservers,
 
     // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
     // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
@@ -120,6 +122,7 @@ class Reservation with _$Reservation {
       email: data?['emal'],
       // status: data?['status'],
       status: ReservationStatusExtension.fromString(data?['status']),
+      reservers: data?['reservers'] is Iterable ? List.from(data?['regions']) : null,
     );
   }
 
@@ -132,6 +135,7 @@ class Reservation with _$Reservation {
       if (tel != null) "tel": tel,
       if (email != null) "email": email,
       "status": ReservationStatusExtension.statusToString(status),
+      if (reservers != null) "reservers": reservers,
       // "status": status,
       // if (reserveMade != null) "state": reserveMade,
       // if (facility != null) "facility": facility,
@@ -178,8 +182,15 @@ class ReservationRepository {
     log.info('--> addReservation1');
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.name);
 
-    final reservation =
-        Reservation(reserveOn: reserveOn, reserveMade: reserveMade, facility: facilityRef, uid: uid, status: status);
+    final formattedReserveOn = DateTime(reserveOn.year, reserveOn.month, reserveOn.day);
+
+    final reservation = Reservation(
+        reserveOn: formattedReserveOn,
+        reserveMade: reserveMade,
+        facility: facilityRef,
+        uid: uid,
+        status: status,
+        reservers: [uid]);
 
     db
         .collection(collectionReservation)

@@ -5,6 +5,11 @@ const Color brightFontColor = Color(0xFFF0F4C3);
 
 const colDivider = SizedBox(height: 10);
 
+// for making test data
+const numFacilities = 3;
+const numUsers = 3;
+const numRecords = 10;
+
 // enum Facility implements Comparable<Facility> {
 enum Facility {
   kitchen(displayName: "台所", capacity: 5, description: "IH。ただし給電無し。発電機持ち込み必要\n水道無し。外に井戸あり\nイス無し"),
@@ -26,6 +31,3 @@ enum Facility {
   // @override
   // int compareTo(Facility other) => carbonFootprint - other.carbonFootprint;
 }
-
-
-
