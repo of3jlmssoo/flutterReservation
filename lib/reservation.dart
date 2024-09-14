@@ -27,7 +27,8 @@ enum ReservationStatus {
 }
 
 extension ReservationStatusExtension on ReservationStatus {
-  static ReservationStatus fromString(String status) {
+  static ReservationStatus statusfromString(String status) {
+    log.info('--> fromString called!');
     switch (status) {
       case 'none':
         return ReservationStatus.none;
@@ -60,7 +61,7 @@ class ReservationStatusConverter implements JsonConverter<ReservationStatus, Str
 
   @override
   ReservationStatus fromJson(String json) {
-    return ReservationStatusExtension.fromString(json);
+    return ReservationStatusExtension.statusfromString(json);
   }
 
   @override
@@ -74,6 +75,13 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
 
   @override
   DateTime fromJson(Timestamp json) {
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
+    log.info('-----------------------------------------------');
     return json.toDate();
   }
 
@@ -110,7 +118,7 @@ class Reservation with _$Reservation {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
-    log.info('--> data $data');
+    log.info('-- fromFiresstore --> data $data');
     return Reservation(
       reserveOn: data?["reserveOn"].toDate(),
       reserveMade: data?['reserveMade'].toDate(),
@@ -121,7 +129,8 @@ class Reservation with _$Reservation {
       tel: data?['tel'],
       email: data?['emal'],
       // status: data?['status'],
-      status: ReservationStatusExtension.fromString(data?['status']),
+      // status: ReservationStatusExtension.statusfromString(data?['status']),
+      status: data?["status"].statusfromString(),
       reservers: data?['reservers'] is Iterable ? List.from(data?['regions']) : null,
     );
   }
@@ -168,7 +177,15 @@ class ReservationRepository {
 
     ReservationStatus result = ReservationStatus.notFound;
 
-    reserveRef.where("reserveOn", isEqualTo: formattedT).where("facility", isEqualTo: facilityRef).get().then(
+    reserveRef
+        .where("reserveOn", isEqualTo: formattedT)
+        .where("facility", isEqualTo: facilityRef)
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation city, _) => city.toFirestore(),
+        )
+        .get()
+        .then(
       (querySnapshot) {
         log.info("レコード有無照会1    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
         // there should be only one record for this query
@@ -177,9 +194,12 @@ class ReservationRepository {
         // log.info('レコード有無照会2    ${querySnapshot.docs[0]["status"]} --- $result');
 
         for (var docSnapshot in querySnapshot.docs) {
-          log.info('${docSnapshot.id} ====> ${docSnapshot.data()}');
-          log.info('${docSnapshot.id} ====> ${docSnapshot.data()["status"]}');
-          result = docSnapshot.data()["status"];
+          log.info('${docSnapshot.id} 1 ====> ${docSnapshot.data()}');
+          // log.info(
+          //     '${docSnapshot.id} 2 ====> ${docSnapshot.data()["status"]}  ${docSnapshot.data()["status"].runtimeType}');
+          // log.info(
+          //     '${docSnapshot.id} 2 ====> ${docSnapshot.data()["reserveOn"]}  ${docSnapshot.data()["reserveOn"].runtimeType}');
+          // result = docSnapshot.data()["status"];
         }
       },
       onError: (e) => log.info("Error completing: $e"),
