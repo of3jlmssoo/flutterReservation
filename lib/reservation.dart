@@ -234,26 +234,56 @@ class ReservationRepository {
   }
 
   Future<ReservationStatus> reservationExist(DateTime t, Facility f) async {
-    log.info('reservationExist called');
-    final reserveRef = FirebaseFirestore.instance.collection("reservations");
+    log.info('reservationExist called $t $f ${f.runtimeType}');
+    // final reserveRef = FirebaseFirestore.instance.collection("reservations");
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
 
-    final formattedT = DateTime(t.year, t.month, t.day);
+    // final formattedT = DateTime(t.year, t.month, t.day);
 
     ReservationStatus result = ReservationStatus.notFound;
 
-    final docRef = db.collection('reservations').doc('5RE42FSz6FdRer0Rkd07').withConverter(
+    final docRef = await db
+        .collection("reservations")
+        .where("reserveOn", isEqualTo: t)
+        .where("facility", isEqualTo: facilityRef)
+        .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-        );
-    final docSnap = await docRef.get();
-    log.info('ReservationExist docRef : $docRef    docSnap : $docSnap');
-    final reservation = docSnap.data(); // Convert to City object
-    if (reservation != null) {
-      log.info('reservationExist data() $reservation}');
+        )
+        .get();
+    log.info("reservationExist docRef.size : ${docRef.size}");
+    if (docRef.size == 1) {
+      log.info("reservationExist docRef.docs : ${docRef.docs}");
+      // result = reservation.status;
     } else {
-      log.info("reservationExist  No such document.");
+      log.info("reservationExist some records exist!");
+      UnimplementedError();
     }
+    log.info("reservationExist docRef.runtimeType ${docRef.runtimeType}");
+    //     .then(
+    //   (querySnapshot) {
+    //     log.info("reservationExist Successfully completed ${querySnapshot.size}");
+    //     for (var docSnapshot in querySnapshot.docs) {
+    //       log.info('${docSnapshot.id} => ${docSnapshot.data()}');
+    //     }
+    //   },
+    //   onError: (e) => log.info("Error completing: $e"),
+    // );
+
+    // final docRef = db.collection('reservations').doc('5RE42FSz6FdRer0Rkd07').withConverter(
+    //       // final docRef = db.collection('reservations').where("reserveOn", isEqualTo: t).withConverter(
+    //       fromFirestore: Reservation.fromFirestore,
+    //       toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+    //     );
+    // final docSnap = await docRef.get();
+    // log.info('ReservationExist docRef : $docRef    docSnap : $docSnap');
+    // final reservation = docSnap.data(); // Convert to City object
+    // if (reservation != null) {
+    //   log.info('reservationExist data() $reservation}');
+    //   result = reservation.status;
+    // } else {
+    //   log.info("reservationExist  No such document.");
+    // }
 
     // await docRef.get().then(
     //       (res) => log.info("Successfully completed"),

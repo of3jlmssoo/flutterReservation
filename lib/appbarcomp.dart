@@ -329,7 +329,7 @@ class Firestorework extends ConsumerWidget {
     Logger.root.level = Level.ALL;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
     // Future<ReservationStatus> fs =  rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2);
-    log.info('checkReservationExist()-------> ${await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2)}');
+    log.info('checkReservationExist-------> ${await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2)}');
     // if (ref.read(authRepositoryProvider).currentUser != null) {
     //   ref.read().signOut();
     // }
