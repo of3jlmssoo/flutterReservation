@@ -328,30 +328,9 @@ class Firestorework extends ConsumerWidget {
   Future<void> checkReservationExist() async {
     Logger.root.level = Level.ALL;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    // Future<ReservationStatus> fs =  rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2);
-    log.info('checkReservationExist-------> ${await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2)}');
-    // if (ref.read(authRepositoryProvider).currentUser != null) {
-    //   ref.read().signOut();
-    // }
-    // ref
-    //     .read(firebaseAuthProvider)
-    //     .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
-    // final reserveRef = FirebaseFirestore.instance.collection("reservations");
-    // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
-    // log.info('--------------------------------------------------> facilityRef ${facilityRef.toString()}');
-    // reserveRef
-    //     .where("reserveOn", isEqualTo: DateTime(2024, 9, 17))
-    //     .where("facility", isEqualTo: facilityRef)
-    //     .get()
-    //     .then(
-    //   (querySnapshot) {
-    //     log.info("レコード有無照会    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       log.info('${docSnapshot.id} ====> ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => log.info("Error completing: $e"),
-    // );
+    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2);
+    log.info('checkReservationExist-------> $r');
+
     Logger.root.level = Level.OFF;
   }
 

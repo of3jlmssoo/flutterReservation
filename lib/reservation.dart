@@ -233,14 +233,14 @@ class ReservationRepository {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
   }
 
-  Future<ReservationStatus> reservationExist(DateTime t, Facility f) async {
+  Future<Reservation?> reservationExist(DateTime t, Facility f) async {
     log.info('reservationExist called $t $f ${f.runtimeType}');
     // final reserveRef = FirebaseFirestore.instance.collection("reservations");
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
 
     // final formattedT = DateTime(t.year, t.month, t.day);
 
-    ReservationStatus result = ReservationStatus.notFound;
+    Reservation? result;
 
     final docRef = await db
         .collection("reservations")
@@ -254,7 +254,8 @@ class ReservationRepository {
     log.info("reservationExist docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
       log.info("reservationExist docRef.docs : ${docRef.docs}");
-      // result = reservation.status;
+      log.info("reservationExist docRef.docs.data() : ${docRef.docs[0].data()}");
+      result = docRef.docs[0].data();
     } else {
       log.info("reservationExist some records exist!");
       UnimplementedError();
