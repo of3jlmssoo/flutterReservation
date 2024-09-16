@@ -15,10 +15,10 @@ import 'firebase_options.dart';
 final log = Logger('MainLogger');
 
 Future<void> main() async {
-  Logger.root.level = Level.ALL; // defaults to Level.INFO
+  // Logger.root.level = Level.ALL; // defaults to Level.INFO
+  Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord rec) {
-    debugPrint(
-        '[${rec.loggerName}] ${rec.level.name}: ${rec.time}: ${rec.message}');
+    debugPrint('[${rec.loggerName}] ${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
   log.info("main() started");

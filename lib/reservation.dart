@@ -5,7 +5,7 @@ import 'package:logging/logging.dart';
 import 'consts.dart';
 
 part 'reservation.freezed.dart';
-// part 'reservation.g.dart';
+part 'reservation.g.dart';
 
 // part 'reservation.g.dart';
 final log = Logger('Reservation');
@@ -41,32 +41,53 @@ extension ReservationStatusExtension on ReservationStatus {
     }
   }
 
-  static String statusToString(ReservationStatus status) {
+  static Map<String, dynamic> statusToString(ReservationStatus status) {
     log.info('--> statusToString called!');
     switch (status) {
       case ReservationStatus.none:
-        return 'none';
+        return {"status": ReservationStatus.none.name};
       case ReservationStatus.tentative:
-        return 'tentative';
+        return {'tentative': ReservationStatus.tentative.name};
       case ReservationStatus.reserved:
-        return 'reserved';
+        return {'reserved': ReservationStatus.reserved.name};
       default:
-        return 'notFound';
+        return {'notFound': ReservationStatus.notFound.name};
     }
   }
 }
 
-class ReservationStatusConverter implements JsonConverter<ReservationStatus, String> {
+extension FacilityExtension on Facility {
+  static DocumentReference<Object?> fromString(dynamic xxx) {
+    log.info('---> FacilityExtension on Facility');
+    return xxx as DocumentReference;
+  }
+}
+
+class FacilityConverter implements JsonConverter<Facility, Map<String, dynamic>> {
+  const FacilityConverter();
+
+  @override
+  Facility fromJson(dynamic json) {
+    return json["facility"];
+  }
+
+  @override
+  Map<String, dynamic> toJson(Facility object) {
+    return {"facility": object};
+  }
+}
+
+class ReservationStatusConverter implements JsonConverter<ReservationStatus, Map<String, dynamic>> {
   const ReservationStatusConverter();
 
   @override
-  ReservationStatus fromJson(String json) {
+  ReservationStatus fromJson(dynamic json) {
     return ReservationStatusExtension.statusfromString(json);
   }
 
   @override
-  String toJson(ReservationStatus status) {
-    return ReservationStatusExtension.statusToString(status);
+  Map<String, dynamic> toJson(ReservationStatus reservationStatu) {
+    return ReservationStatusExtension.statusToString(reservationStatu);
   }
 }
 
@@ -93,16 +114,17 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
 
 @freezed
 class Reservation with _$Reservation {
+  @JsonSerializable(explicitToJson: true)
   const Reservation._();
   const factory Reservation({
     required DateTime reserveOn,
     required DateTime reserveMade,
-    DocumentReference? facility,
+    @FacilityConverter() facility,
     required String uid,
     String? tel,
     String? email,
     @Default(ReservationStatus.none) ReservationStatus status,
-    List<String>? reservers,
+    required List<String>? reservers,
 
     // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
     // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
@@ -118,24 +140,43 @@ class Reservation with _$Reservation {
     SnapshotOptions? options,
   ) {
     final data = snapshot.data();
-    log.info('-- fromFiresstore --> data $data');
-    return Reservation(
-      reserveOn: data?["reserveOn"].toDate(),
-      reserveMade: data?['reserveMade'].toDate(),
-      // reserveOn: data?['reservedOn'],
-      // reserveMade: data?['reserveMade'],
-      facility: data?['facility'],
-      uid: data?['uid'],
-      tel: data?['tel'],
-      email: data?['emal'],
-      // status: data?['status'],
-      // status: ReservationStatusExtension.statusfromString(data?['status']),
-      status: data?["status"].statusfromString(),
-      reservers: data?['reservers'] is Iterable ? List.from(data?['regions']) : null,
+    log.info('fromFirestore1 data $data ${data?.keys}');
+    var d = data as Map<String, dynamic>;
+    log.info('fromFirestore2 $d');
+    log.info('fromFirestore3 ${data["reserveOn"]} XXX ${data["reserveOn"].toDate()}');
+    log.info('fromFirestore4 ${data["reservers"]} ----- ${data["reservers"].runtimeType}}');
+    log.info('fromFirestore5 ${data["status"]} ----- ${data["status"].runtimeType}}');
+    final r = Reservation(
+      reserveOn: data["reserveOn"].toDate(),
+      reserveMade: data["reserveMade"].toDate(),
+      uid: data["uid"],
+      tel: data["tel"] ?? null,
+      email: data["email"] ?? null,
+      reservers: data["reservers"],
+      // status: data["status"]
+
+      // reservers: data["reservers"] ?? [],
     );
+    return r;
+    // log.info('XXXXX ${d["reserveOn"]} XXX ${d["reserveOn"].toDate()}');
+    // return Reservation(
+    //   reserveOn: data?["reserveOn"].toDate(),
+    //   reserveMade: data?['reserveMade'].toDate(),
+    //   // reserveOn: data?['reservedOn'],
+    //   // reserveMade: data?['reserveMade'],
+    //   facility: data?['facility'] as DocumentReference,
+    //   uid: data?['uid'],
+    //   tel: data?['tel'],
+    //   email: data?['emal'],
+    //   // status: data?['status'] as ReservationStatus,
+    //   // status: ReservationStatusExtension.statusfromString(data?['status']),
+    //   status: data?["status"].statusfromString(),
+    //   reservers: data?['reservers'] is Iterable ? List.from(data?['regions']) : null,
+    // );
   }
 
   Map<String, dynamic> toFirestore() {
+    log.info('fromFireStore $reserveOn');
     return {
       "reserveOn": Timestamp.fromDate(reserveOn),
       "reserveMade": Timestamp.fromDate(reserveMade),
@@ -154,6 +195,8 @@ class Reservation with _$Reservation {
       // if (status != null) "status": status,
     };
   }
+
+  factory Reservation.fromJson(Map<String, dynamic> json) => _$ReservationFromJson(json);
 }
 
 class ReservationRepository {
@@ -166,7 +209,7 @@ class ReservationRepository {
 
   ReservationStatus reservationExist(DateTime t, Enum f) {
     // if (ref.read(authRepositoryProvider).currentUser != null) {
-    //   ref.read(authRepositoryProvider).signOut();
+    //   ref.read().signOut();
     // }
     // ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
 
@@ -182,24 +225,40 @@ class ReservationRepository {
         .where("facility", isEqualTo: facilityRef)
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
-          toFirestore: (Reservation city, _) => city.toFirestore(),
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
         .get()
         .then(
       (querySnapshot) {
-        log.info("レコード有無照会1    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
+        log.info(
+            "Class Reservation reservatonExist()   Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
         // there should be only one record for this query
 
         // result = querySnapshot.docs[0]["status"];
         // log.info('レコード有無照会2    ${querySnapshot.docs[0]["status"]} --- $result');
 
         for (var docSnapshot in querySnapshot.docs) {
-          log.info('${docSnapshot.id} 1 ====> ${docSnapshot.data()}');
-          // log.info(
-          //     '${docSnapshot.id} 2 ====> ${docSnapshot.data()["status"]}  ${docSnapshot.data()["status"].runtimeType}');
-          // log.info(
-          //     '${docSnapshot.id} 2 ====> ${docSnapshot.data()["reserveOn"]}  ${docSnapshot.data()["reserveOn"].runtimeType}');
-          // result = docSnapshot.data()["status"];
+          // var d = docSnapshot.data() as Map<String, dynamic>;
+          // log.info('reservatonExist() keys : ${d.keys}');
+
+          // log.info("レコード有無照会1  in for loop  Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
+          // // final data = docSnapshot.data()! as Map<String, dynamic>;
+          log.info("レコード有無照会1reservatonExist() --- ${docSnapshot.data()}");
+
+          // log.info(data.keys);
+
+          // log.info(' 1 ====>             ${docSnapshot.data()}');
+          // log.info(' 1 ====>             ${docSnapshot.data()}');
+          // log.info(' 1 ====>  ${docSnapshot} === ${docSnapshot.runtimeType}');
+          // // log.info(' 2 ====>             ${docSnapshot.data().runtimeType}');
+          // log.info(' 1 ====> reserveOn   ${docSnapshot["reserveOn"].runtimeType}');
+          // log.info(' 1 ====> reserveMade ${docSnapshot["reserveMade"].runtimeType}');
+          // log.info(' 1 ====> facility    ${docSnapshot["facility"].runtimeType}');
+          // log.info(' 1 ====> uid         ${docSnapshot["uid"].runtimeType}');
+          // log.info(' 1 ====> tel         ${docSnapshot["tel"] ? docSnapshot["tel"].runtimeType : 'No Tel'}');
+          // // log.info(' 1 ====> email       ${docSnapshot["email"].runtmeType}');
+          // // log.info(' 1 ====> status      ${docSnapshot["status"].runtmeType}');
+          // // log.info(' 1 ====> reservers   ${docSnapshot["reservers"].runtimeType}');
         }
       },
       onError: (e) => log.info("Error completing: $e"),
@@ -212,10 +271,10 @@ class ReservationRepository {
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
     db
         .collection("reservations")
-        .withConverter(
-          fromFirestore: Reservation.fromFirestore,
-          toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
-        )
+        // .withConverter(
+        //   fromFirestore: Reservation.fromFirestore,
+        //   toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+        // )
         .where("facility", isEqualTo: facilityRef)
         .get()
         .then(
@@ -235,8 +294,9 @@ class ReservationRepository {
     required Facility facility,
     required ReservationStatus status,
     required String uid,
+    // required List<String> reservers,
   }) async {
-    log.info('--> addReservation1');
+    log.info('--> addReservation1 $reserveOn $reserveOn $facility ${facility.name} $status $uid');
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.name);
 
     final formattedReserveOn = DateTime(reserveOn.year, reserveOn.month, reserveOn.day);

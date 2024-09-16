@@ -14,17 +14,24 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+Reservation _$ReservationFromJson(Map<String, dynamic> json) {
+  return _Reservation.fromJson(json);
+}
+
 /// @nodoc
 mixin _$Reservation {
   DateTime get reserveOn => throw _privateConstructorUsedError;
   DateTime get reserveMade => throw _privateConstructorUsedError;
-  DocumentReference<Object?>? get facility =>
-      throw _privateConstructorUsedError;
+  @FacilityConverter()
+  dynamic get facility => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String? get tel => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
   ReservationStatus get status => throw _privateConstructorUsedError;
   List<String>? get reservers => throw _privateConstructorUsedError;
+
+  /// Serializes this Reservation to a JSON map.
+  Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
@@ -42,7 +49,7 @@ abstract class $ReservationCopyWith<$Res> {
   $Res call(
       {DateTime reserveOn,
       DateTime reserveMade,
-      DocumentReference<Object?>? facility,
+      @FacilityConverter() dynamic facility,
       String uid,
       String? tel,
       String? email,
@@ -86,7 +93,7 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
       facility: freezed == facility
           ? _value.facility
           : facility // ignore: cast_nullable_to_non_nullable
-              as DocumentReference<Object?>?,
+              as dynamic,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -122,7 +129,7 @@ abstract class _$$ReservationImplCopyWith<$Res>
   $Res call(
       {DateTime reserveOn,
       DateTime reserveMade,
-      DocumentReference<Object?>? facility,
+      @FacilityConverter() dynamic facility,
       String uid,
       String? tel,
       String? email,
@@ -161,10 +168,7 @@ class __$$ReservationImplCopyWithImpl<$Res>
           ? _value.reserveMade
           : reserveMade // ignore: cast_nullable_to_non_nullable
               as DateTime,
-      facility: freezed == facility
-          ? _value.facility
-          : facility // ignore: cast_nullable_to_non_nullable
-              as DocumentReference<Object?>?,
+      facility: freezed == facility ? _value.facility! : facility,
       uid: null == uid
           ? _value.uid
           : uid // ignore: cast_nullable_to_non_nullable
@@ -190,26 +194,30 @@ class __$$ReservationImplCopyWithImpl<$Res>
 }
 
 /// @nodoc
-
+@JsonSerializable()
 class _$ReservationImpl extends _Reservation {
   const _$ReservationImpl(
       {required this.reserveOn,
       required this.reserveMade,
-      this.facility,
+      @FacilityConverter() this.facility,
       required this.uid,
       this.tel,
       this.email,
       this.status = ReservationStatus.none,
-      final List<String>? reservers})
+      required final List<String>? reservers})
       : _reservers = reservers,
         super._();
+
+  factory _$ReservationImpl.fromJson(Map<String, dynamic> json) =>
+      _$$ReservationImplFromJson(json);
 
   @override
   final DateTime reserveOn;
   @override
   final DateTime reserveMade;
   @override
-  final DocumentReference<Object?>? facility;
+  @FacilityConverter()
+  final dynamic facility;
   @override
   final String uid;
   @override
@@ -243,8 +251,7 @@ class _$ReservationImpl extends _Reservation {
                 other.reserveOn == reserveOn) &&
             (identical(other.reserveMade, reserveMade) ||
                 other.reserveMade == reserveMade) &&
-            (identical(other.facility, facility) ||
-                other.facility == facility) &&
+            const DeepCollectionEquality().equals(other.facility, facility) &&
             (identical(other.uid, uid) || other.uid == uid) &&
             (identical(other.tel, tel) || other.tel == tel) &&
             (identical(other.email, email) || other.email == email) &&
@@ -253,9 +260,18 @@ class _$ReservationImpl extends _Reservation {
                 .equals(other._reservers, _reservers));
   }
 
+  @JsonKey(includeFromJson: false, includeToJson: false)
   @override
-  int get hashCode => Object.hash(runtimeType, reserveOn, reserveMade, facility,
-      uid, tel, email, status, const DeepCollectionEquality().hash(_reservers));
+  int get hashCode => Object.hash(
+      runtimeType,
+      reserveOn,
+      reserveMade,
+      const DeepCollectionEquality().hash(facility),
+      uid,
+      tel,
+      email,
+      status,
+      const DeepCollectionEquality().hash(_reservers));
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
@@ -264,26 +280,37 @@ class _$ReservationImpl extends _Reservation {
   @pragma('vm:prefer-inline')
   _$$ReservationImplCopyWith<_$ReservationImpl> get copyWith =>
       __$$ReservationImplCopyWithImpl<_$ReservationImpl>(this, _$identity);
+
+  @override
+  Map<String, dynamic> toJson() {
+    return _$$ReservationImplToJson(
+      this,
+    );
+  }
 }
 
 abstract class _Reservation extends Reservation {
   const factory _Reservation(
       {required final DateTime reserveOn,
       required final DateTime reserveMade,
-      final DocumentReference<Object?>? facility,
+      @FacilityConverter() final dynamic facility,
       required final String uid,
       final String? tel,
       final String? email,
       final ReservationStatus status,
-      final List<String>? reservers}) = _$ReservationImpl;
+      required final List<String>? reservers}) = _$ReservationImpl;
   const _Reservation._() : super._();
+
+  factory _Reservation.fromJson(Map<String, dynamic> json) =
+      _$ReservationImpl.fromJson;
 
   @override
   DateTime get reserveOn;
   @override
   DateTime get reserveMade;
   @override
-  DocumentReference<Object?>? get facility;
+  @FacilityConverter()
+  dynamic get facility;
   @override
   String get uid;
   @override
