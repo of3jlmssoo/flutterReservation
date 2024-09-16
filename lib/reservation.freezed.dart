@@ -27,6 +27,7 @@ mixin _$Reservation {
   String get uid => throw _privateConstructorUsedError;
   String? get tel => throw _privateConstructorUsedError;
   String? get email => throw _privateConstructorUsedError;
+  @ReservationStatusConverter()
   ReservationStatus get status => throw _privateConstructorUsedError;
   List<String>? get reservers => throw _privateConstructorUsedError;
 
@@ -53,7 +54,7 @@ abstract class $ReservationCopyWith<$Res> {
       String uid,
       String? tel,
       String? email,
-      ReservationStatus status,
+      @ReservationStatusConverter() ReservationStatus status,
       List<String>? reservers});
 }
 
@@ -133,7 +134,7 @@ abstract class _$$ReservationImplCopyWith<$Res>
       String uid,
       String? tel,
       String? email,
-      ReservationStatus status,
+      @ReservationStatusConverter() ReservationStatus status,
       List<String>? reservers});
 }
 
@@ -203,7 +204,7 @@ class _$ReservationImpl extends _Reservation {
       required this.uid,
       this.tel,
       this.email,
-      this.status = ReservationStatus.none,
+      @ReservationStatusConverter() this.status = ReservationStatus.none,
       required final List<String>? reservers})
       : _reservers = reservers,
         super._();
@@ -226,6 +227,7 @@ class _$ReservationImpl extends _Reservation {
   final String? email;
   @override
   @JsonKey()
+  @ReservationStatusConverter()
   final ReservationStatus status;
   final List<String>? _reservers;
   @override
@@ -297,7 +299,7 @@ abstract class _Reservation extends Reservation {
       required final String uid,
       final String? tel,
       final String? email,
-      final ReservationStatus status,
+      @ReservationStatusConverter() final ReservationStatus status,
       required final List<String>? reservers}) = _$ReservationImpl;
   const _Reservation._() : super._();
 
@@ -318,6 +320,7 @@ abstract class _Reservation extends Reservation {
   @override
   String? get email;
   @override
+  @ReservationStatusConverter()
   ReservationStatus get status;
   @override
   List<String>? get reservers;

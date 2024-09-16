@@ -14,8 +14,10 @@ _$ReservationImpl _$$ReservationImplFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String,
       tel: json['tel'] as String?,
       email: json['email'] as String?,
-      status: $enumDecodeNullable(_$ReservationStatusEnumMap, json['status']) ??
-          ReservationStatus.none,
+      status: json['status'] == null
+          ? ReservationStatus.none
+          : const ReservationStatusConverter()
+              .fromJson(json['status'] as Map<String, dynamic>),
       reservers: (json['reservers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -29,14 +31,6 @@ Map<String, dynamic> _$$ReservationImplToJson(_$ReservationImpl instance) =>
       'uid': instance.uid,
       'tel': instance.tel,
       'email': instance.email,
-      'status': _$ReservationStatusEnumMap[instance.status]!,
+      'status': const ReservationStatusConverter().toJson(instance.status),
       'reservers': instance.reservers,
     };
-
-const _$ReservationStatusEnumMap = {
-  ReservationStatus.none: 'none',
-  ReservationStatus.tentative: 'tentative',
-  ReservationStatus.priority: 'priority',
-  ReservationStatus.reserved: 'reserved',
-  ReservationStatus.notFound: 'notFound',
-};

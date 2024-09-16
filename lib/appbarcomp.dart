@@ -317,16 +317,19 @@ class Firestorework extends ConsumerWidget {
           uid: uid,
         );
       }
-      
+
       await FirebaseAuth.instance.signOut();
-      
-    log.info('makeReservations 予約情報登録2-2');
-    Logger.root.level = Level.OFF;
+
+      log.info('makeReservations 予約情報登録2-2');
+      Logger.root.level = Level.OFF;
+    }
   }
 
-  void checkReservationExist() {
+  Future<void> checkReservationExist() async {
+    Logger.root.level = Level.ALL;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    log.info('checkReservationExist()-------> ${rr.reservationExist(DateTime(2024, 9, 18), Facility.mtgR1)}');
+    // Future<ReservationStatus> fs =  rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2);
+    log.info('checkReservationExist()-------> ${await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2)}');
     // if (ref.read(authRepositoryProvider).currentUser != null) {
     //   ref.read().signOut();
     // }
@@ -349,6 +352,7 @@ class Firestorework extends ConsumerWidget {
     //   },
     //   onError: (e) => log.info("Error completing: $e"),
     // );
+    Logger.root.level = Level.OFF;
   }
 
   void makeReservation1(WidgetRef ref) async {
