@@ -235,7 +235,8 @@ class ShowDatePickerWidget extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () async {
-              log.info('FacilitySelectionScreen ');
+              Logger.root.level = Level.ALL;
+              log.info('ShowDatePickerWidget FacilitySelectionScreen ');
               final selectedDate = await showDatePicker(
                 locale: const Locale("ja"),
                 context: context,
@@ -253,23 +254,39 @@ class ShowDatePickerWidget extends StatelessWidget {
               //   lastDate: DateTime.now().add(Duration(days: 20)),
               // );
 
+              if (selectedDate == null) {
+                log.info("ShowDatePickerWidget selectedDate == null");
+                if (context.mounted) {
+                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                    content: Text('翌日以降を選んでください'),
+                  ));
+                }
+                return;
+              }
+
               var currentdate = DateTime.now();
               var justdate = DateTime(currentdate.year, currentdate.month, currentdate.day);
 
-              log.info('FacilitySelectionScreen $selectedDate ${selectedDate.runtimeType} now $justdate');
-              log.info('${selectedDate!.difference(justdate).inDays}');
+              log.info('ShowDatePickerWidget $selectedDate ${selectedDate.runtimeType} now $justdate');
+              log.info(
+                  'ShowDatePickerWidget ${selectedDate != null ? selectedDate!.difference(justdate).inDays : "no selectedDate"}');
 
-              if (selectedDate.difference(justdate).inDays > 0) {
+              if (selectedDate!.difference(justdate).inDays > 0) {
                 var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
                 if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
-              } else {
-                if (!context.mounted) return;
-                ScaffoldMessenger.of(context).showSnackBar(
-                  const SnackBar(
-                    content: Text('翌日以降を選んでください'),
-                  ),
-                );
               }
+
+              // if (selectedDate!.difference(justdate).inDays > 0) {
+              //   var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
+              //   if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+              // } else {
+              //   if (!context.mounted) return;
+              //   ScaffoldMessenger.of(context).showSnackBar(
+              //     const SnackBar(
+              //       content: Text('翌日以降を選んでください'),
+              //     ),
+              //   );
+              // }
 
               // context.push('/datetimepickerapp');
             },
