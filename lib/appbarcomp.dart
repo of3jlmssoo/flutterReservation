@@ -270,7 +270,7 @@ class Firestorework extends ConsumerWidget {
 
       // makeReservation1(ref);
 
-      ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+      // ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
       // for (var l in futureData[i]) {
 
       final batch = FirebaseFirestore.instance.batch();

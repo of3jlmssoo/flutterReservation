@@ -268,10 +268,9 @@ class ShowDatePickerWidget extends StatelessWidget {
               var justdate = DateTime(currentdate.year, currentdate.month, currentdate.day);
 
               log.info('ShowDatePickerWidget $selectedDate ${selectedDate.runtimeType} now $justdate');
-              log.info(
-                  'ShowDatePickerWidget ${selectedDate != null ? selectedDate!.difference(justdate).inDays : "no selectedDate"}');
+              log.info('ShowDatePickerWidget ${selectedDate.difference(justdate).inDays}');
 
-              if (selectedDate!.difference(justdate).inDays > 0) {
+              if (selectedDate.difference(justdate).inDays > 0) {
                 var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
                 if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
               }
