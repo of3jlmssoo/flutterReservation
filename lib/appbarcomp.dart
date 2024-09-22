@@ -152,7 +152,6 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
               onPressed: () async {
                 Logger.root.level = Level.ALL;
-                print("--------------------------------------------------------------");
                 log.info('Firestorework 予約データ照会(id特定) 1');
                 await getReservationWithID("3TllYctRVw43gPzhu4bT");
                 log.info('Firestorework 予約データ照会(id特定) 2');
@@ -412,6 +411,8 @@ class Firestorework extends ConsumerWidget {
   }
 
   Future<void> getReservationWithID(String id) async {
+    Logger.root.level = Level.ALL;
+
     final ref = FirebaseFirestore.instance.collection("reservations").doc(id).withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
@@ -420,15 +421,9 @@ class Firestorework extends ConsumerWidget {
     final reservation = docSnap.data(); // Convert to City object
     Logger.root.level = Level.ALL;
     if (reservation != null) {
-      log.info('--> reserveOn   ${reservation.reserveOn} ${reservation.reserveOn.runtimeType}');
-      log.info('--> reserveMade ${reservation.reserveMade} ${reservation.reserveMade.runtimeType}');
-      log.info('--> facility    ${reservation.facility} ${reservation.facility.runtimeType}');
-      log.info('--> uid         ${reservation.uid}');
-      log.info('--> tel         ${reservation.tel}');
-      log.info('--> email       ${reservation.email}');
-      log.info('--> status      ${reservation.status} ${reservation.status.runtimeType}');
+      showReservationInstanceVariables(true, log, reservation);
     } else {
-      log.info("No such document.");
+      log.info("getReservationWithID No such document.");
     }
     Logger.root.level = Level.OFF;
   }
