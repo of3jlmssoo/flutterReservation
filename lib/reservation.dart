@@ -142,7 +142,7 @@ class Reservation with _$Reservation {
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.OFF;
     final data = snapshot.data();
     log.info('fromFirestore1 data $data ${data?.keys}');
     var d = data as Map<String, dynamic>;
@@ -344,7 +344,7 @@ class ReservationRepository {
   }
 
   Future<void> getDocument() async {
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.OFF;
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
     log.info("getDocument called facilityRef : $facilityRef");
     final kitchens = db
@@ -358,7 +358,7 @@ class ReservationRepository {
 
     kitchens.get().then(
       (querySnapshot) {
-        Logger.root.level = Level.ALL;
+        Logger.root.level = Level.OFF;
         log.info("Successfully completed ------------------------> ${querySnapshot.docs.length}");
         for (var docSnapshot in querySnapshot.docs) {
           // log.info('${docSnapshot.id} ===============================> ${docSnapshot.data()}');

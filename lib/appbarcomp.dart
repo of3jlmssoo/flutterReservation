@@ -166,7 +166,7 @@ class Firestorework extends ConsumerWidget {
               child: const Text('予約データ照会')),
           OutlinedButton(
               onPressed: () async {
-                Logger.root.level = Level.ALL;
+                Logger.root.level = Level.OFF;
                 log.info('---> 予約情報照会2-1');
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                 await rr.getDocument();
@@ -360,10 +360,10 @@ class Firestorework extends ConsumerWidget {
   }
 
   Future<void> checkReservationExist() async {
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.OFF;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
     Reservation? r = await rr.reservationExist(DateTime(2024, 9, 19), Facility.mtgR2);
-    Logger.root.level = Level.ALL;
+    Logger.root.level = Level.OFF;
     log.info('checkReservationExist-------> $r');
     log.info('checkReservationExist-------> uid : ${r?.uid} ${r?.uid.runtimeType}');
     log.info('checkReservationExist-------> facility : ${r?.facility} ${r?.facility.runtimeType}');
