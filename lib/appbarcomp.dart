@@ -7,6 +7,7 @@ import 'package:logging/logging.dart';
 import 'package:reservations2/firebase_auth_repository.dart';
 import 'package:reservations2/make_data.dart';
 import 'package:reservations2/reservation.dart';
+import 'package:reservations2/utils.dart';
 
 import 'consts.dart';
 
@@ -62,7 +63,6 @@ class CommonAppBarWidget extends ConsumerWidget {
               },
               icon: const Icon(
                 Icons.density_medium,
-                // Icons.access_alarm_outlined,
                 color: brightFontColor,
               ),
               tooltip: 'Show menu',
@@ -73,7 +73,6 @@ class CommonAppBarWidget extends ConsumerWidget {
               onPressed: () {
                 log.info('BaseAppBar logoug pressed');
                 ref.read(firebaseAuthProvider).signOut();
-                // ref.read(firebaseAuthProvider).sign;
               },
               child: const Text('ログアウト'),
             ),
@@ -112,24 +111,19 @@ class Firestorework extends ConsumerWidget {
       appBar: BaseAppBar(title: 'firestore work', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
-          const Text('abc'),
+          const Text('firestore work menu'),
           OutlinedButton(
             onPressed: () {
               final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
               var r = Reservation(
-                  reserveOn: DateTime.now(),
-                  reserveMade: DateTime.now(),
-                  facility: facilityRef,
-                  reservers: [ref.read(authRepositoryProvider).currentUser!.uid],
-                  uid: ref.read(authRepositoryProvider).currentUser!.uid);
-              log.info("------> reserveOn   ${r.reserveOn.runtimeType}");
-              log.info("------> reserveMade ${r.reserveMade.runtimeType}");
-              log.info("------> faclity     ${r.facility.runtimeType}");
-              log.info("------> uid         ${r.uid..runtimeType}");
-              log.info("------> tel         ${r.tel.runtimeType}");
-              log.info("------> email       ${r.email.runtimeType}");
-              log.info("------> status      ${r.status.runtimeType}");
-              log.info("------> reservers   ${r.reservers.runtimeType}");
+                reserveOn: DateTime.now(),
+                reserveMade: DateTime.now(),
+                facility: facilityRef,
+                reservers: [ref.read(authRepositoryProvider).currentUser!.uid],
+                uid: ref.read(authRepositoryProvider).currentUser!.uid,
+                status: ReservationStatus.priority.name,
+              );
+              showReservationInstanceVariables(true, log, r);
             },
             child: const Text('Reservatin runtimeType'),
           ),
@@ -157,17 +151,18 @@ class Firestorework extends ConsumerWidget {
               child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
-                Logger.root.level = Level.OFF;
-                log.info('---> 予約情報照会1');
-                await getReservationWithID("0L6q6cwqStGbyoEj2Sel");
-                log.info('---> 予約情報照会2');
+                Logger.root.level = Level.ALL;
+                print("--------------------------------------------------------------");
+                log.info('Firestorework 予約データ照会(id特定) 1');
+                await getReservationWithID("3TllYctRVw43gPzhu4bT");
+                log.info('Firestorework 予約データ照会(id特定) 2');
                 Logger.root.level = Level.OFF;
               },
-              child: const Text('予約データ照会')),
+              child: const Text('予約データ照会(id特定)')),
           OutlinedButton(
               onPressed: () async {
                 Logger.root.level = Level.OFF;
-                log.info('---> 予約情報照会2-1');
+                log.info('firestorework 予約情報照会2-1');
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                 await rr.getDocument();
                 log.info('---> 予約情報照会2-2');
@@ -423,6 +418,7 @@ class Firestorework extends ConsumerWidget {
         );
     final docSnap = await ref.get();
     final reservation = docSnap.data(); // Convert to City object
+    Logger.root.level = Level.ALL;
     if (reservation != null) {
       log.info('--> reserveOn   ${reservation.reserveOn} ${reservation.reserveOn.runtimeType}');
       log.info('--> reserveMade ${reservation.reserveMade} ${reservation.reserveMade.runtimeType}');
@@ -434,6 +430,7 @@ class Firestorework extends ConsumerWidget {
     } else {
       log.info("No such document.");
     }
+    Logger.root.level = Level.OFF;
   }
 
   // Future<Reservation> makeReservation(WidgetRef ref) async {

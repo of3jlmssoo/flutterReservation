@@ -15,13 +15,12 @@ import 'firebase_options.dart';
 final log = Logger('MainLogger');
 
 Future<void> main() async {
-  // Logger.root.level = Level.ALL; // defaults to Level.INFO
   Logger.root.level = Level.OFF;
   Logger.root.onRecord.listen((LogRecord rec) {
     debugPrint('[${rec.loggerName}] ${rec.level.name}: ${rec.time}: ${rec.message}');
   });
 
-  log.info("main() started");
+  log.info("main started");
 
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -34,13 +33,11 @@ Future<void> main() async {
       await FirebaseAuth.instance.useAuthEmulator('localhost', 9099);
     } catch (e) {
       // ignore: avoid_print
-      print(e);
+      log.info("error at emulator start $e");
     }
   }
 
   runApp(
-    // const MyApp()
-    // const ProviderScope(child: MyApp()),
     const ProviderScope(child: MaterialApp(home: MyApp())),
   );
 }

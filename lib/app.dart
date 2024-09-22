@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:logging/logging.dart';
-import 'package:reservations2/riverpods.dart';
 
 import 'app_router.dart';
-import 'consts.dart';
 
 final log = Logger('app');
+
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -39,94 +38,94 @@ class MyApp extends ConsumerWidget {
   }
 }
 
-class MyHomePage extends ConsumerWidget {
-  const MyHomePage({super.key, required this.title});
+// class MyHomePage extends ConsumerWidget {
+//   const MyHomePage({super.key, required this.title});
 
-  final String title;
+//   final String title;
 
-  @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final userStatus = ref.watch(exampleProvider);
-    return Scaffold(
-      appBar: AppBar(
-        actions: <Widget>[
-          MenuAnchor(
-            builder: (BuildContext context, MenuController controller,
-                Widget? child) {
-              return IconButton(
-                color: Colors.white,
-                onPressed: () {
-                  if (controller.isOpen) {
-                    controller.close();
-                  } else {
-                    controller.open();
-                  }
-                },
-                icon: const Icon(Icons.density_medium),
-                tooltip: 'Show menu',
-              );
-            },
-            menuChildren: [
-              MenuItemButton(
-                onPressed: () {
-                  ref.read(exampleProvider.notifier).setToZero();
-                  log.info(ref.watch(exampleProvider));
-                },
-                child: const Text('set to 0'),
-              ),
-              MenuItemButton(
-                onPressed: () {
-                  ref.read(exampleProvider.notifier).setToOne();
-                  log.info(ref.watch(exampleProvider));
-                },
-                child: const Text('set to 1'),
-              ),
-              MenuItemButton(
-                onPressed: () {},
-                child: const Text('answer check'),
-              ),
-              MenuItemButton(
-                child: const Text('main'),
-                onPressed: () {},
-              )
-            ],
-          ),
-        ],
+//   @override
+//   Widget build(BuildContext context, WidgetRef ref) {
+//     final userStatus = ref.watch(exampleProvider);
+//     return Scaffold(
+//       appBar: AppBar(
+//         actions: <Widget>[
+//           MenuAnchor(
+//             builder: (BuildContext context, MenuController controller,
+//                 Widget? child) {
+//               return IconButton(
+//                 color: Colors.white,
+//                 onPressed: () {
+//                   if (controller.isOpen) {
+//                     controller.close();
+//                   } else {
+//                     controller.open();
+//                   }
+//                 },
+//                 icon: const Icon(Icons.density_medium),
+//                 tooltip: 'Show menu',
+//               );
+//             },
+//             menuChildren: [
+//               MenuItemButton(
+//                 onPressed: () {
+//                   ref.read(exampleProvider.notifier).setToZero();
+//                   log.info(ref.watch(exampleProvider));
+//                 },
+//                 child: const Text('set to 0'),
+//               ),
+//               MenuItemButton(
+//                 onPressed: () {
+//                   ref.read(exampleProvider.notifier).setToOne();
+//                   log.info(ref.watch(exampleProvider));
+//                 },
+//                 child: const Text('set to 1'),
+//               ),
+//               MenuItemButton(
+//                 onPressed: () {},
+//                 child: const Text('answer check'),
+//               ),
+//               MenuItemButton(
+//                 child: const Text('main'),
+//                 onPressed: () {},
+//               )
+//             ],
+//           ),
+//         ],
 
-        backgroundColor:
-            commonBackgroundColor, // Theme.of(context).colorScheme.inversePrimary,
-        title: const Text(
-          "widget.title",
-          style: TextStyle(color: brightFontColor),
-        ),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            userStatus == 1
-                ? const Text(
-                    'You have pushed the button this many times:',
-                  )
-                : const Text('abc'),
-            const Text(
-              '7',
-              // '$_counter',
-              // style: Theme.of(context).textTheme.headlineMedium,
-            ),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          // _counter = _counter + 1;
-        },
-        tooltip: 'Increment',
-        child: const Icon(
-          Icons.add,
-          color: Colors.white,
-        ),
-      ),
-    );
-  }
-}
+//         backgroundColor:
+//             commonBackgroundColor, // Theme.of(context).colorScheme.inversePrimary,
+//         title: const Text(
+//           "widget.title",
+//           style: TextStyle(color: brightFontColor),
+//         ),
+//       ),
+//       body: Center(
+//         child: Column(
+//           mainAxisAlignment: MainAxisAlignment.center,
+//           children: <Widget>[
+//             userStatus == 1
+//                 ? const Text(
+//                     'You have pushed the button this many times:',
+//                   )
+//                 : const Text('abc'),
+//             const Text(
+//               '7',
+//               // '$_counter',
+//               // style: Theme.of(context).textTheme.headlineMedium,
+//             ),
+//           ],
+//         ),
+//       ),
+//       floatingActionButton: FloatingActionButton(
+//         onPressed: () {
+//           // _counter = _counter + 1;
+//         },
+//         tooltip: 'Increment',
+//         child: const Icon(
+//           Icons.add,
+//           color: Colors.white,
+//         ),
+//       ),
+//     );
+//   }
+// }
