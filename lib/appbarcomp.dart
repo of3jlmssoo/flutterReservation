@@ -148,28 +148,6 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
               onPressed: () {
                 checkReservationExist();
-                // if (ref.read(authRepositoryProvider).currentUser != null) {
-                //   ref.read().signOut();
-                // }
-                // ref
-                //     .read(firebaseAuthProvider)
-                //     .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
-                // final reserveRef = FirebaseFirestore.instance.collection("reservations");
-                // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
-                // log.info('--------------------------------------------------> facilityRef ${facilityRef.toString()}');
-                // reserveRef
-                //     .where("reserveOn", isEqualTo: DateTime(2024, 9, 17))
-                //     .where("facility", isEqualTo: facilityRef)
-                //     .get()
-                //     .then(
-                //   (querySnapshot) {
-                //     log.info("レコード有無照会    Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
-                //     for (var docSnapshot in querySnapshot.docs) {
-                //       log.info('${docSnapshot.id} ====> ${docSnapshot.data()}');
-                //     }
-                //   },
-                //   onError: (e) => log.info("Error completing: $e"),
-                // );
               },
               child: const Text('レコード有無照会')),
           OutlinedButton(
@@ -179,17 +157,21 @@ class Firestorework extends ConsumerWidget {
               child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
+                Logger.root.level = Level.OFF;
                 log.info('---> 予約情報照会1');
-                await getReservationWithID("FDSn1I3TPS7POOzNsdri");
+                await getReservationWithID("0L6q6cwqStGbyoEj2Sel");
                 log.info('---> 予約情報照会2');
+                Logger.root.level = Level.OFF;
               },
               child: const Text('予約データ照会')),
           OutlinedButton(
               onPressed: () async {
+                Logger.root.level = Level.ALL;
                 log.info('---> 予約情報照会2-1');
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-                rr.getDocument();
+                await rr.getDocument();
                 log.info('---> 予約情報照会2-2');
+                Logger.root.level = Level.OFF;
               },
               child: const Text('予約データ照会2')),
           OutlinedButton(
@@ -281,14 +263,22 @@ class Firestorework extends ConsumerWidget {
         }
       }
 
+      Logger.root.level = Level.OFF;
       log.info(
           'makeReservations --> log in as ${FirebaseAuth.instance.currentUser!.displayName} --> ${users[i]} --- ${passwords[i]}}');
+      log.info('makeReservations ---------------------------> futureData[i].length ${futureData[i].length}');
 
       // makeReservation1(ref);
 
       ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
       // for (var l in futureData[i]) {
+
+      final batch = FirebaseFirestore.instance.batch();
+
+      log.info('makeReservations batch cOFFed');
       for (int l = 0; l < futureData[i].length; l++) {
+        log.info('makeReservations second loop');
+        // Logger.root.level = Level.OFF;
         String uid = FirebaseAuth.instance.currentUser!.uid;
         // log.info('makeReservations second loop --- user is $uid');
         // makeReservation1(ref);
@@ -307,16 +297,60 @@ class Firestorework extends ConsumerWidget {
           default:
             break;
         }
+        log.info('makeReservations fac set');
+        final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
 
-        await rr.addReservation(
-          reserveOn: cD.add(Duration(days: l + 1)),
-          reserveMade: cDD,
-          // facility: Facility.kitchen,
-          facility: fac,
-          status: ReservationStatus.tentative,
-          uid: uid,
+        log.info('makeReservations getRandomReservationStatus will be cOFFed');
+        ReservationStatus rs = getRandomReservationStatus();
+
+        log.info("makeReservations addReservation cOFFed rs : $rs ${rs.runtimeType}");
+
+        var newReservationRef = FirebaseFirestore.instance
+            .collection('reservations')
+            // .withConverter(
+            //   fromFirestore: Reservation.fromFirestore,
+            //   toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
+            // )
+            .doc();
+
+        log.info("makeReservations addReservation will be cOFFed 2");
+        // Reservation reservation = Reservation(
+        //     reserveOn: cD.add(Duration(days: l + 1)),
+        //     reserveMade: cDD,
+        //     uid: uid,
+        //     reservers: [uid],
+        //     facility: facilityRef,
+        //     status: rs);
+        batch.set(
+          newReservationRef,
+          {
+            "reserveOn": cD.add(Duration(days: l + 1)),
+            "reserveMade": cDD,
+            "uid": uid,
+            "reservers": [uid],
+            "facility": facilityRef,
+            "status": rs.name,
+          },
         );
+        // batch.update(newReservationRef, {"status": rs});
+
+        log.info("makeReservations addReservation will be cOFFed 3");
+
+        // await rr.addReservation(
+        //   reserveOn: cD.add(Duration(days: l + 1)),
+        //   reserveMade: cDD,
+        //   // facility: Facility.kitchen,
+        //   facility: fac,
+        //   // status: ReservationStatus.tentative,
+        //   status: rs,
+        //   uid: uid,
+        // );
       }
+      log.info("makeReservations beofe commit()");
+      batch.commit().then(
+            (res) => log.info("Successfully completed"),
+            onError: (e) => log.info("Error completing: $e"),
+          );
 
       await FirebaseAuth.instance.signOut();
 
@@ -328,9 +362,17 @@ class Firestorework extends ConsumerWidget {
   Future<void> checkReservationExist() async {
     Logger.root.level = Level.ALL;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 17), Facility.mtgR2);
+    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 19), Facility.mtgR2);
+    Logger.root.level = Level.ALL;
     log.info('checkReservationExist-------> $r');
-
+    log.info('checkReservationExist-------> uid : ${r?.uid} ${r?.uid.runtimeType}');
+    log.info('checkReservationExist-------> facility : ${r?.facility} ${r?.facility.runtimeType}');
+    log.info('checkReservationExist-------> reserveMade : ${r?.reserveMade} ${r?.reserveMade.runtimeType}');
+    log.info('checkReservationExist-------> reserveOn : ${r?.reserveOn} ${r?.reserveOn.runtimeType}');
+    log.info('checkReservationExist-------> status : ${r?.status} ${r?.status.runtimeType}');
+    log.info('checkReservationExist-------> reservers : ${r?.reservers} ${r?.reservers.runtimeType}');
+    log.info('checkReservationExist-------> tel : ${r?.tel} ${r?.tel.runtimeType}');
+    log.info('checkReservationExist-------> email : ${r?.email} ${r?.email.runtimeType}');
     Logger.root.level = Level.OFF;
   }
 
@@ -382,13 +424,13 @@ class Firestorework extends ConsumerWidget {
     final docSnap = await ref.get();
     final reservation = docSnap.data(); // Convert to City object
     if (reservation != null) {
-      log.info('--> reserveOn   ${reservation.reserveOn}');
-      log.info('--> reserveMade ${reservation.reserveMade}');
-      log.info('--> facility    ${reservation.facility}');
+      log.info('--> reserveOn   ${reservation.reserveOn} ${reservation.reserveOn.runtimeType}');
+      log.info('--> reserveMade ${reservation.reserveMade} ${reservation.reserveMade.runtimeType}');
+      log.info('--> facility    ${reservation.facility} ${reservation.facility.runtimeType}');
       log.info('--> uid         ${reservation.uid}');
       log.info('--> tel         ${reservation.tel}');
       log.info('--> email       ${reservation.email}');
-      log.info('--> status      ${reservation.status.displayName}');
+      log.info('--> status      ${reservation.status} ${reservation.status.runtimeType}');
     } else {
       log.info("No such document.");
     }

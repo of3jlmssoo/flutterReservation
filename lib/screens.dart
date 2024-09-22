@@ -35,7 +35,7 @@ class MainScreen extends ConsumerWidget {
         children: [
           colDivider,
           Text(
-            'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName ?? ref.read(authRepositoryProvider).currentUser!.email}',
+            'ユーザー a ${ref.read(authRepositoryProvider).currentUser?.displayName == null ? ref.read(authRepositoryProvider).currentUser?.email : "dummy"}',
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
@@ -235,7 +235,7 @@ class ShowDatePickerWidget extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () async {
-              Logger.root.level = Level.ALL;
+              Logger.root.level = Level.OFF;
               log.info('ShowDatePickerWidget FacilitySelectionScreen ');
               final selectedDate = await showDatePicker(
                 locale: const Locale("ja"),
@@ -289,6 +289,7 @@ class ShowDatePickerWidget extends StatelessWidget {
               // }
 
               // context.push('/datetimepickerapp');
+              Logger.root.level = Level.OFF;
             },
             child: const Text('日付')),
         ElevatedButton(

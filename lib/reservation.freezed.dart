@@ -26,9 +26,9 @@ mixin _$Reservation {
   dynamic get facility => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String? get tel => throw _privateConstructorUsedError;
-  String? get email => throw _privateConstructorUsedError;
-  @ReservationStatusConverter()
-  ReservationStatus get status => throw _privateConstructorUsedError;
+  String? get email =>
+      throw _privateConstructorUsedError; // @Default(ReservationStatus.none) ReservationStatus status,
+  String? get status => throw _privateConstructorUsedError;
   List<String>? get reservers => throw _privateConstructorUsedError;
 
   /// Serializes this Reservation to a JSON map.
@@ -54,7 +54,7 @@ abstract class $ReservationCopyWith<$Res> {
       String uid,
       String? tel,
       String? email,
-      @ReservationStatusConverter() ReservationStatus status,
+      String? status,
       List<String>? reservers});
 }
 
@@ -79,7 +79,7 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
     Object? uid = null,
     Object? tel = freezed,
     Object? email = freezed,
-    Object? status = null,
+    Object? status = freezed,
     Object? reservers = freezed,
   }) {
     return _then(_value.copyWith(
@@ -107,10 +107,10 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as ReservationStatus,
+              as String?,
       reservers: freezed == reservers
           ? _value.reservers
           : reservers // ignore: cast_nullable_to_non_nullable
@@ -134,7 +134,7 @@ abstract class _$$ReservationImplCopyWith<$Res>
       String uid,
       String? tel,
       String? email,
-      @ReservationStatusConverter() ReservationStatus status,
+      String? status,
       List<String>? reservers});
 }
 
@@ -157,7 +157,7 @@ class __$$ReservationImplCopyWithImpl<$Res>
     Object? uid = null,
     Object? tel = freezed,
     Object? email = freezed,
-    Object? status = null,
+    Object? status = freezed,
     Object? reservers = freezed,
   }) {
     return _then(_$ReservationImpl(
@@ -182,10 +182,10 @@ class __$$ReservationImplCopyWithImpl<$Res>
           ? _value.email
           : email // ignore: cast_nullable_to_non_nullable
               as String?,
-      status: null == status
+      status: freezed == status
           ? _value.status
           : status // ignore: cast_nullable_to_non_nullable
-              as ReservationStatus,
+              as String?,
       reservers: freezed == reservers
           ? _value._reservers
           : reservers // ignore: cast_nullable_to_non_nullable
@@ -204,7 +204,7 @@ class _$ReservationImpl extends _Reservation {
       required this.uid,
       this.tel,
       this.email,
-      @ReservationStatusConverter() this.status = ReservationStatus.none,
+      this.status,
       required final List<String>? reservers})
       : _reservers = reservers,
         super._();
@@ -225,10 +225,9 @@ class _$ReservationImpl extends _Reservation {
   final String? tel;
   @override
   final String? email;
+// @Default(ReservationStatus.none) ReservationStatus status,
   @override
-  @JsonKey()
-  @ReservationStatusConverter()
-  final ReservationStatus status;
+  final String? status;
   final List<String>? _reservers;
   @override
   List<String>? get reservers {
@@ -299,7 +298,7 @@ abstract class _Reservation extends Reservation {
       required final String uid,
       final String? tel,
       final String? email,
-      @ReservationStatusConverter() final ReservationStatus status,
+      final String? status,
       required final List<String>? reservers}) = _$ReservationImpl;
   const _Reservation._() : super._();
 
@@ -318,10 +317,10 @@ abstract class _Reservation extends Reservation {
   @override
   String? get tel;
   @override
-  String? get email;
+  String?
+      get email; // @Default(ReservationStatus.none) ReservationStatus status,
   @override
-  @ReservationStatusConverter()
-  ReservationStatus get status;
+  String? get status;
   @override
   List<String>? get reservers;
 

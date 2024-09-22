@@ -14,10 +14,7 @@ _$ReservationImpl _$$ReservationImplFromJson(Map<String, dynamic> json) =>
       uid: json['uid'] as String,
       tel: json['tel'] as String?,
       email: json['email'] as String?,
-      status: json['status'] == null
-          ? ReservationStatus.none
-          : const ReservationStatusConverter()
-              .fromJson(json['status'] as Map<String, dynamic>),
+      status: json['status'] as String?,
       reservers: (json['reservers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
@@ -31,6 +28,6 @@ Map<String, dynamic> _$$ReservationImplToJson(_$ReservationImpl instance) =>
       'uid': instance.uid,
       'tel': instance.tel,
       'email': instance.email,
-      'status': const ReservationStatusConverter().toJson(instance.status),
+      'status': instance.status,
       'reservers': instance.reservers,
     };

@@ -8,7 +8,7 @@ const colDivider = SizedBox(height: 10);
 // for making test data
 const numFacilities = 3;
 const numUsers = 3;
-const numRecords = 2;
+const numRecords = 5;
 
 // enum Facility implements Comparable<Facility> {
 enum Facility {

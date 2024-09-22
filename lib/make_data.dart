@@ -1,6 +1,7 @@
 import 'dart:math' as math;
 
 import 'package:logging/logging.dart';
+import 'package:reservations2/reservation.dart';
 
 import 'consts.dart';
 
@@ -72,5 +73,22 @@ int updateNumber(int i, int numEle) {
   if (result >= numFacilities) {
     result = result - 3;
   }
+  return result;
+}
+
+ReservationStatus getRandomReservationStatus() {
+  var i = math.Random().nextInt(3) + 1;
+  var result = ReservationStatus.tentative;
+  switch (i) {
+    case 1:
+      result = ReservationStatus.tentative;
+    case 2:
+      result = ReservationStatus.priority;
+    case 3:
+      result = ReservationStatus.reserved;
+    default:
+      result = ReservationStatus.tentative;
+  }
+  log.info("getRandomReservationStatus result : $result");
   return result;
 }

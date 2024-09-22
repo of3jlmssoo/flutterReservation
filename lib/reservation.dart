@@ -26,35 +26,36 @@ enum ReservationStatus {
   final String displayName;
 }
 
-extension ReservationStatusExtension on ReservationStatus {
-  static ReservationStatus statusfromString(String status) {
-    log.info('ReservationStatusExtension --> fromString called! status : $status');
-    switch (status) {
-      case 'none':
-        return ReservationStatus.none;
-      case 'tentative':
-        return ReservationStatus.tentative;
-      case 'reserved':
-        return ReservationStatus.reserved;
-      default:
-        return ReservationStatus.notFound;
-    }
-  }
+// extension ReservationStatusExtension on ReservationStatus {
+//   static ReservationStatus statusfromString(String status) {
+//     log.info('ReservationStatusExtension --> fromString called! status : $status');
+//     switch (status) {
+//       case 'none':
+//         return ReservationStatus.none;
+//       case 'tentative':
+//         return ReservationStatus.tentative;
+//       case 'reserved':
+//         return ReservationStatus.reserved;
+//       default:
+//         return ReservationStatus.notFound;
+//     }
+//   }
 
-  static Map<String, dynamic> statusToString(ReservationStatus status) {
-    log.info('--> statusToString called!');
-    switch (status) {
-      case ReservationStatus.none:
-        return {"status": ReservationStatus.none.name};
-      case ReservationStatus.tentative:
-        return {'tentative': ReservationStatus.tentative.name};
-      case ReservationStatus.reserved:
-        return {'reserved': ReservationStatus.reserved.name};
-      default:
-        return {'notFound': ReservationStatus.notFound.name};
-    }
-  }
-}
+//   // static Map<String, dynamic> statusToString(ReservationStatus status) {
+//   static Map<String, dynamic> statusToString(ReservationStatus status) {
+//     log.info('--> statusToString called!');
+//     switch (status) {
+//       case ReservationStatus.none:
+//         return {"status": ReservationStatus.none.name};
+//       case ReservationStatus.tentative:
+//         return {'status': ReservationStatus.tentative.name};
+//       case ReservationStatus.reserved:
+//         return {'status': ReservationStatus.reserved.name};
+//       default:
+//         return {'status': ReservationStatus.notFound.name};
+//     }
+//   }
+// }
 
 extension FacilityExtension on Facility {
   static DocumentReference<Object?> fromString(dynamic xxx) {
@@ -77,20 +78,20 @@ class FacilityConverter implements JsonConverter<Facility, Map<String, dynamic>>
   }
 }
 
-class ReservationStatusConverter implements JsonConverter<ReservationStatus, Map<String, dynamic>> {
-  const ReservationStatusConverter();
+// class ReservationStatusConverter implements JsonConverter<ReservationStatus, Map<String, dynamic>> {
+//   const ReservationStatusConverter();
 
-  @override
-  ReservationStatus fromJson(dynamic json) {
-    log.info('ReservationStatusConverter json : $json');
-    return ReservationStatusExtension.statusfromString(json);
-  }
+//   @override
+//   ReservationStatus fromJson(dynamic json) {
+//     log.info('ReservationStatusConverter json : $json');
+//     return ReservationStatusExtension.statusfromString(json);
+//   }
 
-  @override
-  Map<String, dynamic> toJson(ReservationStatus reservationStatu) {
-    return ReservationStatusExtension.statusToString(reservationStatu);
-  }
-}
+//   @override
+//   Map<String, dynamic> toJson(ReservationStatus reservationStatu) {
+//     return ReservationStatusExtension.statusToString(reservationStatu);
+//   }
+// }
 
 class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
   const DateTimeConverter();
@@ -124,7 +125,8 @@ class Reservation with _$Reservation {
     required String uid,
     String? tel,
     String? email,
-    @Default(ReservationStatus.none) @ReservationStatusConverter() ReservationStatus status,
+    // @Default(ReservationStatus.none) ReservationStatus status,
+    String? status,
     required List<String>? reservers,
 
     // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
@@ -140,6 +142,7 @@ class Reservation with _$Reservation {
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
+    Logger.root.level = Level.ALL;
     final data = snapshot.data();
     log.info('fromFirestore1 data $data ${data?.keys}');
     var d = data as Map<String, dynamic>;
@@ -148,26 +151,27 @@ class Reservation with _$Reservation {
     log.info('fromFirestore4 ${data["reservers"]} ----- ${data["reservers"].runtimeType}}');
     log.info('fromFirestore5 ${data["status"]} ----- ${data["status"].runtimeType}}');
 
-    var m = data["status"].map<String, String>((key, value) => MapEntry<String, String>(key, value.toString()));
-    String s = 'none';
-    for (var v in m.values) {
-      s = v;
-    }
+    // var m = data["status"].map<String, String>((key, value) => MapEntry<String, String>(key, value.toString()));
+    var m = data["status"];
+    // String s = 'none';
+    // for (var v in m.values) {
+    //   s = v;
+    // }
 
-    log.info('fromFirestore6 m : $m --- ${m.keys} --- ${m[m.keys]} ${m["tentative"]} s : $s');
+    log.info('fromFirestore6 m : $m ');
 
-    ReservationStatus rs = ReservationStatus.none;
-    switch (s) {
-      case 'none':
-        rs = ReservationStatus.none;
-      case 'tentative':
-        rs = ReservationStatus.tentative;
-      case 'reserved':
-        rs = ReservationStatus.reserved;
-      default:
-        rs = ReservationStatus.notFound;
-    }
-    log.info('fromFirestore7 rs : $rs');
+    // ReservationStatus rs = ReservationStatus.none;
+    // switch (s) {
+    //   case 'none':
+    //     rs = ReservationStatus.none;
+    //   case 'tentative':
+    //     rs = ReservationStatus.tentative;
+    //   case 'reserved':
+    //     rs = ReservationStatus.reserved;
+    //   default:
+    //     rs = ReservationStatus.notFound;
+    // }
+    // log.info('fromFirestore7 rs : $rs');
     log.info('fromFirestore8 facility : ${data["facility"]} --- ${data["facility"].runtimeType}}');
 
     final r = Reservation(
@@ -178,11 +182,13 @@ class Reservation with _$Reservation {
       email: data["email"] ?? null,
       // reservers: data["reservers"].cast<String>() as List<String>,
       reservers: List<String>.from(data["reservers"]),
-      status: rs,
+      status: data["status"],
       facility: data["facility"],
 
       // reservers: data["reservers"] ?? [],
     );
+    log.info('fromFirestore9 r : $r');
+    Logger.root.level = Level.OFF;
     return r;
     // log.info('XXXXX ${d["reserveOn"]} XXX ${d["reserveOn"].toDate()}');
     // return Reservation(
@@ -210,7 +216,7 @@ class Reservation with _$Reservation {
       "uid": uid,
       if (tel != null) "tel": tel,
       if (email != null) "email": email,
-      "status": ReservationStatusExtension.statusToString(status),
+      "status": status,
       if (reservers != null) "reservers": reservers,
       // "status": status,
       // if (reserveMade != null) "state": reserveMade,
@@ -338,24 +344,31 @@ class ReservationRepository {
   }
 
   Future<void> getDocument() async {
+    Logger.root.level = Level.ALL;
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
-    db
+    log.info("getDocument called facilityRef : $facilityRef");
+    final kitchens = db
         .collection("reservations")
         // .withConverter(
         //   fromFirestore: Reservation.fromFirestore,
         //   toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
         // )
-        .where("facility", isEqualTo: facilityRef)
-        .get()
-        .then(
+        .where("status", isEqualTo: "priority");
+    log.info("getDocument called kitchens : $kitchens");
+
+    kitchens.get().then(
       (querySnapshot) {
-        log.info("Successfully completed ${querySnapshot.docs.length}");
+        Logger.root.level = Level.ALL;
+        log.info("Successfully completed ------------------------> ${querySnapshot.docs.length}");
         for (var docSnapshot in querySnapshot.docs) {
-          log.info('${docSnapshot.id} ===> ${docSnapshot.data()}');
+          // log.info('${docSnapshot.id} ===============================> ${docSnapshot.data()}');
+          log.info('----------------> ${docSnapshot.id} ${docSnapshot.data()["status"]}');
         }
+        log.info("Successfully completed -> ${querySnapshot.docs.length}");
       },
       onError: (e) => log.info("Error completing: $e"),
     );
+    log.info("getDocument end of ");
   }
 
   Future<void> addReservation({
@@ -376,7 +389,7 @@ class ReservationRepository {
         reserveMade: reserveMade,
         facility: facilityRef,
         uid: uid,
-        status: status,
+        status: status.name,
         reservers: [uid]);
 
     db
