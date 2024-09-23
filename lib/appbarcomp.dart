@@ -153,8 +153,9 @@ class Firestorework extends ConsumerWidget {
               onPressed: () async {
                 Logger.root.level = Level.ALL;
                 log.info('Firestorework 予約データ照会(id特定) 1');
-                await getReservationWithID("3TllYctRVw43gPzhu4bT");
-                log.info('Firestorework 予約データ照会(id特定) 2');
+                var result = await getReservationWithID(context, "3TllYctRVw43gPzhu4bT");
+                Logger.root.level = Level.ALL;
+                log.info('Firestorework 予約データ照会(id特定) 2 $result');
                 Logger.root.level = Level.OFF;
               },
               child: const Text('予約データ照会(id特定)')),
@@ -355,7 +356,7 @@ class Firestorework extends ConsumerWidget {
 
   Future<void> checkReservationExist(dynamic context) async {
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 24), Facility.kitchen);
+    Reservation? r = await rr.queryReservationDateFacility(DateTime(2024, 9, 24), Facility.kitchen);
     if (r == null) {
       if (context.mounted) {
         ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
@@ -367,6 +368,26 @@ class Firestorework extends ConsumerWidget {
       showReservationInstanceVariables(true, log, r);
       Logger.root.level = Level.OFF;
     }
+  }
+
+  Future<Reservation?> getReservationWithID(dynamic context, String id) async {
+    ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+    Reservation? r = await rr.queryReservationID(id);
+    if (r == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('対象レコードがありませんでした'),
+        ));
+      }
+    } else {
+      Logger.root.level = Level.ALL;
+      showReservationInstanceVariables(true, log, r);
+      Logger.root.level = Level.OFF;
+    }
+    Logger.root.level = Level.ALL;
+    log.info("getReservationWithID will return $r");
+    Logger.root.level = Level.OFF;
+    return r;
   }
 
   void makeReservation1(WidgetRef ref) async {
@@ -409,23 +430,23 @@ class Firestorework extends ConsumerWidget {
     }
   }
 
-  Future<void> getReservationWithID(String id) async {
-    Logger.root.level = Level.ALL;
+  // Future<void> getReservationWithID(String id) async {
+  //   Logger.root.level = Level.ALL;
 
-    final ref = FirebaseFirestore.instance.collection("reservations").doc(id).withConverter(
-          fromFirestore: Reservation.fromFirestore,
-          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-        );
-    final docSnap = await ref.get();
-    final reservation = docSnap.data(); // Convert to City object
-    Logger.root.level = Level.ALL;
-    if (reservation != null) {
-      showReservationInstanceVariables(true, log, reservation);
-    } else {
-      log.info("getReservationWithID No such document.");
-    }
-    Logger.root.level = Level.OFF;
-  }
+  //   final ref = FirebaseFirestore.instance.collection("reservations").doc(id).withConverter(
+  //         fromFirestore: Reservation.fromFirestore,
+  //         toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+  //       );
+  //   final docSnap = await ref.get();
+  //   final reservation = docSnap.data(); // Convert to City object
+  //   Logger.root.level = Level.ALL;
+  //   if (reservation != null) {
+  //     showReservationInstanceVariables(true, log, reservation);
+  //   } else {
+  //     log.info("getReservationWithID No such document.");
+  //   }
+  //   Logger.root.level = Level.OFF;
+  // }
 
   // Future<Reservation> makeReservation(WidgetRef ref) async {
   //   final reservation = Reservation(

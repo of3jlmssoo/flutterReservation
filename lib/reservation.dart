@@ -239,9 +239,9 @@ class ReservationRepository {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
   }
 
-  Future<Reservation?> reservationExist(DateTime t, Facility f) async {
+  Future<Reservation?> queryReservationDateFacility(DateTime t, Facility f) async {
     Logger.root.level = Level.OFF;
-    log.info('reservationExist called $t $f ${f.runtimeType}');
+    log.info('queryReservationDateFacility called $t $f ${f.runtimeType}');
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
     Reservation? result;
@@ -256,17 +256,42 @@ class ReservationRepository {
         )
         .get();
 
-    log.info("reservationExist docRef.size : ${docRef.size}");
+    log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
-      log.info("reservationExist docRef.docs : ${docRef.docs}");
-      log.info("reservationExist docRef.docs.data() : ${docRef.docs[0].data()}");
+      log.info("queryReservationDateFacility docRef.docs : ${docRef.docs}");
+      log.info("queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
       result = docRef.docs[0].data();
     } else {
-      log.info("reservationExist some records exist!");
+      log.info("queryReservationDateFacility some records exist!");
       UnimplementedError();
     }
-    log.info("reservationExist docRef.runtimeType ${docRef.runtimeType}");
-    log.info('reservation Exist return');
+    log.info("queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
+    log.info('queryReservationDateFacility Exist return');
+
+    Logger.root.level = Level.OFF;
+
+    return result;
+  }
+
+  Future<Reservation?> queryReservationID(String id) async {
+    Logger.root.level = Level.OFF;
+    log.info('queryReservationID called $id');
+
+    // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
+    Reservation? result;
+
+    final docRef = await db
+        .collection("reservations")
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .doc(id)
+        .get();
+
+    result = docRef.data();
+    log.info("queryReservationID docRef.runtimeType ${docRef.runtimeType}");
+    log.info('queryReservationID Exist return');
 
     Logger.root.level = Level.OFF;
 
