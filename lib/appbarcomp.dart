@@ -356,7 +356,7 @@ class Firestorework extends ConsumerWidget {
   Future<void> checkReservationExist() async {
     Logger.root.level = Level.OFF;
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 19), Facility.mtgR2);
+    Reservation? r = await rr.reservationExist(DateTime(2024, 9, 24), Facility.kitchen);
     Logger.root.level = Level.OFF;
     log.info('checkReservationExist-------> $r');
     log.info('checkReservationExist-------> uid : ${r?.uid} ${r?.uid.runtimeType}');
