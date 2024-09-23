@@ -240,12 +240,10 @@ class ReservationRepository {
   }
 
   Future<Reservation?> reservationExist(DateTime t, Facility f) async {
+    Logger.root.level = Level.OFF;
     log.info('reservationExist called $t $f ${f.runtimeType}');
-    // final reserveRef = FirebaseFirestore.instance.collection("reservations");
+
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
-
-    // final formattedT = DateTime(t.year, t.month, t.day);
-
     Reservation? result;
 
     final docRef = await db
@@ -257,6 +255,7 @@ class ReservationRepository {
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
         .get();
+
     log.info("reservationExist docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
       log.info("reservationExist docRef.docs : ${docRef.docs}");
@@ -267,79 +266,10 @@ class ReservationRepository {
       UnimplementedError();
     }
     log.info("reservationExist docRef.runtimeType ${docRef.runtimeType}");
-    //     .then(
-    //   (querySnapshot) {
-    //     log.info("reservationExist Successfully completed ${querySnapshot.size}");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       log.info('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => log.info("Error completing: $e"),
-    // );
-
-    // final docRef = db.collection('reservations').doc('5RE42FSz6FdRer0Rkd07').withConverter(
-    //       // final docRef = db.collection('reservations').where("reserveOn", isEqualTo: t).withConverter(
-    //       fromFirestore: Reservation.fromFirestore,
-    //       toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-    //     );
-    // final docSnap = await docRef.get();
-    // log.info('ReservationExist docRef : $docRef    docSnap : $docSnap');
-    // final reservation = docSnap.data(); // Convert to City object
-    // if (reservation != null) {
-    //   log.info('reservationExist data() $reservation}');
-    //   result = reservation.status;
-    // } else {
-    //   log.info("reservationExist  No such document.");
-    // }
-
-    // await docRef.get().then(
-    //       (res) => log.info("Successfully completed"),
-    //       onError: (e) => log.info("Error completing: $e"),
-    //     );
-
-    // reserveRef
-    //     // .where("reserveOn", isEqualTo: formattedT)
-    //     // .where("facility", isEqualTo: facilityRef)
-    //     // .withConverter(
-    //     //   fromFirestore: Reservation.fromFirestore,
-    //     //   toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-    //     // )
-    //     .get()
-    //     .then(
-    //   (querySnapshot) {
-    //     log.info("reservatonExist   Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
-    //     // there should be only one record for this query
-
-    //     // result = querySnapshot.docs[0]["status"];
-    //     // log.info('レコード有無照会2    ${querySnapshot.docs[0]["status"]} --- $result');
-
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       // var d = docSnapshot.data() as Map<String, dynamic>;
-    //       // log.info('reservatonExist() keys : ${d.keys}');
-
-    //       // log.info("レコード有無照会1  in for loop  Successfully completed ${querySnapshot.docs.length} ${querySnapshot.docs}");
-    //       // // final data = docSnapshot.data()! as Map<String, dynamic>;
-    //       log.info("reservatonExist --- ${docSnapshot.data()}");
-
-    //       // log.info(data.keys);
-
-    //       // log.info(' 1 ====>             ${docSnapshot.data()}');
-    //       // log.info(' 1 ====>             ${docSnapshot.data()}');
-    //       // log.info(' 1 ====>  ${docSnapshot} === ${docSnapshot.runtimeType}');
-    //       // // log.info(' 2 ====>             ${docSnapshot.data().runtimeType}');
-    //       // log.info(' 1 ====> reserveOn   ${docSnapshot["reserveOn"].runtimeType}');
-    //       // log.info(' 1 ====> reserveMade ${docSnapshot["reserveMade"].runtimeType}');
-    //       // log.info(' 1 ====> facility    ${docSnapshot["facility"].runtimeType}');
-    //       // log.info(' 1 ====> uid         ${docSnapshot["uid"].runtimeType}');
-    //       // log.info(' 1 ====> tel         ${docSnapshot["tel"] ? docSnapshot["tel"].runtimeType : 'No Tel'}');
-    //       // // log.info(' 1 ====> email       ${docSnapshot["email"].runtmeType}');
-    //       // // log.info(' 1 ====> status      ${docSnapshot["status"].runtmeType}');
-    //       // // log.info(' 1 ====> reservers   ${docSnapshot["reservers"].runtimeType}');
-    //     }
-    //   },
-    //   onError: (e) => log.info("reservationExist Error completing: $e"),
-    // );
     log.info('reservation Exist return');
+
+    Logger.root.level = Level.OFF;
+
     return result;
   }
 

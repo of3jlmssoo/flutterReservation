@@ -141,7 +141,7 @@ class Firestorework extends ConsumerWidget {
           ),
           OutlinedButton(
               onPressed: () {
-                checkReservationExist();
+                checkReservationExist(context);
               },
               child: const Text('レコード有無照会')),
           OutlinedButton(
@@ -353,21 +353,20 @@ class Firestorework extends ConsumerWidget {
     }
   }
 
-  Future<void> checkReservationExist() async {
-    Logger.root.level = Level.OFF;
+  Future<void> checkReservationExist(dynamic context) async {
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
     Reservation? r = await rr.reservationExist(DateTime(2024, 9, 24), Facility.kitchen);
-    Logger.root.level = Level.OFF;
-    log.info('checkReservationExist-------> $r');
-    log.info('checkReservationExist-------> uid : ${r?.uid} ${r?.uid.runtimeType}');
-    log.info('checkReservationExist-------> facility : ${r?.facility} ${r?.facility.runtimeType}');
-    log.info('checkReservationExist-------> reserveMade : ${r?.reserveMade} ${r?.reserveMade.runtimeType}');
-    log.info('checkReservationExist-------> reserveOn : ${r?.reserveOn} ${r?.reserveOn.runtimeType}');
-    log.info('checkReservationExist-------> status : ${r?.status} ${r?.status.runtimeType}');
-    log.info('checkReservationExist-------> reservers : ${r?.reservers} ${r?.reservers.runtimeType}');
-    log.info('checkReservationExist-------> tel : ${r?.tel} ${r?.tel.runtimeType}');
-    log.info('checkReservationExist-------> email : ${r?.email} ${r?.email.runtimeType}');
-    Logger.root.level = Level.OFF;
+    if (r == null) {
+      if (context.mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text('対象レコードがありませんでした'),
+        ));
+      }
+    } else {
+      Logger.root.level = Level.ALL;
+      showReservationInstanceVariables(true, log, r);
+      Logger.root.level = Level.OFF;
+    }
   }
 
   void makeReservation1(WidgetRef ref) async {
