@@ -151,12 +151,9 @@ class Firestorework extends ConsumerWidget {
               child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
-                Logger.root.level = Level.ALL;
-                log.info('Firestorework 予約データ照会(id特定) 1');
+                logmessage(true, log, '予約データ照会(id特定) 1');
                 var result = await getReservationWithID(context, "3TllYctRVw43gPzhu4bT");
-                Logger.root.level = Level.ALL;
-                log.info('Firestorework 予約データ照会(id特定) 2 $result');
-                Logger.root.level = Level.OFF;
+                logmessage(true, log, '予約データ照会(id特定) 2 $result');
               },
               child: const Text('予約データ照会(id特定)')),
           OutlinedButton(
@@ -263,11 +260,6 @@ class Firestorework extends ConsumerWidget {
           'makeReservations --> log in as ${FirebaseAuth.instance.currentUser!.displayName} --> ${users[i]} --- ${passwords[i]}}');
       log.info('makeReservations ---------------------------> futureData[i].length ${futureData[i].length}');
 
-      // makeReservation1(ref);
-
-      // ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-      // for (var l in futureData[i]) {
-
       final batch = FirebaseFirestore.instance.batch();
 
       log.info('makeReservations batch cOFFed');
@@ -327,19 +319,8 @@ class Firestorework extends ConsumerWidget {
             "status": rs.name,
           },
         );
-        // batch.update(newReservationRef, {"status": rs});
 
         log.info("makeReservations addReservation will be cOFFed 3");
-
-        // await rr.addReservation(
-        //   reserveOn: cD.add(Duration(days: l + 1)),
-        //   reserveMade: cDD,
-        //   // facility: Facility.kitchen,
-        //   facility: fac,
-        //   // status: ReservationStatus.tentative,
-        //   status: rs,
-        //   uid: uid,
-        // );
       }
       log.info("makeReservations beofe commit()");
       batch.commit().then(
