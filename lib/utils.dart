@@ -23,6 +23,7 @@ void showReservationInstanceVariables(
 }
 
 void logmessage(bool b, Logger l, String s) {
+  if (b == false) return;
   var logstatus = Logger.root.level;
   Logger.root.level = Level.ALL;
   l.info(s);

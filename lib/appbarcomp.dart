@@ -179,6 +179,12 @@ class Firestorework extends ConsumerWidget {
           ),
           OutlinedButton(
             onPressed: () {
+              context.push('/listreservations');
+            },
+            child: const Text('予約一覧表示'),
+          ),
+          OutlinedButton(
+            onPressed: () {
               context.pop();
             },
             child: const Text('戻る'),
@@ -345,7 +351,7 @@ class Firestorework extends ConsumerWidget {
         ));
       }
     } else {
-      Logger.root.level = Level.ALL;
+      Logger.root.level = Level.OFF;
       showReservationInstanceVariables(true, log, r);
       Logger.root.level = Level.OFF;
     }

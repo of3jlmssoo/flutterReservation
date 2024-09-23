@@ -1,14 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
+import 'package:reservations2/utils.dart';
 
 import 'appbarcomp.dart';
 import 'commonclass.dart';
 import 'consts.dart';
 import 'firebase_auth_repository.dart';
+import 'reservation.dart';
 
 final log = Logger('Screens');
 
@@ -587,6 +590,27 @@ class UserInformationUpdateScreen extends StatelessWidget {
                 context.pop();
               },
               child: const Text('更新')),
+        ],
+      ),
+    );
+  }
+}
+
+class ListReservations extends ConsumerWidget {
+  const ListReservations({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    return Scaffold(
+      appBar: BaseAppBar(title: 'firestore work', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
+      body: Column(
+        children: [
+          const Text("ListReservations"),
+          FloatingActionButton(onPressed: () async {
+            ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+            List<Reservation?> r = await rr.getAllDocuments();
+            logmessage(true, log, "ListReservations result length ${r.length}");
+          })
         ],
       ),
     );

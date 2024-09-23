@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:logging/logging.dart';
+import 'package:reservations2/utils.dart';
 
 import 'consts.dart';
 
@@ -296,6 +297,44 @@ class ReservationRepository {
     Logger.root.level = Level.OFF;
 
     return result;
+  }
+
+  Future<List<Reservation?>> getAllDocuments() async {
+    Logger.root.level = Level.OFF;
+    logmessage(false, log, 'getAllDocuments called');
+
+    List<Reservation?> result = [];
+
+    // final docRef = await db
+    await db
+        .collection("reservations")
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .get()
+        .then((querySnapshot) {
+      logmessage(false, log, "Successfully completed");
+      for (var docSnapshot in querySnapshot.docs) {
+        logmessage(false, log, '${docSnapshot.id} => ${docSnapshot.data()}');
+        result.add(docSnapshot.data());
+      }
+    }, onError: (e) => logmessage(true, log, "getAllDocuments error $e"));
+
+    // result = docRef.data();
+    logmessage(false, log, 'getAllDocuments Exist return $result');
+
+    return result;
+
+    // db.collection("cities").get().then(
+    //   (querySnapshot) {
+    //     print("Successfully completed");
+    //     for (var docSnapshot in querySnapshot.docs) {
+    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
+    //     }
+    //   },
+    //   onError: (e) => print("Error completing: $e"),
+    // );
   }
 
   Future<void> getDocument() async {

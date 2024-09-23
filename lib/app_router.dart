@@ -44,6 +44,7 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/userinformation')) return path;
         if (path.startsWith('/userinformationupdate')) return '/userinformationupdate';
         if (path.startsWith('/firestorework')) return '/firestorework';
+        if (path.startsWith('/listreservations')) return '/listreservations';
         return '/main';
       } else {
         return '/login';
@@ -81,6 +82,10 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/firestorework',
         builder: (context, state) => const Firestorework(),
+      ),
+      GoRoute(
+        path: '/listreservations',
+        builder: (context, state) => const ListReservations(),
       ),
       GoRoute(
         path: '/reservationinput',
