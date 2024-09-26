@@ -1,11 +1,9 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
-import 'package:reservations2/utils.dart';
 
 import 'appbarcomp.dart';
 import 'commonclass.dart';
@@ -232,6 +230,7 @@ class ShowDatePickerWidget extends StatelessWidget {
   });
 
   final String facility;
+
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -308,6 +307,7 @@ class ReservationInputScreen extends StatelessWidget {
   const ReservationInputScreen({super.key, required this.rbase});
 
   final ReservationInputsBase rbase;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -352,6 +352,7 @@ class ReservationConfirmationScreen extends StatelessWidget {
   const ReservationConfirmationScreen({super.key, required this.rext});
 
   final ReservationInputsExt rext;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -597,7 +598,9 @@ class UserInformationUpdateScreen extends StatelessWidget {
 }
 
 class ListReservations extends ConsumerWidget {
-  const ListReservations({super.key});
+  const ListReservations({super.key, required this.reservationList});
+
+  final List<Reservation?> reservationList;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -606,13 +609,62 @@ class ListReservations extends ConsumerWidget {
       body: Column(
         children: [
           const Text("ListReservations"),
-          FloatingActionButton(onPressed: () async {
-            ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-            List<Reservation?> r = await rr.getAllDocuments();
-            logmessage(true, log, "ListReservations result length ${r.length}");
-          })
+          // FloatingActionButton(
+          //   onPressed: () async {
+          //     logmessage(true, log, "ListReservations list reservation pressed");
+          //     // ReservationRepository rr =
+          //     //     ReservationRepository(db: FirebaseFirestore.instance);
+          //     // r = await rr.getAllDocuments();
+          //     // logmessage(true, log, "ListReservations result ${r}");
+          //     // logmessage(
+          //     //     true, log, "ListReservations result length ${r.length}");
+          //   },
+          //   child: Text("list reservations"),
+          // ),
+          Expanded(
+            child: ListView.builder(
+              // shrinkWrap: true,
+              // padding: const EdgeInsets.all(8),
+              itemCount: reservationList.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Center(
+                  child: Card(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: <Widget>[
+                        ListTile(
+                          leading: selectIcon(),
+                          title: Text('${reservationList[index]!.reserveOn}'),
+                          subtitle: getFacilityName(),
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: <Widget>[
+                            TextButton(
+                              child: const Text('LISTEN'),
+                              onPressed: () {/* ... */},
+                            ),
+                            const SizedBox(width: 8),
+                            TextButton(
+                              child: const Text('LISTEN'),
+                              onPressed: () {/* ... */},
+                            ),
+                            const SizedBox(width: 8),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ),
         ],
       ),
     );
   }
+
+  Icon selectIcon() => const Icon(Icons.album);
+
+  Text getFacilityName() => const Text('BUY TICKETS');
 }

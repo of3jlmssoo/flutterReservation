@@ -60,7 +60,7 @@ enum ReservationStatus {
 
 extension FacilityExtension on Facility {
   static DocumentReference<Object?> fromString(dynamic xxx) {
-    log.info('---> FacilityExtension on Facility');
+    logmessage(true, log, '---> FacilityExtension on Facility xxx.runtimeType ${xxx.runtimeType}');
     return xxx as DocumentReference;
   }
 }
@@ -113,6 +113,21 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
   Timestamp toJson(DateTime dateTime) {
     return Timestamp.fromDate(dateTime);
   }
+}
+
+@freezed
+class Reservation4Display with _$Reservation4Display {
+  const Reservation4Display._();
+  const factory Reservation4Display({
+    required DateTime reserveOn,
+    required DateTime reserveMade,
+    required String facility,
+    required String uid,
+    String? tel,
+    String? email,
+    required String status,
+    required List<String>? reservers,
+  }) = _Reservation4Display;
 }
 
 @freezed

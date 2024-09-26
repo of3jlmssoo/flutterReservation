@@ -14,6 +14,294 @@ T _$identity<T>(T value) => value;
 final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
+/// @nodoc
+mixin _$Reservation4Display {
+  DateTime get reserveOn => throw _privateConstructorUsedError;
+  DateTime get reserveMade => throw _privateConstructorUsedError;
+  String get facility => throw _privateConstructorUsedError;
+  String get uid => throw _privateConstructorUsedError;
+  String? get tel => throw _privateConstructorUsedError;
+  String? get email => throw _privateConstructorUsedError;
+  String get status => throw _privateConstructorUsedError;
+  List<String>? get reservers => throw _privateConstructorUsedError;
+
+  /// Create a copy of Reservation4Display
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $Reservation4DisplayCopyWith<Reservation4Display> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $Reservation4DisplayCopyWith<$Res> {
+  factory $Reservation4DisplayCopyWith(
+          Reservation4Display value, $Res Function(Reservation4Display) then) =
+      _$Reservation4DisplayCopyWithImpl<$Res, Reservation4Display>;
+  @useResult
+  $Res call(
+      {DateTime reserveOn,
+      DateTime reserveMade,
+      String facility,
+      String uid,
+      String? tel,
+      String? email,
+      String status,
+      List<String>? reservers});
+}
+
+/// @nodoc
+class _$Reservation4DisplayCopyWithImpl<$Res, $Val extends Reservation4Display>
+    implements $Reservation4DisplayCopyWith<$Res> {
+  _$Reservation4DisplayCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of Reservation4Display
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? reserveOn = null,
+    Object? reserveMade = null,
+    Object? facility = null,
+    Object? uid = null,
+    Object? tel = freezed,
+    Object? email = freezed,
+    Object? status = null,
+    Object? reservers = freezed,
+  }) {
+    return _then(_value.copyWith(
+      reserveOn: null == reserveOn
+          ? _value.reserveOn
+          : reserveOn // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      reserveMade: null == reserveMade
+          ? _value.reserveMade
+          : reserveMade // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      facility: null == facility
+          ? _value.facility
+          : facility // ignore: cast_nullable_to_non_nullable
+              as String,
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      tel: freezed == tel
+          ? _value.tel
+          : tel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      reservers: freezed == reservers
+          ? _value.reservers
+          : reservers // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$Reservation4DisplayImplCopyWith<$Res>
+    implements $Reservation4DisplayCopyWith<$Res> {
+  factory _$$Reservation4DisplayImplCopyWith(_$Reservation4DisplayImpl value,
+          $Res Function(_$Reservation4DisplayImpl) then) =
+      __$$Reservation4DisplayImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call(
+      {DateTime reserveOn,
+      DateTime reserveMade,
+      String facility,
+      String uid,
+      String? tel,
+      String? email,
+      String status,
+      List<String>? reservers});
+}
+
+/// @nodoc
+class __$$Reservation4DisplayImplCopyWithImpl<$Res>
+    extends _$Reservation4DisplayCopyWithImpl<$Res, _$Reservation4DisplayImpl>
+    implements _$$Reservation4DisplayImplCopyWith<$Res> {
+  __$$Reservation4DisplayImplCopyWithImpl(_$Reservation4DisplayImpl _value,
+      $Res Function(_$Reservation4DisplayImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of Reservation4Display
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? reserveOn = null,
+    Object? reserveMade = null,
+    Object? facility = null,
+    Object? uid = null,
+    Object? tel = freezed,
+    Object? email = freezed,
+    Object? status = null,
+    Object? reservers = freezed,
+  }) {
+    return _then(_$Reservation4DisplayImpl(
+      reserveOn: null == reserveOn
+          ? _value.reserveOn
+          : reserveOn // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      reserveMade: null == reserveMade
+          ? _value.reserveMade
+          : reserveMade // ignore: cast_nullable_to_non_nullable
+              as DateTime,
+      facility: null == facility
+          ? _value.facility
+          : facility // ignore: cast_nullable_to_non_nullable
+              as String,
+      uid: null == uid
+          ? _value.uid
+          : uid // ignore: cast_nullable_to_non_nullable
+              as String,
+      tel: freezed == tel
+          ? _value.tel
+          : tel // ignore: cast_nullable_to_non_nullable
+              as String?,
+      email: freezed == email
+          ? _value.email
+          : email // ignore: cast_nullable_to_non_nullable
+              as String?,
+      status: null == status
+          ? _value.status
+          : status // ignore: cast_nullable_to_non_nullable
+              as String,
+      reservers: freezed == reservers
+          ? _value._reservers
+          : reservers // ignore: cast_nullable_to_non_nullable
+              as List<String>?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$Reservation4DisplayImpl extends _Reservation4Display {
+  const _$Reservation4DisplayImpl(
+      {required this.reserveOn,
+      required this.reserveMade,
+      required this.facility,
+      required this.uid,
+      this.tel,
+      this.email,
+      required this.status,
+      required final List<String>? reservers})
+      : _reservers = reservers,
+        super._();
+
+  @override
+  final DateTime reserveOn;
+  @override
+  final DateTime reserveMade;
+  @override
+  final String facility;
+  @override
+  final String uid;
+  @override
+  final String? tel;
+  @override
+  final String? email;
+  @override
+  final String status;
+  final List<String>? _reservers;
+  @override
+  List<String>? get reservers {
+    final value = _reservers;
+    if (value == null) return null;
+    if (_reservers is EqualUnmodifiableListView) return _reservers;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  String toString() {
+    return 'Reservation4Display(reserveOn: $reserveOn, reserveMade: $reserveMade, facility: $facility, uid: $uid, tel: $tel, email: $email, status: $status, reservers: $reservers)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$Reservation4DisplayImpl &&
+            (identical(other.reserveOn, reserveOn) ||
+                other.reserveOn == reserveOn) &&
+            (identical(other.reserveMade, reserveMade) ||
+                other.reserveMade == reserveMade) &&
+            (identical(other.facility, facility) ||
+                other.facility == facility) &&
+            (identical(other.uid, uid) || other.uid == uid) &&
+            (identical(other.tel, tel) || other.tel == tel) &&
+            (identical(other.email, email) || other.email == email) &&
+            (identical(other.status, status) || other.status == status) &&
+            const DeepCollectionEquality()
+                .equals(other._reservers, _reservers));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, reserveOn, reserveMade, facility,
+      uid, tel, email, status, const DeepCollectionEquality().hash(_reservers));
+
+  /// Create a copy of Reservation4Display
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$Reservation4DisplayImplCopyWith<_$Reservation4DisplayImpl> get copyWith =>
+      __$$Reservation4DisplayImplCopyWithImpl<_$Reservation4DisplayImpl>(
+          this, _$identity);
+}
+
+abstract class _Reservation4Display extends Reservation4Display {
+  const factory _Reservation4Display(
+      {required final DateTime reserveOn,
+      required final DateTime reserveMade,
+      required final String facility,
+      required final String uid,
+      final String? tel,
+      final String? email,
+      required final String status,
+      required final List<String>? reservers}) = _$Reservation4DisplayImpl;
+  const _Reservation4Display._() : super._();
+
+  @override
+  DateTime get reserveOn;
+  @override
+  DateTime get reserveMade;
+  @override
+  String get facility;
+  @override
+  String get uid;
+  @override
+  String? get tel;
+  @override
+  String? get email;
+  @override
+  String get status;
+  @override
+  List<String>? get reservers;
+
+  /// Create a copy of Reservation4Display
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$Reservation4DisplayImplCopyWith<_$Reservation4DisplayImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
 Reservation _$ReservationFromJson(Map<String, dynamic> json) {
   return _Reservation.fromJson(json);
 }

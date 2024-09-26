@@ -9,6 +9,7 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'firebase_auth_repository.dart';
 import 'go_router_refresh_stream.dart';
+import 'reservation.dart';
 
 part 'app_router.g.dart';
 
@@ -85,7 +86,9 @@ GoRouter goRouter(GoRouterRef ref) {
       ),
       GoRoute(
         path: '/listreservations',
-        builder: (context, state) => const ListReservations(),
+        builder: (context, state) => ListReservations(
+          reservationList: state.extra! as List<Reservation?>,
+        ),
       ),
       GoRoute(
         path: '/reservationinput',
