@@ -27,6 +27,22 @@ enum ReservationStatus {
   final String displayName;
 }
 
+ReservationStatus getReservationStatus(String rstatus) {
+  switch (rstatus) {
+    case "none":
+      return ReservationStatus.none;
+    case "tentative":
+      return ReservationStatus.tentative;
+    case "priority":
+      return ReservationStatus.priority;
+    case "reserved":
+      return ReservationStatus.reserved;
+    // case "notfound":
+    default:
+      return ReservationStatus.notFound;
+  }
+}
+
 // extension ReservationStatusExtension on ReservationStatus {
 //   static ReservationStatus statusfromString(String status) {
 //     log.info('ReservationStatusExtension --> fromString called! status : $status');

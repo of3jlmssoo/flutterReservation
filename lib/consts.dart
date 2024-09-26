@@ -26,6 +26,19 @@ enum Facility {
   final int capacity;
   final String description;
 
+  Facility getF(String f) {
+    switch (f) {
+      case "kitchen":
+        return Facility.kitchen;
+      case "mtgR1":
+        return Facility.mtgR1;
+      case "mtgR2":
+        return Facility.mtgR2;
+      default:
+        return Facility.kitchen;
+    }
+  }
+
   // int get carbonFootprint => (description / capacity).round();
   // bool get isTwoWheeled => this == Facility.bicycle;
   // @override
