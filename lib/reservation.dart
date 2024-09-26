@@ -119,8 +119,8 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
 class Reservation4Display with _$Reservation4Display {
   const Reservation4Display._();
   const factory Reservation4Display({
-    required DateTime reserveOn,
-    required DateTime reserveMade,
+    required String reserveOn,
+    required String reserveMade,
     required String facility,
     required String uid,
     String? tel,
@@ -314,11 +314,11 @@ class ReservationRepository {
     return result;
   }
 
-  Future<List<Reservation?>> getAllDocuments() async {
+  Future<List<Reservation>?> getAllDocuments() async {
     Logger.root.level = Level.OFF;
     logmessage(false, log, 'getAllDocuments called');
 
-    List<Reservation?> result = [];
+    List<Reservation> result = [];
 
     // final docRef = await db
     await db

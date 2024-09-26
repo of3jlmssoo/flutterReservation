@@ -1,3 +1,4 @@
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/reservation.dart';
 
@@ -28,4 +29,15 @@ void logmessage(bool b, Logger l, String s) {
   Logger.root.level = Level.ALL;
   l.info(s);
   Logger.root.level = logstatus;
+}
+
+// List<Reservation4Display> copyReservation4Display(List<Reservation> reservationList) {
+void copyReservation4Display(List<Reservation>? reservationList) {
+  List<Reservation4Display> results = [];
+  if (reservationList != null) {
+    for (var r in reservationList) {
+      DateTime rOn = DateFormat('yyyy年M月d日').format(r.reserveOn) as DateTime;
+      logmessage(true, log, "${r.reserveOn} -> $rOn");
+    }
+  }
 }

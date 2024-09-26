@@ -180,12 +180,14 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-              var reservationLists = await rr.getAllDocuments();
-              if (reservationLists.isNotEmpty) {
+              List<Reservation>? reservationList = await rr.getAllDocuments();
+              if (reservationList != null) {
                 logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
                 if (context.mounted) GoRouter.of(context).go('/firestorework');
+              } else {
+                copyReservation4Display(reservationList);
               }
-              if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationLists);
+              if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
             },
             child: const Text('予約一覧表示'),
           ),

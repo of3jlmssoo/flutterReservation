@@ -16,8 +16,8 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$Reservation4Display {
-  DateTime get reserveOn => throw _privateConstructorUsedError;
-  DateTime get reserveMade => throw _privateConstructorUsedError;
+  String get reserveOn => throw _privateConstructorUsedError;
+  String get reserveMade => throw _privateConstructorUsedError;
   String get facility => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String? get tel => throw _privateConstructorUsedError;
@@ -39,8 +39,8 @@ abstract class $Reservation4DisplayCopyWith<$Res> {
       _$Reservation4DisplayCopyWithImpl<$Res, Reservation4Display>;
   @useResult
   $Res call(
-      {DateTime reserveOn,
-      DateTime reserveMade,
+      {String reserveOn,
+      String reserveMade,
       String facility,
       String uid,
       String? tel,
@@ -77,11 +77,11 @@ class _$Reservation4DisplayCopyWithImpl<$Res, $Val extends Reservation4Display>
       reserveOn: null == reserveOn
           ? _value.reserveOn
           : reserveOn // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       reserveMade: null == reserveMade
           ? _value.reserveMade
           : reserveMade // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       facility: null == facility
           ? _value.facility
           : facility // ignore: cast_nullable_to_non_nullable
@@ -119,8 +119,8 @@ abstract class _$$Reservation4DisplayImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {DateTime reserveOn,
-      DateTime reserveMade,
+      {String reserveOn,
+      String reserveMade,
       String facility,
       String uid,
       String? tel,
@@ -155,11 +155,11 @@ class __$$Reservation4DisplayImplCopyWithImpl<$Res>
       reserveOn: null == reserveOn
           ? _value.reserveOn
           : reserveOn // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       reserveMade: null == reserveMade
           ? _value.reserveMade
           : reserveMade // ignore: cast_nullable_to_non_nullable
-              as DateTime,
+              as String,
       facility: null == facility
           ? _value.facility
           : facility // ignore: cast_nullable_to_non_nullable
@@ -204,9 +204,9 @@ class _$Reservation4DisplayImpl extends _Reservation4Display {
         super._();
 
   @override
-  final DateTime reserveOn;
+  final String reserveOn;
   @override
-  final DateTime reserveMade;
+  final String reserveMade;
   @override
   final String facility;
   @override
@@ -267,8 +267,8 @@ class _$Reservation4DisplayImpl extends _Reservation4Display {
 
 abstract class _Reservation4Display extends Reservation4Display {
   const factory _Reservation4Display(
-      {required final DateTime reserveOn,
-      required final DateTime reserveMade,
+      {required final String reserveOn,
+      required final String reserveMade,
       required final String facility,
       required final String uid,
       final String? tel,
@@ -278,9 +278,9 @@ abstract class _Reservation4Display extends Reservation4Display {
   const _Reservation4Display._() : super._();
 
   @override
-  DateTime get reserveOn;
+  String get reserveOn;
   @override
-  DateTime get reserveMade;
+  String get reserveMade;
   @override
   String get facility;
   @override
