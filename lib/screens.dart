@@ -633,9 +633,10 @@ class ListReservations extends ConsumerWidget {
                       mainAxisSize: MainAxisSize.min,
                       children: <Widget>[
                         ListTile(
-                          leading: selectIcon(),
-                          title: Text('${reservationList[index]!.reserveOn}'),
-                          subtitle: getFacilityName(),
+                          // leading: selectIcon(),
+                          leading: Text("${index + 1}"),
+                          title: Text(reservationList[index]!.getrOn),
+                          subtitle: GetFacilityName(r: reservationList[index]!),
                         ),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.end,
@@ -666,5 +667,43 @@ class ListReservations extends ConsumerWidget {
 
   Icon selectIcon() => const Icon(Icons.album);
 
-  Text getFacilityName() => const Text('BUY TICKETS');
+  // Text getFacilityName(Reservation r) => const Text('BUY TICKETS');
+  // Text getFacilityName(Reservation r) {
+  //   // var fname = await r.getfName;
+  //   // return Text("${fname}") as Text;
+  //   FutureBuilder(
+  //     future: null,
+  //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) async {
+  //       var fname = await r.getfName;
+  //       return Text("$fname");
+  //     },
+  //   );
+  // }
+}
+
+class GetFacilityName extends StatelessWidget {
+  const GetFacilityName({super.key, required this.r});
+
+  final Reservation r;
+
+  Future<String> f() async {
+    // var fname = await r.getfName;
+    // return fname;
+
+    return await r.getfName;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder(
+      future: f(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        if (snapshot.hasData) {
+          return Text(snapshot.data!);
+        } else {
+          return const Text("無いぞ");
+        }
+      },
+    );
+  }
 }

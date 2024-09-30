@@ -185,8 +185,7 @@ class Firestorework extends ConsumerWidget {
                 logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
                 if (context.mounted) GoRouter.of(context).go('/firestorework');
               } else {
-                
-                copyReservation4Display(reservationList);
+                // copyReservation4Display(reservationList);
               }
               if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
             },

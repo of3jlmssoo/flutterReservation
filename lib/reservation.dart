@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/utils.dart';
 
@@ -131,20 +132,20 @@ class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
   }
 }
 
-@freezed
-class Reservation4Display with _$Reservation4Display {
-  const Reservation4Display._();
-  const factory Reservation4Display({
-    required String reserveOn,
-    required String reserveMade,
-    required String facility,
-    required String uid,
-    String? tel,
-    String? email,
-    required String status,
-    required List<String>? reservers,
-  }) = _Reservation4Display;
-}
+// @freezed
+// class Reservation4Display with _$Reservation4Display {
+//   const Reservation4Display._();
+//   const factory Reservation4Display({
+//     required String reserveOn,
+//     required String reserveMade,
+//     required String facility,
+//     required String uid,
+//     String? tel,
+//     String? email,
+//     required String status,
+//     required List<String>? reservers,
+//   }) = _Reservation4Display;
+// }
 
 @freezed
 class Reservation with _$Reservation {
@@ -169,6 +170,16 @@ class Reservation with _$Reservation {
     // @JsonKey(name: "email") String? email,
     // @JsonKey(name: "status") @ReservationStatusConverter() required ReservationStatus status,
   }) = _Reservation;
+
+  String get getrOn => DateFormat('yyyy年M月d日').format(reserveOn);
+  String get getrMade => DateFormat('yyyy年M月d日').format(reserveMade);
+  Future<String> get getfName async => await facilityName(facility as DocumentReference<Map<String, dynamic>>);
+  String get getUid => uid.substring(0, 3);
+  String get getTel => tel ?? "登録なし";
+  String get getEmail => email ?? "登録なし";
+  String get getStatus => status ?? "ステータス無し";
+  //       // var tel = r.tel ?? "登録なし";
+//       // var email = r.email ?? "登録なし";
 
   factory Reservation.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
