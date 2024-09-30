@@ -15,11 +15,11 @@ final log = Logger('Reservation');
 const String collectionReservation = "reservations";
 
 enum ReservationStatus {
-  none(displayName: "空"),
-  tentative(displayName: "仮"),
-  priority(displayName: "優"),
-  reserved(displayName: "確"),
-  notFound(displayName: "不");
+  none(displayName: "空き"),
+  tentative(displayName: "仮り"),
+  priority(displayName: "優先"),
+  reserved(displayName: "確定"),
+  notFound(displayName: "不明");
 
   const ReservationStatus({
     required this.displayName,
@@ -41,6 +41,22 @@ ReservationStatus getReservationStatus(String rstatus) {
     // case "notfound":
     default:
       return ReservationStatus.notFound;
+  }
+}
+
+String getReservationDisplayName(String rstatus) {
+  switch (rstatus) {
+    case "none":
+      return ReservationStatus.none.displayName;
+    case "tentative":
+      return ReservationStatus.tentative.displayName;
+    case "priority":
+      return ReservationStatus.priority.displayName;
+    case "reserved":
+      return ReservationStatus.reserved.displayName;
+    // case "notfound":
+    default:
+      return ReservationStatus.notFound.displayName;
   }
 }
 
@@ -177,7 +193,7 @@ class Reservation with _$Reservation {
   String get getUid => uid.substring(0, 3);
   String get getTel => tel ?? "登録なし";
   String get getEmail => email ?? "登録なし";
-  String get getStatus => status ?? "ステータス無し";
+  String get getStatus => getReservationDisplayName(status!);
   //       // var tel = r.tel ?? "登録なし";
 //       // var email = r.email ?? "登録なし";
 

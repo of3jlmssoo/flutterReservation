@@ -11,7 +11,7 @@ import 'package:reservations2/firebase_auth_repository.dart';
 
 import 'consts.dart';
 
-final log = Logger('BaseAppBar');
+final log = Logger('appbarcomp');
 
 class BaseAppBar extends ConsumerWidget implements PreferredSizeWidget {
   final Color backgroundColor = commonBackgroundColor;

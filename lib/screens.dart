@@ -620,29 +620,44 @@ class ListReservations extends ConsumerWidget {
                 itemBuilder: (BuildContext context, int index) {
                   return Center(
                     child: Card.outlined(
-                      // color: Colors.lime[100],
                       color: Colors.green[100],
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: <Widget>[
-                          ListTile(
-                            // leading: selectIcon(),
-                            leading: Text("${index + 1}"),
-                            title: Text(reservationList[index]!.getrOn),
-                            subtitle: GetFacilityName(r: reservationList[index]!),
-                            // tileColor: Colors.lime[100],
+                          SizedBox(
+                            height: 40,
+                            child: ListTile(
+                              // leading: selectIcon(),
+                              leading: Text(
+                                "${index + 1}",
+                                style: const TextStyle(fontSize: 18),
+                              ),
+                              title: Text(reservationList[index]!.getrOn),
+                              subtitle: GetFacilityNameStatus(r: reservationList[index]!),
+                              // tileColor: Colors.lime[100],
+                            ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
-                              TextButton(
-                                child: const Text('LISTEN'),
-                                onPressed: () {/* ... */},
+                              SizedBox(
+                                height: 35,
+                                child: TextButton(
+                                  child: const Text('LISTEN!'),
+                                  onPressed: () {
+                                    /* ... */
+                                  },
+                                ),
                               ),
                               const SizedBox(width: 8),
-                              TextButton(
-                                child: const Text('LISTEN'),
-                                onPressed: () {/* ... */},
+                              SizedBox(
+                                height: 35,
+                                child: TextButton(
+                                  child: const Text('LISTEN'),
+                                  onPressed: () {
+                                    /* ... */
+                                  },
+                                ),
                               ),
                               const SizedBox(width: 8),
                             ],
@@ -662,22 +677,22 @@ class ListReservations extends ConsumerWidget {
 
   Icon selectIcon() => const Icon(Icons.album);
 
-  // Text getFacilityName(Reservation r) => const Text('BUY TICKETS');
-  // Text getFacilityName(Reservation r) {
-  //   // var fname = await r.getfName;
-  //   // return Text("${fname}") as Text;
-  //   FutureBuilder(
-  //     future: null,
-  //     builder: (BuildContext context, AsyncSnapshot<String> snapshot) async {
-  //       var fname = await r.getfName;
-  //       return Text("$fname");
-  //     },
-  //   );
-  // }
+// Text getFacilityName(Reservation r) => const Text('BUY TICKETS');
+// Text getFacilityName(Reservation r) {
+//   // var fname = await r.getfName;
+//   // return Text("${fname}") as Text;
+//   FutureBuilder(
+//     future: null,
+//     builder: (BuildContext context, AsyncSnapshot<String> snapshot) async {
+//       var fname = await r.getfName;
+//       return Text("$fname");
+//     },
+//   );
+// }
 }
 
-class GetFacilityName extends StatelessWidget {
-  const GetFacilityName({super.key, required this.r});
+class GetFacilityNameStatus extends StatelessWidget {
+  const GetFacilityNameStatus({super.key, required this.r});
 
   final Reservation r;
 
@@ -690,11 +705,16 @@ class GetFacilityName extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // var status4display = getReservationDisplayName(r.getStatus);
+    // logmessage(true, log, status4display);
     return FutureBuilder(
       future: f(),
       builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
         if (snapshot.hasData) {
-          return Text(snapshot.data!);
+          return Text(
+            "${snapshot.data!} --- ${r.getStatus}",
+            style: const TextStyle(fontSize: 22),
+          );
         } else {
           return const Text("無いぞ");
         }

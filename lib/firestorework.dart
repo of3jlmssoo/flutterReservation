@@ -63,9 +63,9 @@ class Firestorework extends ConsumerWidget {
               child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
-                logmessage(true, log, '予約データ照会(id特定) 1');
+                logmessage(false, log, '予約データ照会(id特定) 1');
                 var result = await getReservationWithID(context, "3TllYctRVw43gPzhu4bT");
-                logmessage(true, log, '予約データ照会(id特定) 2 $result');
+                logmessage(false, log, '予約データ照会(id特定) 2 $result');
               },
               child: const Text('予約データ照会(id特定)')),
           OutlinedButton(
@@ -97,7 +97,7 @@ class Firestorework extends ConsumerWidget {
                 logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
                 if (context.mounted) GoRouter.of(context).go('/firestorework');
               } else {
-                // copyReservation4Display(reservationList);
+                // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               }
               if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
             },
