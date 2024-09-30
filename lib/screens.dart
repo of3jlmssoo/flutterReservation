@@ -608,7 +608,8 @@ class ListReservations extends ConsumerWidget {
       appBar: BaseAppBar(title: 'firestore work', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
-          const Text("ListReservations"),
+          Container(
+              width: double.infinity, alignment: Alignment.center, color: Colors.green, child: const Text("予約一覧")),
           // FloatingActionButton(
           //   onPressed: () async {
           //     logmessage(true, log, "ListReservations list reservation pressed");
@@ -622,42 +623,48 @@ class ListReservations extends ConsumerWidget {
           //   child: Text("list reservations"),
           // ),
           Expanded(
-            child: ListView.builder(
-              // shrinkWrap: true,
-              // padding: const EdgeInsets.all(8),
-              itemCount: reservationList.length,
-              itemBuilder: (BuildContext context, int index) {
-                return Center(
-                  child: Card(
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: <Widget>[
-                        ListTile(
-                          // leading: selectIcon(),
-                          leading: Text("${index + 1}"),
-                          title: Text(reservationList[index]!.getrOn),
-                          subtitle: GetFacilityName(r: reservationList[index]!),
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.end,
-                          children: <Widget>[
-                            TextButton(
-                              child: const Text('LISTEN'),
-                              onPressed: () {/* ... */},
-                            ),
-                            const SizedBox(width: 8),
-                            TextButton(
-                              child: const Text('LISTEN'),
-                              onPressed: () {/* ... */},
-                            ),
-                            const SizedBox(width: 8),
-                          ],
-                        ),
-                      ],
+            child: Container(
+              color: Colors.green,
+              child: ListView.builder(
+                // shrinkWrap: true,
+                // padding: const EdgeInsets.all(8),
+                itemCount: reservationList.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return Center(
+                    child: Card.outlined(
+                      // color: Colors.lime[100],
+                      color: Colors.green[100],
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: <Widget>[
+                          ListTile(
+                            // leading: selectIcon(),
+                            leading: Text("${index + 1}"),
+                            title: Text(reservationList[index]!.getrOn),
+                            subtitle: GetFacilityName(r: reservationList[index]!),
+                            // tileColor: Colors.lime[100],
+                          ),
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: <Widget>[
+                              TextButton(
+                                child: const Text('LISTEN'),
+                                onPressed: () {/* ... */},
+                              ),
+                              const SizedBox(width: 8),
+                              TextButton(
+                                child: const Text('LISTEN'),
+                                onPressed: () {/* ... */},
+                              ),
+                              const SizedBox(width: 8),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                );
-              },
+                  );
+                },
+              ),
             ),
           ),
         ],
