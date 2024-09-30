@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
-import 'package:reservations2/appbarcomp.dart';
+// import 'package:reservations2/appbarcomp.dart';
 import 'package:reservations2/commonclass.dart';
 import 'package:reservations2/datepickerapp.dart';
 import 'package:reservations2/screens.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 import 'firebase_auth_repository.dart';
+import 'firestorework.dart';
 import 'go_router_refresh_stream.dart';
 import 'reservation.dart';
 
@@ -19,8 +20,6 @@ final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
 @riverpod
 GoRouter goRouter(GoRouterRef ref) {
-  // rebuild GoRouter when app startup state changes
-  // final appStartupState = ref.watch(appStartupProvider);
   final authRepository = ref.watch(authRepositoryProvider);
   return GoRouter(
     initialLocation: '/login',

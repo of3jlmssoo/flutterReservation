@@ -610,18 +610,6 @@ class ListReservations extends ConsumerWidget {
         children: [
           Container(
               width: double.infinity, alignment: Alignment.center, color: Colors.green, child: const Text("予約一覧")),
-          // FloatingActionButton(
-          //   onPressed: () async {
-          //     logmessage(true, log, "ListReservations list reservation pressed");
-          //     // ReservationRepository rr =
-          //     //     ReservationRepository(db: FirebaseFirestore.instance);
-          //     // r = await rr.getAllDocuments();
-          //     // logmessage(true, log, "ListReservations result ${r}");
-          //     // logmessage(
-          //     //     true, log, "ListReservations result length ${r.length}");
-          //   },
-          //   child: Text("list reservations"),
-          // ),
           Expanded(
             child: Container(
               color: Colors.green,
