@@ -10,6 +10,16 @@ const numFacilities = 3;
 const numUsers = 3;
 const numRecords = 5;
 
+// テストデータ
+// 9/23から9/27
+final DateTime testDataInitialDate = DateTime(2024, 9, 22, 0, 0);
+// final DateTime testDataInitialDate = DateTime.now();
+final DateTime testDataFirstDate = testDataInitialDate;
+final DateTime testDataLastDate = testDataFirstDate.add(const Duration(days: 6));
+// initialDate: DateTime.now(),
+// firstDate: DateTime.now(),
+// lastDate: DateTime.now().add(const Duration(days: 20)),
+
 // enum Facility implements Comparable<Facility> {
 enum Facility {
   kitchen(displayName: "台所", capacity: 5, description: "IH。ただし給電無し。発電機持ち込み必要\n水道無し。外に井戸あり\nイス無し"),
@@ -36,6 +46,17 @@ enum Facility {
         return Facility.mtgR2;
       default:
         return Facility.kitchen;
+    }
+  }
+
+  String getFname(Facility facility) {
+    switch (facility) {
+      case Facility.kitchen:
+        return "kitchen";
+      case Facility.mtgR1:
+        return "mtgR1";
+      case Facility.mtgR2:
+        return "mtgR2";
     }
   }
 

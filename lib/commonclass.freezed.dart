@@ -261,7 +261,7 @@ ReservationInputsBase _$ReservationInputsBaseFromJson(
 /// @nodoc
 mixin _$ReservationInputsBase {
   DateTime get reservationDate => throw _privateConstructorUsedError;
-  String get facility => throw _privateConstructorUsedError;
+  Facility get facility => throw _privateConstructorUsedError;
 
   /// Serializes this ReservationInputsBase to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -279,7 +279,7 @@ abstract class $ReservationInputsBaseCopyWith<$Res> {
           $Res Function(ReservationInputsBase) then) =
       _$ReservationInputsBaseCopyWithImpl<$Res, ReservationInputsBase>;
   @useResult
-  $Res call({DateTime reservationDate, String facility});
+  $Res call({DateTime reservationDate, Facility facility});
 }
 
 /// @nodoc
@@ -309,7 +309,7 @@ class _$ReservationInputsBaseCopyWithImpl<$Res,
       facility: null == facility
           ? _value.facility
           : facility // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Facility,
     ) as $Val);
   }
 }
@@ -323,7 +323,7 @@ abstract class _$$ReservationInputsBaseImplCopyWith<$Res>
       __$$ReservationInputsBaseImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({DateTime reservationDate, String facility});
+  $Res call({DateTime reservationDate, Facility facility});
 }
 
 /// @nodoc
@@ -351,7 +351,7 @@ class __$$ReservationInputsBaseImplCopyWithImpl<$Res>
       facility: null == facility
           ? _value.facility
           : facility // ignore: cast_nullable_to_non_nullable
-              as String,
+              as Facility,
     ));
   }
 }
@@ -368,7 +368,7 @@ class _$ReservationInputsBaseImpl implements _ReservationInputsBase {
   @override
   final DateTime reservationDate;
   @override
-  final String facility;
+  final Facility facility;
 
   @override
   String toString() {
@@ -410,7 +410,7 @@ class _$ReservationInputsBaseImpl implements _ReservationInputsBase {
 abstract class _ReservationInputsBase implements ReservationInputsBase {
   const factory _ReservationInputsBase(
       {required final DateTime reservationDate,
-      required final String facility}) = _$ReservationInputsBaseImpl;
+      required final Facility facility}) = _$ReservationInputsBaseImpl;
 
   factory _ReservationInputsBase.fromJson(Map<String, dynamic> json) =
       _$ReservationInputsBaseImpl.fromJson;
@@ -418,7 +418,7 @@ abstract class _ReservationInputsBase implements ReservationInputsBase {
   @override
   DateTime get reservationDate;
   @override
-  String get facility;
+  Facility get facility;
 
   /// Create a copy of ReservationInputsBase
   /// with the given fields replaced by the non-null parameter values.

@@ -92,8 +92,8 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-              List<Reservation>? reservationList = await rr.getAllDocuments();
-              if (reservationList == null) {
+              List<Reservation> reservationList = await rr.getAllDocuments();
+              if (reservationList.isEmpty) {
                 logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
                 if (context.mounted) GoRouter.of(context).go('/firestorework');
               } else {
@@ -102,6 +102,30 @@ class Firestorework extends ConsumerWidget {
               if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
             },
             child: const Text('予約一覧表示'),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+              List<DateTime> reservableKitichen = await rr.getFacilityAvailableDates(Facility.kitchen);
+              List<DateTime> reservableMtgR1 = await rr.getFacilityAvailableDates(Facility.mtgR1);
+              List<DateTime> reservableMtgR2 = await rr.getFacilityAvailableDates(Facility.mtgR2);
+
+              logmessage(true, log,
+                  "Q unAvailable Date --- kitchen ${reservableKitichen.length} days unavailable $reservableKitichen");
+              logmessage(true, log,
+                  "Q unAvailable Date --- mtgR1   ${reservableMtgR1.length} days unavailable $reservableMtgR1");
+              logmessage(true, log,
+                  "Q unAvailable Date --- mtgR2   ${reservableMtgR2.length} days unavailable $reservableMtgR2");
+
+              // if (reservationList.isEmpty) {
+              //   logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
+              //   if (context.mounted) GoRouter.of(context).go('/firestorework');
+              // } else {
+              //   // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
+              // }
+              // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
+            },
+            child: const Text('Query where(f=x).where(date=x)'),
           ),
           OutlinedButton(
             onPressed: () {

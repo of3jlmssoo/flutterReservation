@@ -44,6 +44,21 @@ ReservationStatus getReservationStatus(String rstatus) {
   }
 }
 
+String getReservationExpressionOnFirestore(ReservationStatus rstatus) {
+  switch (rstatus) {
+    case ReservationStatus.none:
+      return "none";
+    case ReservationStatus.notFound:
+      return "notFound";
+    case ReservationStatus.priority:
+      return "priority";
+    case ReservationStatus.reserved:
+      return "reserved";
+    case ReservationStatus.tentative:
+      return "tentative";
+  }
+}
+
 String getReservationDisplayName(String rstatus) {
   switch (rstatus) {
     case "none":
@@ -357,7 +372,36 @@ class ReservationRepository {
     return result;
   }
 
-  Future<List<Reservation>?> getAllDocuments() async {
+  Future<List<DateTime>> getFacilityAvailableDates(Facility facility) async {
+    List<DateTime> result = [];
+
+    const bool l = true;
+
+    final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.getFname(facility));
+    // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
+    await db
+        .collection("reservations")
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .where(Filter.and(Filter("facility", isEqualTo: facilityRef),
+            Filter("status", isEqualTo: getReservationExpressionOnFirestore(ReservationStatus.reserved))))
+        .get()
+        .then((querySnapshot) {
+      logmessage(l, log,
+          "getFacilityAvailableDates --- Successfully completed ${facility.getFname(facility)} ${Facility.mtgR1.name}");
+      for (var docSnapshot in querySnapshot.docs) {
+        var d = docSnapshot.data();
+        logmessage(l, log, '${docSnapshot.id} => $d');
+        result.add(d.reserveOn);
+      }
+    }, onError: (e) => logmessage(true, log, "getFacilityAvailableDates error $e"));
+
+    return result;
+  }
+
+  Future<List<Reservation>> getAllDocuments() async {
     Logger.root.level = Level.OFF;
     logmessage(false, log, 'getAllDocuments called');
 
@@ -372,7 +416,7 @@ class ReservationRepository {
         )
         .get()
         .then((querySnapshot) {
-      logmessage(false, log, "Successfully completed");
+      logmessage(false, log, "getAllDocuments --- Successfully completed");
       for (var docSnapshot in querySnapshot.docs) {
         logmessage(false, log, '${docSnapshot.id} => ${docSnapshot.data()}');
         result.add(docSnapshot.data());

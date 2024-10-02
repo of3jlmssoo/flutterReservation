@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:logging/logging.dart';
 // import 'package:reservations2/appbarcomp.dart';
 import 'package:reservations2/commonclass.dart';
+import 'package:reservations2/consts.dart';
 import 'package:reservations2/datepickerapp.dart';
 import 'package:reservations2/screens.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -72,7 +73,7 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/dateselection',
         builder: (context, state) => DateSelectionScreen(
-          facility: state.extra! as String,
+          facility: state.extra! as Facility,
         ),
       ),
       GoRoute(

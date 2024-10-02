@@ -30,12 +30,18 @@ _$ReservationInputsBaseImpl _$$ReservationInputsBaseImplFromJson(
         Map<String, dynamic> json) =>
     _$ReservationInputsBaseImpl(
       reservationDate: DateTime.parse(json['reservationDate'] as String),
-      facility: json['facility'] as String,
+      facility: $enumDecode(_$FacilityEnumMap, json['facility']),
     );
 
 Map<String, dynamic> _$$ReservationInputsBaseImplToJson(
         _$ReservationInputsBaseImpl instance) =>
     <String, dynamic>{
       'reservationDate': instance.reservationDate.toIso8601String(),
-      'facility': instance.facility,
+      'facility': _$FacilityEnumMap[instance.facility]!,
     };
+
+const _$FacilityEnumMap = {
+  Facility.kitchen: 'kitchen',
+  Facility.mtgR1: 'mtgR1',
+  Facility.mtgR2: 'mtgR2',
+};

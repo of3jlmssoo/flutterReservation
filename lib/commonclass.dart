@@ -1,5 +1,7 @@
 import 'package:freezed_annotation/freezed_annotation.dart';
 
+import 'consts.dart';
+
 part 'commonclass.freezed.dart';
 part 'commonclass.g.dart';
 
@@ -19,7 +21,7 @@ class ReservationInputsExt with _$ReservationInputsExt {
 class ReservationInputsBase with _$ReservationInputsBase {
   const factory ReservationInputsBase({
     required DateTime reservationDate,
-    required String facility,
+    required Facility facility,
   }) = _ReservationInputsBase;
   factory ReservationInputsBase.fromJson(Map<String, Object?> json) => _$ReservationInputsBaseFromJson(json);
 }

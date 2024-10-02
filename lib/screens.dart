@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -10,6 +11,7 @@ import 'commonclass.dart';
 import 'consts.dart';
 import 'firebase_auth_repository.dart';
 import 'reservation.dart';
+import 'utils.dart';
 
 final log = Logger('Screens');
 
@@ -135,6 +137,8 @@ class NotFoundScreen extends StatelessWidget {
 class FacilitySelectionScreen extends ConsumerWidget {
   const FacilitySelectionScreen({super.key});
 
+  final bool l = false;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // TODO: implement build
@@ -160,8 +164,8 @@ class FacilitySelectionScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               onTap: () {
-                log.info('NewReservationScreen ListTile Tapped(台所)');
-                context.push('/dateselection', extra: "台所");
+                logmessage(l, log, 'NewReservationScreen ListTile Tapped(台所)');
+                context.push('/dateselection', extra: Facility.kitchen);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('みんなで美味しく！'),
@@ -172,8 +176,8 @@ class FacilitySelectionScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               onTap: () {
-                log.info('NewReservationScreen ListTile Tapped(会議室1)');
-                context.push('/dateselection', extra: "会議室1");
+                logmessage(l, log, 'NewReservationScreen ListTile Tapped(会議室1)');
+                context.push('/dateselection', extra: Facility.mtgR1);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('熱く語り合う'),
@@ -184,8 +188,8 @@ class FacilitySelectionScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               onTap: () {
-                log.info('NewReservationScreen ListTile Tapped(会議室2)');
-                context.push('/dateselection', extra: "会議室2");
+                logmessage(l, log, 'NewReservationScreen ListTile Tapped(会議室2)');
+                context.push('/dateselection', extra: Facility.mtgR2);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('お茶会で使って！'),
@@ -202,7 +206,7 @@ class FacilitySelectionScreen extends ConsumerWidget {
 class DateSelectionScreen extends ConsumerWidget {
   const DateSelectionScreen({super.key, required this.facility});
 
-  final String facility;
+  final Facility facility;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -216,7 +220,8 @@ class DateSelectionScreen extends ConsumerWidget {
         Locale("ja"),
       ],
       home: Scaffold(
-        appBar: BaseAppBar(title: '日付選択画面', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
+        appBar: BaseAppBar(
+            title: '日付選択画面(${facility.displayName})', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
         body: ShowDatePickerWidget(facility: facility),
       ),
     );
@@ -229,7 +234,8 @@ class ShowDatePickerWidget extends StatelessWidget {
     required this.facility,
   });
 
-  final String facility;
+  final Facility facility;
+  final bool l = true;
 
   @override
   Widget build(BuildContext context) {
@@ -237,59 +243,66 @@ class ShowDatePickerWidget extends StatelessWidget {
       children: [
         ElevatedButton(
             onPressed: () async {
-              Logger.root.level = Level.OFF;
-              log.info('ShowDatePickerWidget FacilitySelectionScreen ');
-              final selectedDate = await showDatePicker(
-                locale: const Locale("ja"),
-                context: context,
-                cancelText: 'キャンセル',
-                confirmText: '確定',
-                initialDate: DateTime.now(),
-                firstDate: DateTime.now(),
-                lastDate: DateTime.now().add(const Duration(days: 20)),
-                selectableDayPredicate: (DateTime val) {
-                  return !strunselectable2.contains(DateFormat.yMd().format(val));
-                },
-              );
-              // final selectedDate = await DatePickerDialog(
-              //   firstDate: DateTime.now(),
-              //   lastDate: DateTime.now().add(Duration(days: 20)),
-              // );
-
-              if (selectedDate == null) {
-                log.info("ShowDatePickerWidget selectedDate == null");
-                if (context.mounted) {
-                  ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                    content: Text('翌日以降を選んでください'),
-                  ));
-                }
-                return;
-              }
-
-              var currentdate = DateTime.now();
-              var justdate = DateTime(currentdate.year, currentdate.month, currentdate.day);
-
-              log.info('ShowDatePickerWidget $selectedDate ${selectedDate.runtimeType} now $justdate');
-              log.info('ShowDatePickerWidget ${selectedDate.difference(justdate).inDays}');
-
-              if (selectedDate.difference(justdate).inDays > 0) {
-                var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
-                if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
-              }
-
-              // if (selectedDate!.difference(justdate).inDays > 0) {
-              //   var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
-              //   if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
-              // } else {
-              //   if (!context.mounted) return;
-              //   ScaffoldMessenger.of(context).showSnackBar(
-              //     const SnackBar(
-              //       content: Text('翌日以降を選んでください'),
-              //     ),
-              //   );
+              logmessage(l, log, 'ShowDatePickerWidget FacilitySelectionScreen ');
+              ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+              List<DateTime> unreservable = await rr.getFacilityAvailableDates(facility);
+              // List<Reservation> reservationList = await rr.getAllDocuments();
+              // List<DateTime> reservable = [];
+              // for (var r in reservationList) {
+              //   logmessage(l, log,
+              //       "ShowDatePickerWidget --- reservationList --- ${r.reserveOn} --- ${r.status} --- ${r.getStatus}");
+              //   switch (r.status) {
+              //     case "none":
+              //     case "notFound":
+              //     case "priority":
+              //     case "tentative":
+              //       reservable.add(r.reserveOn);
+              //   }
               // }
+              // logmessage(l, log, "ShowDatePickerWidget --- ${DateTime.now()} --- ${testDataInitialDate}");
 
-              // context.push('/datetimepickerapp');
+              if (context.mounted) {
+                final selectedDate = await showDatePicker(
+                  locale: const Locale("ja"),
+                  context: context,
+                  cancelText: 'キャンセル',
+                  confirmText: '確定',
+                  // initialDate: DateTime.now(),
+                  // firstDate: DateTime.now(),
+                  // lastDate: DateTime.now().add(const Duration(days: 20)),
+                  initialDate: testDataInitialDate,
+                  firstDate: testDataFirstDate,
+                  lastDate: testDataLastDate,
+                  selectableDayPredicate: (DateTime val) {
+                    logmessage(l, log, "ShowDatePickerWidget --- selectableDayPredicate --- $val");
+                    // return !strunselectable2.contains(DateFormat.yMd().format(val));
+                    return !unreservable.contains(val);
+                  },
+                );
+
+                if (selectedDate == null) {
+                  logmessage(l, log, "ShowDatePickerWidget selectedDate == null");
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                      content: Text('翌日以降を選んでください'),
+                    ));
+                  }
+                  return;
+                }
+
+                var currentdate = DateTime.now();
+                var justdate = DateTime(currentdate.year, currentdate.month, currentdate.day);
+
+                logmessage(l, log, 'ShowDatePickerWidget $selectedDate ${selectedDate.runtimeType} now $justdate');
+                logmessage(l, log, 'ShowDatePickerWidget ${selectedDate.difference(justdate).inDays}');
+
+                if (selectedDate.difference(justdate).inDays > 0) {
+                  var reservationinput = ReservationInputsBase(reservationDate: selectedDate, facility: facility);
+                  if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+                }
+              } else {
+                log.warning("予約情報がありません");
+              }
               Logger.root.level = Level.OFF;
             },
             child: const Text('日付')),
@@ -322,7 +335,7 @@ class ReservationInputScreen extends StatelessWidget {
         body: Column(
           children: [
             Text(rbase.reservationDate.toString()),
-            Text(rbase.facility),
+            Text(rbase.facility.displayName),
             FilledButton(
               onPressed: () {
                 context.pop();
@@ -336,7 +349,7 @@ class ReservationInputScreen extends StatelessWidget {
                   emaill: 'dummyX@dummy.com',
                   tel: '01-234-5678',
                   reservationDate: rbase.reservationDate,
-                  facility: rbase.facility,
+                  facility: rbase.facility.displayName,
                 );
                 context.push('/reservationconfirmation', extra: rext);
                 // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
@@ -614,8 +627,6 @@ class ListReservations extends ConsumerWidget {
             child: Container(
               color: Colors.green,
               child: ListView.builder(
-                // shrinkWrap: true,
-                // padding: const EdgeInsets.all(8),
                 itemCount: reservationList.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Center(
