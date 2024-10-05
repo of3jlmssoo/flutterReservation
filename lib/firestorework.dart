@@ -124,6 +124,7 @@ class Firestorework extends ConsumerWidget {
               //   // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               // }
               // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
+              rr.updateRecordForReservation();
             },
             child: const Text('Query where(f=x).where(date=x)'),
           ),

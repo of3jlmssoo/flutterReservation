@@ -309,7 +309,7 @@ class ReservationRepository {
   ReservationRepository({required this.db});
   final FirebaseFirestore db;
 
-  DocumentReference facilityRef(Enum facility) {
+  DocumentReference getfacilityRef(Enum facility) {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
   }
 
@@ -399,6 +399,46 @@ class ReservationRepository {
     }, onError: (e) => logmessage(true, log, "getFacilityAvailableDates error $e"));
 
     return result;
+  }
+
+  void updateRecordForReservation() async {
+    const bool l = true;
+
+    // docref取得 日付とfacility指定
+    //      2024-09-25 00:00:00.000 DateTime
+    DateTime targetDate = DateTime(2024, 12, 25);
+    final facilityRef = getfacilityRef(Facility.kitchen);
+
+    FirebaseFirestore.instance
+        .collection("reservations")
+        .where("facility", isEqualTo: facilityRef)
+        .where("reserveOn", isEqualTo: targetDate)
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .get()
+        .then(
+      (querySnapshot) {
+        logmessage(l, log, "updateRecordForReservation Successfully completed");
+        if (querySnapshot.docs.isEmpty) logmessage(true, log, "updateRecordForReservation querySnapshot.docs.isEmpty");
+        for (var docSnapshot in querySnapshot.docs) {
+          logmessage(l, log, 'updateRecordForReservation ${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => logmessage(l, log, "updateRecordForReservation Error completing: $e"),
+    );
+
+    //   既存が無い可能性あり
+    //     addReservation()
+    //        status=tentative
+    //   ある
+    //      transaction処理
+    //        if status==none or notFound
+    //          status = tentative
+    //        else
+    //          not change the status
+    //      reserversにuid追加
   }
 
   Future<List<Reservation>> getAllDocuments() async {
