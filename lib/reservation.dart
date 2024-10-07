@@ -401,34 +401,67 @@ class ReservationRepository {
     return result;
   }
 
-  void updateRecordForReservation() async {
+  Future<List<Reservation>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
     const bool l = true;
 
     // docref取得 日付とfacility指定
     //      2024-09-25 00:00:00.000 DateTime
-    DateTime targetDate = DateTime(2024, 12, 25);
-    final facilityRef = getfacilityRef(Facility.kitchen);
+    // DateTime targetDate = DateTime(2024, 12, 25);
+    final facilityRef = getfacilityRef(facility);
 
-    FirebaseFirestore.instance
+    List<Reservation> result = [];
+    final ref = FirebaseFirestore.instance
         .collection("reservations")
         .where("facility", isEqualTo: facilityRef)
         .where("reserveOn", isEqualTo: targetDate)
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-        )
-        .get()
-        .then(
+        );
+
+    await ref.get().then(
       (querySnapshot) {
-        logmessage(l, log, "updateRecordForReservation Successfully completed");
-        if (querySnapshot.docs.isEmpty) logmessage(true, log, "updateRecordForReservation querySnapshot.docs.isEmpty");
+        logmessage(l, log, "queryRecordsWithDateAndFacility Successfully completed");
+        if (querySnapshot.docs.isEmpty) {
+          logmessage(l, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
+        }
         for (var docSnapshot in querySnapshot.docs) {
-          logmessage(l, log, 'updateRecordForReservation ${docSnapshot.id} => ${docSnapshot.data()}');
+          logmessage(l, log,
+              'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
+          result.add(docSnapshot.data());
         }
       },
-      onError: (e) => logmessage(l, log, "updateRecordForReservation Error completing: $e"),
+      onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
     );
 
+    // onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
+
+    // FirebaseFirestore.instance
+    //     .collection("reservations")
+    //     .where("facility", isEqualTo: facilityRef)
+    //     .where("reserveOn", isEqualTo: targetDate)
+    //     .withConverter(
+    //       fromFirestore: Reservation.fromFirestore,
+    //       toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+    //     )
+    //     .get()
+    //     .then(
+    //   (querySnapshot) {
+    //     logmessage(l, log, "queryRecordsWithDateAndFacility Successfully completed");
+    //     if (querySnapshot.docs.isEmpty) {
+    //       logmessage(l, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
+    //     }
+    //     for (var docSnapshot in querySnapshot.docs) {
+    //       logmessage(l, log,
+    //           'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
+    //       result.add(docSnapshot.data());
+    //     }
+    //   },
+    //   onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
+    // );
+
+    logmessage(l, log, "queryRecordsWithDateAndFacility result is $result");
+    return result;
     //   既存が無い可能性あり
     //     addReservation()
     //        status=tentative

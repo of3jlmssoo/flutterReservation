@@ -49,18 +49,23 @@ class Firestorework extends ConsumerWidget {
             onPressed: () async {
               makeReservation1(ref);
             },
-            child: const Text('予約情報登録'),
+            child: const Text('予約情報登録(3レコードのみ追加)'),
           ),
-          OutlinedButton(
-              onPressed: () {
-                checkReservationExist(context);
-              },
-              child: const Text('レコード有無照会')),
           OutlinedButton(
               onPressed: () async {
                 makeReservations(ref);
               },
               child: const Text('予約情報登録2')),
+          OutlinedButton(
+              onPressed: () async {
+                makeReservations3(ref);
+              },
+              child: const Text('予約情報登録3')),
+          OutlinedButton(
+              onPressed: () {
+                checkReservationExist(context);
+              },
+              child: const Text('レコード有無照会')),
           OutlinedButton(
               onPressed: () async {
                 logmessage(false, log, '予約データ照会(id特定) 1');
@@ -124,7 +129,9 @@ class Firestorework extends ConsumerWidget {
               //   // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               // }
               // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
-              rr.updateRecordForReservation();
+              List<Reservation> result =
+                  await rr.queryRecordsWithDateAndFacility(DateTime(2024, 12, 24), Facility.kitchen);
+              logmessage(true, log, "Q result.length is ${result.length}");
             },
             child: const Text('Query where(f=x).where(date=x)'),
           ),
@@ -173,135 +180,6 @@ class Firestorework extends ConsumerWidget {
     }
   }
 
-  void makeReservations(WidgetRef ref) async {
-    Logger.root.level = Level.OFF;
-    log.info('makeReservations ---> 予約情報登録2-1');
-
-    var futureData = makeData();
-    updateData(futureData);
-    makeTentatives(futureData);
-    for (var v in futureData) {
-      log.info('makeReservations() futureData $v');
-    }
-
-    final users = ["dummy1@dummy.com", "dummy2@dummy.com", "dummy3@dummy.com"];
-    final passwords = ["dummy1dummy1", "dummy2dummy2", "dummy3dummy3"];
-    if (FirebaseAuth.instance.currentUser != null) {
-      log.info('makeReservations signOut ');
-      await FirebaseAuth.instance.signOut();
-    }
-
-    for (int i = 0; i < numUsers; i++) {
-      await FirebaseAuth.instance.signOut();
-
-      try {
-        final credential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(email: users[i], password: passwords[i]);
-        log.info('makeReservations credential $credential');
-      } on FirebaseAuthException catch (e) {
-        if (e.code == 'user-not-found') {
-          log.info('No user found for that email.');
-        } else if (e.code == 'wrong-password') {
-          log.info('Wrong password provided for that user.');
-        }
-      }
-
-      Logger.root.level = Level.OFF;
-      log.info(
-          'makeReservations --> log in as ${FirebaseAuth.instance.currentUser!.displayName} --> ${users[i]} --- ${passwords[i]}}');
-      log.info('makeReservations ---------------------------> futureData[i].length ${futureData[i].length}');
-
-      final batch = FirebaseFirestore.instance.batch();
-
-      log.info('makeReservations batch cOFFed');
-      for (int l = 0; l < futureData[i].length; l++) {
-        log.info('makeReservations second loop');
-        // Logger.root.level = Level.OFF;
-        String uid = FirebaseAuth.instance.currentUser!.uid;
-        // log.info('makeReservations second loop --- user is $uid');
-        // makeReservation1(ref);
-
-        final cDD = DateTime.now();
-        final cD = DateTime(cDD.year, cDD.month, cDD.day);
-        Facility fac = Facility.kitchen;
-
-        switch (futureData[i][l]) {
-          case 0:
-            fac = Facility.kitchen;
-          case 1:
-            fac = Facility.mtgR1;
-          case 2:
-            fac = Facility.mtgR2;
-          default:
-            break;
-        }
-        log.info('makeReservations fac set');
-        final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
-
-        log.info('makeReservations getRandomReservationStatus will be cOFFed');
-        ReservationStatus rs = getRandomReservationStatus();
-
-        log.info("makeReservations addReservation cOFFed rs : $rs ${rs.runtimeType}");
-
-        var newReservationRef = FirebaseFirestore.instance
-            .collection('reservations')
-            // .withConverter(
-            //   fromFirestore: Reservation.fromFirestore,
-            //   toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
-            // )
-            .doc();
-
-        log.info("makeReservations addReservation will be cOFFed 2");
-        // Reservation reservation = Reservation(
-        //     reserveOn: cD.add(Duration(days: l + 1)),
-        //     reserveMade: cDD,
-        //     uid: uid,
-        //     reservers: [uid],
-        //     facility: facilityRef,
-        //     status: rs);
-        batch.set(
-          newReservationRef,
-          {
-            "reserveOn": cD.add(Duration(days: l + 1)),
-            "reserveMade": cDD,
-            "uid": uid,
-            "reservers": [uid],
-            "facility": facilityRef,
-            "status": rs.name,
-          },
-        );
-
-        log.info("makeReservations addReservation will be cOFFed 3");
-      }
-      log.info("makeReservations beofe commit()");
-      batch.commit().then(
-            (res) => log.info("Successfully completed"),
-            onError: (e) => log.info("Error completing: $e"),
-          );
-
-      await FirebaseAuth.instance.signOut();
-
-      log.info('makeReservations 予約情報登録2-2');
-      Logger.root.level = Level.OFF;
-    }
-  }
-
-  Future<void> checkReservationExist(dynamic context) async {
-    ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    Reservation? r = await rr.queryReservationDateFacility(DateTime(2024, 9, 24), Facility.kitchen);
-    if (r == null) {
-      if (context.mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-          content: Text('対象レコードがありませんでした'),
-        ));
-      }
-    } else {
-      Logger.root.level = Level.OFF;
-      showReservationInstanceVariables(true, log, r);
-      Logger.root.level = Level.OFF;
-    }
-  }
-
   Future<Reservation?> getReservationWithID(dynamic context, String id) async {
     ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
     Reservation? r = await rr.queryReservationID(id);
@@ -320,32 +198,6 @@ class Firestorework extends ConsumerWidget {
     log.info("getReservationWithID will return $r");
     Logger.root.level = Level.OFF;
     return r;
-  }
-
-  void makeReservation1(WidgetRef ref) async {
-    log.info('---> 予約情報登録1');
-    // Reservation reservation = await makeReservation(ref);
-    ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-    rr.addReservation(
-      reserveOn: DateTime.now().add(const Duration(days: 2)),
-      reserveMade: DateTime.now(),
-      facility: Facility.kitchen,
-      status: ReservationStatus.tentative,
-      uid: ref.read(firebaseAuthProvider).currentUser!.uid,
-    );
-    rr.addReservation(
-        reserveOn: DateTime.now().add(const Duration(days: 4)),
-        reserveMade: DateTime.now(),
-        facility: Facility.mtgR1,
-        status: ReservationStatus.reserved,
-        uid: ref.read(firebaseAuthProvider).currentUser!.uid);
-    rr.addReservation(
-        reserveOn: DateTime.now().add(const Duration(days: 6)),
-        reserveMade: DateTime.now(),
-        facility: Facility.mtgR1,
-        status: ReservationStatus.tentative,
-        uid: ref.read(firebaseAuthProvider).currentUser!.uid);
-    log.info('---> 予約情報登録2');
   }
 
   void registerFacilities() {
