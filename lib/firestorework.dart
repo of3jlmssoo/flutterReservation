@@ -129,11 +129,15 @@ class Firestorework extends ConsumerWidget {
               //   // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               // }
               // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
-              List<Reservation> result =
-                  await rr.queryRecordsWithDateAndFacility(DateTime(2024, 12, 24), Facility.kitchen);
+              List<Map<String, Reservation>> result =
+                  await rr.queryRecordsWithDateAndFacility(DateTime(2024, 9, 24), Facility.kitchen);
               logmessage(true, log, "Q result.length is ${result.length}");
+              if (result.isNotEmpty) {
+                var l = List.from(result[0].keys);
+                logmessage(true, log, "Q result[0].keys ${l[0]}");
+              }
             },
-            child: const Text('Query where(f=x).where(date=x)'),
+            child: const Text('日付とファシリティで照会'),
           ),
           OutlinedButton(
             onPressed: () {

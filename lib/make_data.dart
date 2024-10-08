@@ -167,16 +167,16 @@ void makeReservations(WidgetRef ref) async {
       }
     }
 
-    Logger.root.level = Level.OFF;
-    log.info(
+    // Logger.root.level = Level.OFF;
+    logmessage(true, log,
         'makeReservations --> log in as ${FirebaseAuth.instance.currentUser!.displayName} --> ${users[i]} --- ${passwords[i]}}');
-    log.info('makeReservations ---------------------------> futureData[i].length ${futureData[i].length}');
+    // log.info('makeReservations ---------------------------> futureData[i].length ${futureData[i].length}');
 
     final batch = FirebaseFirestore.instance.batch();
 
-    log.info('makeReservations batch cOFFed');
+    logmessage(true, log, 'makeReservations batch called');
     for (int l = 0; l < futureData[i].length; l++) {
-      log.info('makeReservations second loop');
+      logmessage(true, log, 'makeReservations second loop');
       // Logger.root.level = Level.OFF;
       String uid = FirebaseAuth.instance.currentUser!.uid;
       // log.info('makeReservations second loop --- user is $uid');
@@ -196,12 +196,12 @@ void makeReservations(WidgetRef ref) async {
         default:
           break;
       }
-      log.info('makeReservations fac set');
+      // log.info('makeReservations fac set');
       final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
 
       // log.info('makeReservations getRandomReservationStatus will be called');
       // ReservationStatus rs = getRandomReservationStatus();
-      // log.info("makeReservations addReservation cOFFed rs : $rs ${rs.runtimeType}");
+      // log.info("makeReservations addReservation called rs : $rs ${rs.runtimeType}");
 
       var newReservationRef = FirebaseFirestore.instance
           .collection('reservations')
@@ -225,7 +225,7 @@ void makeReservations(WidgetRef ref) async {
         },
       );
 
-      log.info("makeReservations addReservation will be cOFFed 3");
+      log.info("makeReservations addReservation will be called 3");
     }
     log.info("makeReservations beofe commit()");
     batch.commit().then(
@@ -266,6 +266,9 @@ new makeReservtions
 WORKDAYS.values().length
 */
 void makeReservations3(WidgetRef ref) async {
+  bool b = false;
+
+  ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
   List<int> r = List.filled(numRecords, 0);
   List<List<int>> rrecords = [
     [...r],
@@ -273,9 +276,9 @@ void makeReservations3(WidgetRef ref) async {
     [...r],
   ];
   void printAll() {
-    logmessage(true, log, rrecords[0].toString());
-    logmessage(true, log, rrecords[1].toString());
-    logmessage(true, log, rrecords[2].toString());
+    logmessage(b, log, rrecords[0].toString());
+    logmessage(b, log, rrecords[1].toString());
+    logmessage(b, log, rrecords[2].toString());
   }
 
   // fill the lists with random number
@@ -297,7 +300,7 @@ void makeReservations3(WidgetRef ref) async {
     // 3ユーザー限定
 
     int allFacilitiesReserved = 0;
-    logmessage(true, log, "allFacilitiesReserved is $allFacilitiesReserved");
+    logmessage(b, log, "allFacilitiesReserved is $allFacilitiesReserved");
     for (int i = 0; i < numRecords; i++) {
       if ((rrecords[0][i] != rrecords[1][i]) &&
           (rrecords[0][i] != rrecords[2][i]) &&
@@ -324,7 +327,7 @@ void makeReservations3(WidgetRef ref) async {
   final users = ["dummy1@dummy.com", "dummy2@dummy.com", "dummy3@dummy.com"];
   final passwords = ["dummy1dummy1", "dummy2dummy2", "dummy3dummy3"];
   if (FirebaseAuth.instance.currentUser != null) {
-    logmessage(true, log, 'makeReservations signOut ');
+    logmessage(b, log, 'makeReservations signOut ');
     await FirebaseAuth.instance.signOut();
   }
 
@@ -334,23 +337,23 @@ void makeReservations3(WidgetRef ref) async {
     try {
       final credential =
           await FirebaseAuth.instance.signInWithEmailAndPassword(email: users[i], password: passwords[i]);
-      logmessage(true, log, 'makeReservations credential $credential');
+      logmessage(b, log, 'makeReservations credential $credential');
     } on FirebaseAuthException catch (e) {
       if (e.code == 'user-not-found') {
-        logmessage(true, log, 'No user found for that email.');
+        logmessage(b, log, 'No user found for that email.');
       } else if (e.code == 'wrong-password') {
-        logmessage(true, log, 'Wrong password provided for that user.');
+        logmessage(b, log, 'Wrong password provided for that user.');
       }
     }
 
-    logmessage(true, log,
+    logmessage(b, log,
         'makeReservations --> log in as ${FirebaseAuth.instance.currentUser!.displayName} --> ${users[i]} --- ${passwords[i]}}');
 
     final batch = FirebaseFirestore.instance.batch();
 
-    logmessage(true, log, 'makeReservations batch cOFFed');
+    logmessage(b, log, 'makeReservations batch called --- ${rrecords}');
     for (int l = 0; l < rrecords[i].length; l++) {
-      log.info('makeReservations second loop');
+      logmessage(b, log, 'makeReservations second loop');
       // Logger.root.level = Level.OFF;
       String uid = FirebaseAuth.instance.currentUser!.uid;
       // log.info('makeReservations second loop --- user is $uid');
@@ -370,40 +373,63 @@ void makeReservations3(WidgetRef ref) async {
         default:
           break;
       }
-      logmessage(true, log, 'makeReservations fac set');
+      // TODO:use getfacility()
+      logmessage(b, log, 'makeReservations date fac ${cD.add(Duration(days: l + 1))} $fac');
       final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
 
-      log.info('makeReservations getRandomReservationStatus will be called');
-      ReservationStatus rs = getRandomReservationStatus();
+      // log.info('makeReservations getRandomReservationStatus will be called');
+      // ReservationStatus rs = getRandomReservationStatus();
+      // log.info("makeReservations addReservation called rs : $rs ${rs.runtimeType}");
 
-      log.info("makeReservations addReservation cOFFed rs : $rs ${rs.runtimeType}");
+      // TODO: 日付とファシリティの組み合わせのレコードが存在するか？
+      //
+      var result = await rr.queryRecordsWithDateAndFacility(cD.add(Duration(days: l + 1)), fac);
+      logmessage(true, log, "result is ${result} from ${cD.add(Duration(days: l + 1))} --- {$fac}");
+      if (result.isNotEmpty) {
+        //    存在する
+        var lst1 = List.from(result[0].keys);
+        String recordID = lst1[0];
 
-      var newReservationRef = FirebaseFirestore.instance.collection('reservations').doc();
+        var lst2 = result[0][recordID];
 
-      log.info("makeReservations addReservation will be cOFFed 2");
-      batch.set(
-        newReservationRef,
-        {
-          "reserveOn": cD.add(Duration(days: l + 1)),
-          "reserveMade": cDD,
-          "uid": uid,
-          "reservers": [uid],
-          "facility": facilityRef,
-          "status": rs.name,
-        },
-      );
+        logmessage(true, log,
+            "makeReservations record exists --- recordID:$recordID --- reserveOn:${lst2!.reserveOn} --- uid:${lst2.uid} --- ${lst2.reservers}");
+        List<String> lst3 = [];
+        for (var v in lst2.reservers!) {
+          lst3.add(v);
+        }
+        lst3.add(lst2.uid);
+        logmessage(true, log, "lst2.uid ${lst2.uid} lst3 ${lst3}");
+        rr.addUID2Record(recordID, lst3);
+      } else {
+        //    存在しない ここから
+        logmessage(b, log, "makeReservations addReservation will be called 2");
+        var newReservationRef = FirebaseFirestore.instance.collection('reservations').doc();
+        batch.set(
+          newReservationRef,
+          {
+            "reserveOn": cD.add(Duration(days: l + 1)),
+            "reserveMade": cDD,
+            "uid": uid,
+            "reservers": [uid],
+            "facility": facilityRef,
+            "status": ReservationStatus.priority.displayName,
+          },
+        );
 
-      log.info("makeReservations addReservation will be cOFFed 3");
+        logmessage(b, log, "makeReservations addReservation will be called 3");
+        //    存在しない ここまで
+      }
     }
-    log.info("makeReservations beofe commit()");
-    batch.commit().then(
-          (res) => log.info("Successfully completed"),
-          onError: (e) => log.info("Error completing: $e"),
+    logmessage(b, log, "makeReservations beofe commit()");
+    await batch.commit().then(
+          (res) => logmessage(true, log, "makeReservations Successfully completed"),
+          onError: (e) => logmessage(true, log, "MakeReservations Error completing: $e"),
         );
 
     await FirebaseAuth.instance.signOut();
 
-    log.info('makeReservations 予約情報登録2-2');
+    logmessage(b, log, 'makeReservations 予約情報登録3-2');
     Logger.root.level = Level.OFF;
   }
 }

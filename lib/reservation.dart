@@ -375,7 +375,7 @@ class ReservationRepository {
   Future<List<DateTime>> getFacilityAvailableDates(Facility facility) async {
     List<DateTime> result = [];
 
-    const bool l = true;
+    const bool l = false;
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.getFname(facility));
     // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
@@ -401,15 +401,26 @@ class ReservationRepository {
     return result;
   }
 
-  Future<List<Reservation>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
-    const bool l = true;
+  bool addUID2Record(String recordID, List<String> lst) {
+    logmessage(true, log, "addUID2Record $recordID $lst");
+    final docRef = db.collection("reservations").doc(recordID);
+    docRef.update({"reservers": lst}).then(
+        (value) => logmessage(true, log, "addUID2Record DocumentSnapshot successfully updated!"),
+        onError: (e) => logmessage(true, log, "addUID2Record Error updating document $recordID $lst $e"));
+
+    return false;
+  }
+
+  // Future<List<Reservation>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
+  Future<List<Map<String, Reservation>>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
+    const bool l = false;
 
     // docref取得 日付とfacility指定
     //      2024-09-25 00:00:00.000 DateTime
     // DateTime targetDate = DateTime(2024, 12, 25);
     final facilityRef = getfacilityRef(facility);
 
-    List<Reservation> result = [];
+    List<Map<String, Reservation>> result = [];
     final ref = FirebaseFirestore.instance
         .collection("reservations")
         .where("facility", isEqualTo: facilityRef)
@@ -428,37 +439,13 @@ class ReservationRepository {
         for (var docSnapshot in querySnapshot.docs) {
           logmessage(l, log,
               'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
-          result.add(docSnapshot.data());
+          var id = docSnapshot.id;
+          var r = docSnapshot.data();
+          result.add(<String, Reservation>{id: r});
         }
       },
       onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
     );
-
-    // onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
-
-    // FirebaseFirestore.instance
-    //     .collection("reservations")
-    //     .where("facility", isEqualTo: facilityRef)
-    //     .where("reserveOn", isEqualTo: targetDate)
-    //     .withConverter(
-    //       fromFirestore: Reservation.fromFirestore,
-    //       toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
-    //     )
-    //     .get()
-    //     .then(
-    //   (querySnapshot) {
-    //     logmessage(l, log, "queryRecordsWithDateAndFacility Successfully completed");
-    //     if (querySnapshot.docs.isEmpty) {
-    //       logmessage(l, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
-    //     }
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       logmessage(l, log,
-    //           'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
-    //       result.add(docSnapshot.data());
-    //     }
-    //   },
-    //   onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
-    // );
 
     logmessage(l, log, "queryRecordsWithDateAndFacility result is $result");
     return result;
