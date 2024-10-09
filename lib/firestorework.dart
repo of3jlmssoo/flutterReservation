@@ -141,6 +141,13 @@ class Firestorework extends ConsumerWidget {
           ),
           OutlinedButton(
             onPressed: () {
+              ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+              rr.queryArrayContains();
+            },
+            child: const Text('queryArrayContaines'),
+          ),
+          OutlinedButton(
+            onPressed: () {
               context.pop();
             },
             child: const Text('戻る'),

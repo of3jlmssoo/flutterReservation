@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
@@ -401,6 +402,26 @@ class ReservationRepository {
     return result;
   }
 
+  bool queryArrayContains() {
+    bool result = false;
+    bool b = true;
+
+    final rRef = db.collection("reservations");
+    final myReservations = rRef.where("reservers", arrayContains: FirebaseAuth.instance.currentUser!.uid);
+
+    logmessage(b, log, "queryArrayContains myReservations $myReservations");
+    myReservations.get().then((onValue) {
+      // logmessage(b, log, "queryArrayContaines ${onValuea.}");
+      for (var docSnapshot in onValue.docs) {
+        var d = docSnapshot.data();
+        logmessage(b, log, "queryArrayContains data $d");
+      }
+    });
+
+    return result;
+  }
+
+  // TODO: transaction
   bool addUID2Record(String recordID, List<String> lst) {
     logmessage(true, log, "addUID2Record $recordID $lst");
     bool result = false;
