@@ -402,7 +402,9 @@ void makeReservations3(WidgetRef ref) async {
             "makeReservations record exists --- recordID:$recordID --- reserveOn:${reservationRecord.reserveOn} --- uid:${reservationRecord.uid} --- ${reservationRecord.reservers}");
 
         logmessage(true, log, "makeReservations lst2.uid ${reservationRecord.uid} lst3 $reservers");
-        rr.addUID2Record(recordID, reservers);
+        if (!rr.addUID2Record(recordID, reservers)) {
+          logmessage(true, log, "makeReservations addUID2Record failed");
+        }
       } else {
         //    存在しない ここから
         logmessage(b, log, "makeReservations addReservation will be called 2");

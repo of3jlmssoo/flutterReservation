@@ -403,12 +403,17 @@ class ReservationRepository {
 
   bool addUID2Record(String recordID, List<String> lst) {
     logmessage(true, log, "addUID2Record $recordID $lst");
+    bool result = false;
     final docRef = db.collection("reservations").doc(recordID);
-    docRef.update({"reservers": lst}).then(
-        (value) => logmessage(true, log, "addUID2Record DocumentSnapshot successfully updated!"),
-        onError: (e) => logmessage(true, log, "addUID2Record Error updating document $recordID $lst $e"));
+    docRef.update({"reservers": lst}).then((value) {
+      logmessage(true, log, "addUID2Record DocumentSnapshot successfully updated!");
+      result = true;
+    }, onError: (e) {
+      logmessage(true, log, "addUID2Record Error updating document $recordID $lst $e");
+      result = false;
+    });
 
-    return false;
+    return result;
   }
 
   // Future<List<Reservation>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
