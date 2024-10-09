@@ -351,7 +351,7 @@ void makeReservations3(WidgetRef ref) async {
 
     final batch = FirebaseFirestore.instance.batch();
 
-    logmessage(b, log, 'makeReservations batch called --- ${rrecords}');
+    logmessage(b, log, 'makeReservations batch called --- $rrecords');
     for (int l = 0; l < rrecords[i].length; l++) {
       logmessage(b, log, 'makeReservations second loop');
       // Logger.root.level = Level.OFF;
@@ -377,30 +377,32 @@ void makeReservations3(WidgetRef ref) async {
       logmessage(b, log, 'makeReservations date fac ${cD.add(Duration(days: l + 1))} $fac');
       final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
 
-      // log.info('makeReservations getRandomReservationStatus will be called');
-      // ReservationStatus rs = getRandomReservationStatus();
-      // log.info("makeReservations addReservation called rs : $rs ${rs.runtimeType}");
-
       // TODO: 日付とファシリティの組み合わせのレコードが存在するか？
       //
       var result = await rr.queryRecordsWithDateAndFacility(cD.add(Duration(days: l + 1)), fac);
-      logmessage(true, log, "result is ${result} from ${cD.add(Duration(days: l + 1))} --- {$fac}");
+      logmessage(b, log, "result is $result from ${cD.add(Duration(days: l + 1))} --- {$fac}");
       if (result.isNotEmpty) {
         //    存在する
-        var lst1 = List.from(result[0].keys);
-        String recordID = lst1[0];
+        // var lst1 = List.from(result[0].keys);
+        // String recordID = lst1[0];
 
-        var lst2 = result[0][recordID];
-
-        logmessage(true, log,
-            "makeReservations record exists --- recordID:$recordID --- reserveOn:${lst2!.reserveOn} --- uid:${lst2.uid} --- ${lst2.reservers}");
-        List<String> lst3 = [];
-        for (var v in lst2.reservers!) {
-          lst3.add(v);
+        if (result.length > 1) {
+          logmessage(true, log, "makeReservations result.length > 1. ${result.length}");
         }
-        lst3.add(lst2.uid);
-        logmessage(true, log, "lst2.uid ${lst2.uid} lst3 ${lst3}");
-        rr.addUID2Record(recordID, lst3);
+
+        String recordID = List.from(result[0].keys)[0];
+
+        Reservation reservationRecord = result[0][recordID]!;
+        List<String> reservers = [];
+        for (var v in reservationRecord.reservers!) {
+          reservers.add(v);
+        }
+        reservers.add(FirebaseAuth.instance.currentUser!.uid);
+        logmessage(true, log,
+            "makeReservations record exists --- recordID:$recordID --- reserveOn:${reservationRecord.reserveOn} --- uid:${reservationRecord.uid} --- ${reservationRecord.reservers}");
+
+        logmessage(true, log, "makeReservations lst2.uid ${reservationRecord.uid} lst3 $reservers");
+        rr.addUID2Record(recordID, reservers);
       } else {
         //    存在しない ここから
         logmessage(b, log, "makeReservations addReservation will be called 2");
