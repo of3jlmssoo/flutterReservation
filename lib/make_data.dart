@@ -373,6 +373,7 @@ void makeReservations3(WidgetRef ref) async {
         default:
           break;
       }
+      // TODO: 確定データを作成する。ある割合
       // TODO:use getfacility()
       logmessage(b, log, 'makeReservations date fac ${cD.add(Duration(days: l + 1))} $fac');
       final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
@@ -417,7 +418,7 @@ void makeReservations3(WidgetRef ref) async {
             "uid": uid,
             "reservers": [uid],
             "facility": facilityRef,
-            "status": ReservationStatus.priority.displayName,
+            "status": ReservationStatus.priority.name,
           },
         );
 
