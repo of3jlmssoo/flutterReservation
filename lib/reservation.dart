@@ -496,6 +496,7 @@ class ReservationRepository {
     // final docRef = await db
     await db
         .collection("reservations")
+        .orderBy("reserveOn")
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),

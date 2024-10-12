@@ -38,7 +38,8 @@ class MainScreen extends ConsumerWidget {
         children: [
           colDivider,
           Text(
-            'ユーザー a ${ref.read(authRepositoryProvider).currentUser?.displayName == null ? ref.read(authRepositoryProvider).currentUser?.email : "dummy"}',
+            // TODO: display user name. need to fixed
+            'ユーザー ${ref.read(authRepositoryProvider).currentUser?.displayName == null ? ref.read(authRepositoryProvider).currentUser?.email : "dummy"}',
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
@@ -107,15 +108,40 @@ class LoginScreen extends ConsumerWidget {
           ),
           Padding(
             padding: const EdgeInsets.all(8.0),
-            child: ElevatedButton(
-              onPressed: () async {
-                log.info('Log in pressed');
-                ref
-                    .read(firebaseAuthProvider)
-                    .signInWithEmailAndPassword(email: "dummy1@dummy.com", password: "dummy1dummy1");
-                log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
-              },
-              child: const Text('ログイン'),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                ElevatedButton(
+                  onPressed: () async {
+                    log.info('Log in pressed');
+                    ref
+                        .read(firebaseAuthProvider)
+                        .signInWithEmailAndPassword(email: "dummy1@dummy.com", password: "dummy1dummy1");
+                    log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
+                  },
+                  child: const Text('ログイン1'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    log.info('Log in pressed');
+                    ref
+                        .read(firebaseAuthProvider)
+                        .signInWithEmailAndPassword(email: "dummy2@dummy.com", password: "dummy2dummy2");
+                    log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
+                  },
+                  child: const Text('ログイン2'),
+                ),
+                ElevatedButton(
+                  onPressed: () async {
+                    log.info('Log in pressed');
+                    ref
+                        .read(firebaseAuthProvider)
+                        .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+                    log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
+                  },
+                  child: const Text('ログイン3'),
+                ),
+              ],
             ),
           ),
         ],

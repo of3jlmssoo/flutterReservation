@@ -373,6 +373,7 @@ void makeReservations3(WidgetRef ref) async {
         default:
           break;
       }
+      // TODO: sort data from firestore
       // TODO: 確定データを作成する。ある割合
       // TODO:use getfacility()
       logmessage(b, log, 'makeReservations date fac ${cD.add(Duration(days: l + 1))} $fac');
