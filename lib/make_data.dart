@@ -373,8 +373,8 @@ void makeReservations3(WidgetRef ref) async {
         default:
           break;
       }
-      // TODO: sort data from firestore
-      // TODO: 確定データを作成する。ある割合
+      // DONE: sort data from firestore
+      // DONE: 確定データを作成する。ある割合
       // TODO:use getfacility()
       logmessage(b, log, 'makeReservations date fac ${cD.add(Duration(days: l + 1))} $fac');
       final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(fac.name);
@@ -419,7 +419,8 @@ void makeReservations3(WidgetRef ref) async {
             "uid": uid,
             "reservers": [uid],
             "facility": facilityRef,
-            "status": ReservationStatus.priority.name,
+            // "status": ReservationStatus.priority.name,
+            "status": setStatus(),
           },
         );
 
@@ -438,4 +439,15 @@ void makeReservations3(WidgetRef ref) async {
     logmessage(b, log, 'makeReservations 予約情報登録3-2');
     Logger.root.level = Level.OFF;
   }
+}
+
+String setStatus() {
+  // 10%か20％の確率でステータスをreservedにする。それ以外はpriority
+
+  logmessage(true, log, "setStatus called");
+  double threshdold = math.Random().nextBool() ? 0.1 : 0.2;
+
+  return math.Random().nextDouble() < threshdold ? ReservationStatus.reserved.name : ReservationStatus.priority.name;
+
+  // return ReservationStatus.priority.name;
 }

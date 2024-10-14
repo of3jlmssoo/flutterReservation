@@ -9,16 +9,17 @@ const colDivider = SizedBox(height: 10);
 const numFacilities = 3;
 const numUsers = 3;
 const numRecords = 10;
+const reservablePeriod = numRecords;
 
-// テストデータ
-// 9/23から9/27
-final DateTime testDataInitialDate = DateTime(2024, 9, 22, 0, 0);
-// final DateTime testDataInitialDate = DateTime.now();
-final DateTime testDataFirstDate = testDataInitialDate;
-final DateTime testDataLastDate = testDataFirstDate.add(const Duration(days: 6));
-// initialDate: DateTime.now(),
-// firstDate: DateTime.now(),
-// lastDate: DateTime.now().add(const Duration(days: 20)),
+// // テストデータ
+// // (テストデータ作成コード修正に伴い無効)9/23から9/27
+// final DateTime testDataInitialDate = DateTime(2024, 9, 22, 0, 0);
+// // final DateTime testDataInitialDate = DateTime.now();
+// final DateTime testDataFirstDate = testDataInitialDate;
+// final DateTime testDataLastDate = testDataFirstDate.add(const Duration(days: 6));
+// // initialDate: DateTime.now(),
+// // firstDate: DateTime.now(),
+// // lastDate: DateTime.now().add(const Duration(days: 20)),
 
 // enum Facility implements Comparable<Facility> {
 enum Facility {

@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -26,7 +27,6 @@ class MainScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    // TODO: implement build
     // return Text('this is the main screen');
     return Scaffold(
       appBar: BaseAppBar(
@@ -38,8 +38,9 @@ class MainScreen extends ConsumerWidget {
         children: [
           colDivider,
           Text(
-            // TODO: display user name. need to fixed
-            'ユーザー ${ref.read(authRepositoryProvider).currentUser?.displayName == null ? ref.read(authRepositoryProvider).currentUser?.email : "dummy"}',
+            // DONE: display user name. need to fixed
+            // 'ユーザー ${ref.read(authRepositoryProvider).currentUser?.displayName == null ? ref.read(authRepositoryProvider).currentUser?.email : "dummy"}',
+            'ユーザー ${FirebaseAuth.instance.currentUser!.displayName}',
             style: const TextStyle(fontSize: 18),
             textAlign: TextAlign.center,
           ),
@@ -263,6 +264,7 @@ class ShowDatePickerWidget extends StatelessWidget {
   final Facility facility;
   final bool l = true;
 
+  //
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -287,18 +289,17 @@ class ShowDatePickerWidget extends StatelessWidget {
               // }
               // logmessage(l, log, "ShowDatePickerWidget --- ${DateTime.now()} --- ${testDataInitialDate}");
 
+              // TODO:"日付"以降でquery
+              // TODO: 期間設定修正
               if (context.mounted) {
                 final selectedDate = await showDatePicker(
                   locale: const Locale("ja"),
                   context: context,
                   cancelText: 'キャンセル',
                   confirmText: '確定',
-                  // initialDate: DateTime.now(),
-                  // firstDate: DateTime.now(),
-                  // lastDate: DateTime.now().add(const Duration(days: 20)),
-                  initialDate: testDataInitialDate,
-                  firstDate: testDataFirstDate,
-                  lastDate: testDataLastDate,
+                  // initialDate: testDataInitialDate,
+                  firstDate: DateTime.now().add(Duration(days: 1)),
+                  lastDate: DateTime.now().add(Duration(days: reservablePeriod)),
                   selectableDayPredicate: (DateTime val) {
                     logmessage(l, log, "ShowDatePickerWidget --- selectableDayPredicate --- $val");
                     // return !strunselectable2.contains(DateFormat.yMd().format(val));
