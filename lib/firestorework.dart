@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:logging/logging.dart';
 import 'package:reservations2/consts.dart';
 
@@ -145,6 +146,24 @@ class Firestorework extends ConsumerWidget {
               rr.queryArrayContains();
             },
             child: const Text('queryArrayContaines'),
+          ),
+          OutlinedButton(
+            onPressed: () async {
+              ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+              List<Reservation> reservationList = await rr.getAllDocuments();
+              if (reservationList.isEmpty) {
+                logmessage(true, log, "予約情報整形 listreservations 予約情報が無いか取得できませんでした");
+                if (context.mounted) GoRouter.of(context).go('/firestorework');
+              } else {
+                for (var r in reservationList) {
+                  logmessage(true, log,
+                      "予約情報整形 ${DateFormat().add_yMd().format(r.reserveOn)} ${await r.getfName} ${r.status} ${r.reservers}");
+                }
+                // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
+              }
+              // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
+            },
+            child: const Text('予約情報整形'),
           ),
           OutlinedButton(
             onPressed: () {

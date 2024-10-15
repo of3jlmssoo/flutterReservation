@@ -269,6 +269,18 @@ class ShowDatePickerWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
+        const SizedBox(height: 10),
+        const Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+                width: 300,
+                child: Text(
+                  "まず予約日を選択します。\nその後、予約に必要な情報を入力してください。",
+                  style: TextStyle(fontSize: 18),
+                )),
+          ],
+        ),
         ElevatedButton(
             onPressed: () async {
               logmessage(l, log, 'ShowDatePickerWidget FacilitySelectionScreen ');
@@ -298,8 +310,8 @@ class ShowDatePickerWidget extends StatelessWidget {
                   cancelText: 'キャンセル',
                   confirmText: '確定',
                   // initialDate: testDataInitialDate,
-                  firstDate: DateTime.now().add(Duration(days: 1)),
-                  lastDate: DateTime.now().add(Duration(days: reservablePeriod)),
+                  firstDate: DateTime.now().add(const Duration(days: 1)),
+                  lastDate: DateTime.now().add(const Duration(days: reservablePeriod)),
                   selectableDayPredicate: (DateTime val) {
                     logmessage(l, log, "ShowDatePickerWidget --- selectableDayPredicate --- $val");
                     // return !strunselectable2.contains(DateFormat.yMd().format(val));

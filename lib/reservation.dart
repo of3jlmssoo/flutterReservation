@@ -373,10 +373,12 @@ class ReservationRepository {
     return result;
   }
 
+  // DONE: 修正前はreservedのみを取得=>reservedとpriorityを取得するようにする
+  // DONE: 修正後は、reservedの予約日とreserversに自分がいるのをaddする
   Future<List<DateTime>> getFacilityAvailableDates(Facility facility) async {
     List<DateTime> result = [];
 
-    const bool l = false;
+    const bool l = true;
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.getFname(facility));
     // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
@@ -386,18 +388,25 @@ class ReservationRepository {
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
-        .where(Filter.and(Filter("facility", isEqualTo: facilityRef),
-            Filter("status", isEqualTo: getReservationExpressionOnFirestore(ReservationStatus.reserved))))
+        // .where(Filter.and(Filter("facility", isEqualTo: facilityRef),
+        //     Filter("status", isEqualTo: getReservationExpressionOnFirestore(ReservationStatus.reserved))))
+        .where(Filter("facility", isEqualTo: facilityRef))
         .get()
         .then((querySnapshot) {
-      logmessage(l, log,
-          "getFacilityAvailableDates --- Successfully completed ${facility.getFname(facility)} ${Facility.mtgR1.name}");
+      logmessage(l, log, "getFacilityAvailableDates --- Successfully completed ${facility.getFname(facility)} ");
       for (var docSnapshot in querySnapshot.docs) {
         var d = docSnapshot.data();
-        logmessage(l, log, '${docSnapshot.id} => $d');
-        result.add(d.reserveOn);
+        logmessage(l, log, '${docSnapshot.id} => $d ==> ${d.status}');
+
+        if (d.status == "reserved" || d.reservers!.contains(FirebaseAuth.instance.currentUser!.uid)) {
+          result.add(d.reserveOn);
+        }
+
+        // result.add(d.reserveOn);
       }
     }, onError: (e) => logmessage(true, log, "getFacilityAvailableDates error $e"));
+
+    logmessage(l, log, "getFacilityAvailableDates result:$result");
 
     return result;
   }
@@ -488,8 +497,8 @@ class ReservationRepository {
   }
 
   Future<List<Reservation>> getAllDocuments() async {
-    Logger.root.level = Level.OFF;
-    logmessage(false, log, 'getAllDocuments called');
+    bool b = true;
+    logmessage(b, log, 'getAllDocuments called');
 
     List<Reservation> result = [];
 
@@ -503,15 +512,15 @@ class ReservationRepository {
         )
         .get()
         .then((querySnapshot) {
-      logmessage(false, log, "getAllDocuments --- Successfully completed");
+      logmessage(b, log, "getAllDocuments --- Successfully completed");
       for (var docSnapshot in querySnapshot.docs) {
-        logmessage(false, log, '${docSnapshot.id} => ${docSnapshot.data()}');
+        logmessage(b, log, '${docSnapshot.id} => ${docSnapshot.data()}');
         result.add(docSnapshot.data());
       }
     }, onError: (e) => logmessage(true, log, "getAllDocuments error $e"));
 
     // result = docRef.data();
-    logmessage(false, log, 'getAllDocuments Exist return $result');
+    logmessage(b, log, 'getAllDocuments Exist return $result');
 
     return result;
 
