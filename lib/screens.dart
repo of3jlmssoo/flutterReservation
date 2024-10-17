@@ -262,7 +262,7 @@ class ShowDatePickerWidget extends StatelessWidget {
   });
 
   final Facility facility;
-  final bool l = true;
+  final bool l = false;
 
   //
   @override
@@ -286,23 +286,9 @@ class ShowDatePickerWidget extends StatelessWidget {
               logmessage(l, log, 'ShowDatePickerWidget FacilitySelectionScreen ');
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
               List<DateTime> unreservable = await rr.getFacilityAvailableDates(facility);
-              // List<Reservation> reservationList = await rr.getAllDocuments();
-              // List<DateTime> reservable = [];
-              // for (var r in reservationList) {
-              //   logmessage(l, log,
-              //       "ShowDatePickerWidget --- reservationList --- ${r.reserveOn} --- ${r.status} --- ${r.getStatus}");
-              //   switch (r.status) {
-              //     case "none":
-              //     case "notFound":
-              //     case "priority":
-              //     case "tentative":
-              //       reservable.add(r.reserveOn);
-              //   }
-              // }
-              // logmessage(l, log, "ShowDatePickerWidget --- ${DateTime.now()} --- ${testDataInitialDate}");
 
-              // TODO:"日付"以降でquery
-              // TODO: 期間設定修正
+              // DONE:"日付"以降でquery -> firstDate = now()
+              // DONE: 期間設定修正 -> reservablePeriod
               if (context.mounted) {
                 final selectedDate = await showDatePicker(
                   locale: const Locale("ja"),
@@ -356,9 +342,9 @@ class ShowDatePickerWidget extends StatelessWidget {
 }
 
 class ReservationInputScreen extends StatelessWidget {
-  const ReservationInputScreen({super.key, required this.rbase});
+  const ReservationInputScreen({super.key, required this.r});
 
-  final ReservationInputsBase rbase;
+  final ReservationInputsBase r;
 
   @override
   Widget build(BuildContext context) {
@@ -371,32 +357,52 @@ class ReservationInputScreen extends StatelessWidget {
         // body: Container(
         //     child: Text(
         //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
-        body: Column(
+        body: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(rbase.reservationDate.toString()),
-            Text(rbase.facility.displayName),
-            FilledButton(
-              onPressed: () {
-                context.pop();
-              },
-              child: const Text('戻る'),
-            ),
-            FilledButton(
-              onPressed: () {
-                var rext = ReservationInputsExt(
-                  name: '名無し',
-                  emaill: 'dummyX@dummy.com',
-                  tel: '01-234-5678',
-                  reservationDate: rbase.reservationDate,
-                  facility: rbase.facility.displayName,
-                );
-                context.push('/reservationconfirmation', extra: rext);
-                // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
-              },
-              child: const Text('進む'),
+            Column(
+              children: [
+                Text("予約日：${date4Display()}"),
+                Text("予約対象：${r.facility.displayName}"),
+                Row(
+                  children: [
+                    FilledButton(
+                      onPressed: () {
+                        context.pop();
+                      },
+                      child: const Text('戻る'),
+                    ),
+                    const SizedBox(
+                      width: 10,
+                    ),
+                    FilledButton(
+                      onPressed: () {
+                        var rext = ReservationInputsExt(
+                          // name: '名無し',
+                          // emaill: 'dummyX@dummy.com',
+                          name: FirebaseAuth.instance.currentUser!.displayName!,
+                          emaill: FirebaseAuth.instance.currentUser!.email!,
+                          tel: '01-234-5678',
+                          reservationDate: r.reservationDate,
+                          facility: r.facility.displayName,
+                        );
+                        context.push('/reservationconfirmation', extra: rext);
+                        // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+                      },
+                      child: const Text('進む'),
+                    ),
+                  ],
+                ),
+              ],
             ),
           ],
         ));
+  }
+
+  // String date4Display() => r.reservationDate.toString();
+  String date4Display() {
+    // r.reservationDate.toString();
+    return DateFormat.yMd().format(r.reservationDate);
   }
 }
 

@@ -93,7 +93,7 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/reservationinput',
         builder: (context, state) => ReservationInputScreen(
-          rbase: state.extra! as ReservationInputsBase,
+          r: state.extra! as ReservationInputsBase,
         ),
       ),
       GoRoute(

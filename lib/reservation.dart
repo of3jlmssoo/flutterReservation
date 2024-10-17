@@ -377,8 +377,9 @@ class ReservationRepository {
   // DONE: 修正後は、reservedの予約日とreserversに自分がいるのをaddする
   Future<List<DateTime>> getFacilityAvailableDates(Facility facility) async {
     List<DateTime> result = [];
+    List<Map<String, Reservation>> result2 = [];
 
-    const bool l = true;
+    const bool l = false;
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.getFname(facility));
     // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
@@ -396,8 +397,9 @@ class ReservationRepository {
       logmessage(l, log, "getFacilityAvailableDates --- Successfully completed ${facility.getFname(facility)} ");
       for (var docSnapshot in querySnapshot.docs) {
         var d = docSnapshot.data();
-        logmessage(l, log, '${docSnapshot.id} => $d ==> ${d.status}');
+        logmessage(l, log, 'getFacilityAvailableDates ${docSnapshot.id} => $d ==> ${d.status}');
 
+        result2.add(<String, Reservation>{docSnapshot.id: d});
         if (d.status == "reserved" || d.reservers!.contains(FirebaseAuth.instance.currentUser!.uid)) {
           result.add(d.reserveOn);
         }
@@ -407,6 +409,8 @@ class ReservationRepository {
     }, onError: (e) => logmessage(true, log, "getFacilityAvailableDates error $e"));
 
     logmessage(l, log, "getFacilityAvailableDates result:$result");
+    logmessage(l, log, "getFacilityAvailableDates result2:$result2");
+    logmessage(l, log, "getFacilityAvailableDates result2.length:${result2.length} $facility");
 
     return result;
   }
