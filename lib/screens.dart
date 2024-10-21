@@ -341,68 +341,98 @@ class ShowDatePickerWidget extends StatelessWidget {
   }
 }
 
-class ReservationInputScreen extends StatelessWidget {
+class ReservationInputScreen extends StatefulWidget {
   const ReservationInputScreen({super.key, required this.r});
 
   final ReservationInputsBase r;
 
   @override
+  State<ReservationInputScreen> createState() => _ReservationInputScreenState();
+}
+
+class _ReservationInputScreenState extends State<ReservationInputScreen> {
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
+  final _formKey = GlobalKey<FormState>();
+
+  @override
   Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: BaseAppBar(
-          title: '必要情報入力',
-          appBar: AppBar(),
-          widgets: const <Widget>[Icon(Icons.more_vert)],
-        ),
-        // body: Container(
-        //     child: Text(
-        //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
-        body: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Column(
-              children: [
-                Text("予約日：${date4Display()}"),
-                Text("予約対象：${r.facility.displayName}"),
-                Row(
-                  children: [
-                    FilledButton(
-                      onPressed: () {
-                        context.pop();
-                      },
-                      child: const Text('戻る'),
-                    ),
-                    const SizedBox(
-                      width: 10,
-                    ),
-                    FilledButton(
-                      onPressed: () {
-                        var rext = ReservationInputsExt(
-                          // name: '名無し',
-                          // emaill: 'dummyX@dummy.com',
-                          name: FirebaseAuth.instance.currentUser!.displayName!,
-                          emaill: FirebaseAuth.instance.currentUser!.email!,
-                          tel: '01-234-5678',
-                          reservationDate: r.reservationDate,
-                          facility: r.facility.displayName,
-                        );
-                        context.push('/reservationconfirmation', extra: rext);
-                        // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
-                      },
-                      child: const Text('進む'),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ],
-        ));
+    return Form(
+      key: _formKey,
+      child: Scaffold(
+          appBar: BaseAppBar(
+            title: '必要情報入力',
+            appBar: AppBar(),
+            widgets: const <Widget>[Icon(Icons.more_vert)],
+          ),
+          // body: Container(
+          //     child: Text(
+          //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
+          body: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Column(
+                children: [
+                  Text("予約日：${date4Display()}"),
+                  Text("予約対象：${widget.r.facility.displayName}"),
+                  const SizedBox(height: 20),
+                  Row(
+                    children: [
+                      const Text("連絡先電話番号:"),
+                      SizedBox(
+                        height: 30,
+                        width: 160,
+                        child: TextField(
+                          controller: myController,
+                          style: TextStyle(fontSize: 22),
+                        ),
+                      ),
+                    ],
+                  ),
+                  Row(
+                    children: [
+                      FilledButton(
+                        onPressed: () {
+                          context.pop();
+                        },
+                        child: const Text('戻る'),
+                      ),
+                      FilledButton(
+                        onPressed: () {
+                          var rext = ReservationInputsExt(
+                            // name: '名無し',
+                            // emaill: 'dummyX@dummy.com',
+                            name: FirebaseAuth.instance.currentUser!.displayName!,
+                            emaill: FirebaseAuth.instance.currentUser!.email!,
+                            tel: '01-234-5676',
+                            reservationDate: widget.r.reservationDate,
+                            facility: widget.r.facility.displayName,
+                          );
+                          context.push('/reservationconfirmation', extra: rext);
+                          // if (context.mounted) GoRouter.of(context).push('/reservationinput', extra: reservationinput);
+                        },
+                        child: const Text('進む'),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ],
+          )),
+    );
   }
 
   // String date4Display() => r.reservationDate.toString();
   String date4Display() {
     // r.reservationDate.toString();
-    return DateFormat.yMd().format(r.reservationDate);
+    return DateFormat.yMd().format(widget.r.reservationDate);
   }
 }
 
