@@ -362,6 +362,9 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
 
   final _formKey = GlobalKey<FormState>();
 
+  String tel = "";
+  final bool b = true;
+
   @override
   Widget build(BuildContext context) {
     return Form(
@@ -380,18 +383,32 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
             children: [
               Column(
                 children: [
-                  Text("予約日：${date4Display()}"),
                   Text("予約対象：${widget.r.facility.displayName}"),
+                  Text("予約日：${date4Display()}"),
                   const SizedBox(height: 20),
+                  const Text(
+                    "連絡先電話番号を入力してください。",
+                    style: TextStyle(fontSize: 15),
+                  ),
                   Row(
                     children: [
                       const Text("連絡先電話番号:"),
                       SizedBox(
-                        height: 30,
-                        width: 160,
+                        height: 45,
+                        width: 190,
                         child: TextField(
+                          style: const TextStyle(fontSize: 23),
                           controller: myController,
-                          style: TextStyle(fontSize: 22),
+                          // style: const TextStyle(fontSize: 20),
+                          decoration: const InputDecoration(
+                              hintText: "数字のみ入力",
+                              hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
+                              border: OutlineInputBorder()),
+                          textAlignVertical: TextAlignVertical.center,
+                          // onSubmitted: (value) {
+                          //   tel = value;
+                          //   logmessage(b, log, "_ReservationInputScreenState --- tel : $tel");
+                          // },
                         ),
                       ),
                     ],
@@ -406,6 +423,10 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
                       ),
                       FilledButton(
                         onPressed: () {
+                          logmessage(
+                              b, log, "_ReservationInputScreenState --- myController.text: ${myController.text}");
+
+                          // FirebaseAuth.instance.currentUser.;
                           var rext = ReservationInputsExt(
                             // name: '名無し',
                             // emaill: 'dummyX@dummy.com',
