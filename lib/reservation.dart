@@ -309,14 +309,16 @@ class Reservation with _$Reservation {
 class ReservationRepository {
   ReservationRepository({required this.db});
   final FirebaseFirestore db;
+  final bool b = true;
 
   DocumentReference getfacilityRef(Enum facility) {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
   }
 
   Future<Reservation?> queryReservationDateFacility(DateTime t, Facility f) async {
-    Logger.root.level = Level.OFF;
-    log.info('queryReservationDateFacility called $t $f ${f.runtimeType}');
+    // Logger.root.level = Level.OFF;
+    // log.info('queryReservationDateFacility called $t $f ${f.runtimeType}');
+    logmessage(b, log, 'queryReservationDateFacility called $t $f ${f.runtimeType}');
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
     Reservation? result;
@@ -331,19 +333,25 @@ class ReservationRepository {
         )
         .get();
 
-    log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
+    // log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
+    logmessage(b, log, "queryReservationDateFacility docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
-      log.info("queryReservationDateFacility docRef.docs : ${docRef.docs}");
-      log.info("queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
+      // log.info("queryReservationDateFacility docRef.docs : ${docRef.docs}");
+      // log.info("queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
+      logmessage(b, log, "queryReservationDateFacility docRef.docs : ${docRef.docs}");
+      logmessage(b, log, "queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
       result = docRef.docs[0].data();
     } else {
-      log.info("queryReservationDateFacility some records exist!");
+      // log.info("queryReservationDateFacility some records exist!");
+      logmessage(b, log, "queryReservationDateFacility some records exist!");
       UnimplementedError();
     }
-    log.info("queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
-    log.info('queryReservationDateFacility Exist return');
+    // log.info("queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
+    // log.info('queryReservationDateFacility Exist return');
+    logmessage(b, log, "queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
+    logmessage(b, log, 'queryReservationDateFacility Exist return');
 
-    Logger.root.level = Level.OFF;
+    // Logger.root.level = Level.OFF;
 
     return result;
   }
@@ -597,6 +605,48 @@ class ReservationRepository {
         .doc()
         .set(reservation);
     log.info('--> addReservation2');
+  }
+
+  Future<String?> getIDByDateFacility(DateTime t, Facility f) async {
+    String? result;
+
+    logmessage(b, log, 'getIDByDateFacility called $t $f ${f.runtimeType}');
+
+    final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
+
+    final docRef = await db
+        .collection("reservations")
+        .where("reserveOn", isEqualTo: t)
+        .where("facility", isEqualTo: facilityRef)
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .get();
+
+    // log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
+    logmessage(b, log, "getIDByDateFacility docRef.size : ${docRef.size}");
+    if (docRef.size == 1) {
+      logmessage(b, log, "getIDByDateFacility --- docRef.docs[0].id: ${docRef.docs[0].id}");
+      result = docRef.docs[0].id;
+    } else {
+      result = null;
+    }
+    return result;
+  }
+
+  Future<bool> addReserver(String docID, String uid) async {
+    bool result = true;
+
+    final docRef = db.collection("reservations").doc(docID);
+    docRef.update({
+      "reservers": FieldValue.arrayUnion([uid]),
+    }).onError((e, _) {
+      result = false;
+      logmessage(true, log, "addReserver Error : $e");
+    });
+
+    return result;
   }
 }
 

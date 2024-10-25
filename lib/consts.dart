@@ -22,10 +22,14 @@ const reservablePeriod = numRecords;
 // // lastDate: DateTime.now().add(const Duration(days: 20)),
 
 // enum Facility implements Comparable<Facility> {
+const String k = "台所";
+const String m1 = "会議室1";
+const String m2 = "会議室2";
+
 enum Facility {
-  kitchen(displayName: "台所", capacity: 5, description: "IH。ただし給電無し。発電機持ち込み必要\n水道無し。外に井戸あり\nイス無し"),
-  mtgR1(displayName: "会議室1", capacity: 50, description: "畳部屋(1畳)。窓無し、冷暖房無し"),
-  mtgR2(displayName: "会議室2", capacity: 1, description: "2500平米。床抜けあり注意");
+  kitchen(displayName: k, capacity: 5, description: "IH。ただし給電無し。発電機持ち込み必要\n水道無し。外に井戸あり\nイス無し"),
+  mtgR1(displayName: m1, capacity: 50, description: "畳部屋(1畳)。窓無し、冷暖房無し"),
+  mtgR2(displayName: m2, capacity: 1, description: "2500平米。床抜けあり注意");
 
   const Facility({
     required this.displayName,
@@ -65,4 +69,17 @@ enum Facility {
   // bool get isTwoWheeled => this == Facility.bicycle;
   // @override
   // int compareTo(Facility other) => carbonFootprint - other.carbonFootprint;
+}
+
+Facility getFacilitybyDisplayName(String f) {
+  switch (f) {
+    case k:
+      return Facility.kitchen;
+    case m1:
+      return Facility.mtgR1;
+    case m2:
+      return Facility.mtgR2;
+    default:
+      return Facility.kitchen;
+  }
 }

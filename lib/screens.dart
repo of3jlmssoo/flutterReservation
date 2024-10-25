@@ -413,6 +413,7 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
                       ),
                     ],
                   ),
+                  const SizedBox(height: 20),
                   Row(
                     children: [
                       FilledButton(
@@ -426,13 +427,13 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
                           logmessage(
                               b, log, "_ReservationInputScreenState --- myController.text: ${myController.text}");
 
-                          // FirebaseAuth.instance.currentUser.;
+                          // FirebaseAuth.instance.currentUser.
                           var rext = ReservationInputsExt(
                             // name: '名無し',
                             // emaill: 'dummyX@dummy.com',
                             name: FirebaseAuth.instance.currentUser!.displayName!,
                             emaill: FirebaseAuth.instance.currentUser!.email!,
-                            tel: '01-234-5676',
+                            tel: myController.text,
                             reservationDate: widget.r.reservationDate,
                             facility: widget.r.facility.displayName,
                           );
@@ -461,6 +462,7 @@ class ReservationConfirmationScreen extends StatelessWidget {
   const ReservationConfirmationScreen({super.key, required this.rext});
 
   final ReservationInputsExt rext;
+  final bool b = true;
 
   @override
   Widget build(BuildContext context) {
@@ -473,40 +475,90 @@ class ReservationConfirmationScreen extends StatelessWidget {
       // body: Container(
       //     child: Text(
       //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
-      body: Column(
+      body: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          const Text('以下で予約します。'),
-          Text(rext.name),
-          Text(rext.tel),
-          Text(rext.emaill),
-          Text(rext.facility),
-          Text(rext.reservationDate.toString()),
-          FilledButton(
-            onPressed: () {
-              context.pop();
-            },
-            child: const Text('戻る'),
-          ),
-          FilledButton(
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('予約しました！'),
-                  // action: SnackBarAction(
-                  //   label: 'Action',
-                  //   onPressed: () {
-                  //     // Code to execute.
-                  //   },
-                  // ),
-                ),
-              );
-              context.go('/main');
-            },
-            child: const Text('確定'),
+          Column(
+            children: [
+              const Text('以下で予約します。'),
+              Text("お名前 ${rext.name}"),
+              Text("電話番号 ${rext.tel}"),
+              Text("メール ${rext.emaill}"),
+              Text("予約対象 ${rext.facility}"),
+              Text("予約日 ${dateOnlyString()}"),
+              FilledButton(
+                onPressed: () {
+                  context.pop();
+                },
+                child: const Text('戻る'),
+              ),
+              FilledButton(
+                onPressed: () async {
+                  // TODO: 予約処理
+                  ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+                  // Reservation? r = await rr.queryReservationDateFacility(DateTime(2024, 10, 29), Facility.kitchen);
+                  Reservation? r = await rr.queryReservationDateFacility(
+                      rext.reservationDate, getFacilitybyDisplayName(rext.facility));
+                  logmessage(b, log, "reservationconfirmation --- r:$r");
+                  String? id =
+                      await rr.getIDByDateFacility(rext.reservationDate, getFacilitybyDisplayName(rext.facility));
+                  logmessage(b, log, "reservationconfirmation --- id:$id");
+                  // 1) 追加パターン
+                  //  facilities/kitchen
+                  //  reserveOn  Thu Oct 24 2024 00:00:00 GMT+0900
+                  //  reservers h3pe6WYTJ4SrokyQsE7XicinY1G9  dummy3
+                  //  reserversにo0P96bo20UdkLHBRAQiV4JkBFzJMが追加された
+                  //
+                  // 2) 新規パターン
+                  //  会議室2の10/25
+                  // もともと19件
+                  // 会議室2は5件
+
+                  // final washingtonRef = FirebaseFirestore.instance.collection("reservations").doc(id);
+                  // washingtonRef.update({
+                  //   "reservers": FieldValue.arrayUnion([FirebaseAuth.instance.currentUser!.uid]),
+                  // });
+
+                  // テストユーザーはdummy1 o0P96bo20UdkLHBRAQiV4JkBFzJM
+
+                  if (id != null) {
+                    bool result = await rr.addReserver(id, FirebaseAuth.instance.currentUser!.uid);
+                    logmessage(b, log, "reservationconfirmation --- result:$result");
+                  } else {
+                    rr.addReservation(
+                        reserveOn: rext.reservationDate,
+                        reserveMade: DateTime.now(),
+                        facility: getFacilitybyDisplayName(rext.facility),
+                        status: ReservationStatus.priority,
+                        uid: FirebaseAuth.instance.currentUser!.uid);
+                  }
+
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('予約しました！'),
+                      // action: SnackBarAction(
+                      //   label: 'Action',
+                      //   onPressed: () {
+                      //     // Code to execute.
+                      //   },
+                      // ),
+                    ),
+                  );
+                  context.go('/main');
+                },
+                child: const Text('確定'),
+              ),
+            ],
           ),
         ],
       ),
     );
+  }
+
+  String dateOnlyString() {
+    // logmessage(b, log, "reservationconfirmation --- ${rext.reservationDate.runtimeType}");
+    return "${rext.reservationDate.year}年${rext.reservationDate.month}月${rext.reservationDate.day}日";
+    // return rext.reservationDate.toString();
   }
 }
 
