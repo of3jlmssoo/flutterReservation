@@ -37,7 +37,7 @@ GoRouter goRouter(GoRouterRef ref) {
         if (path.startsWith('/datetimepickerapp')) return '/datetimepickerapp';
         if (path.startsWith('/reservationinput')) return '/reservationinput';
         if (path.startsWith('/reservationconfirmation')) return '/reservationconfirmation';
-        if (path.startsWith('/reservationstatus')) return '/reservationstatus';
+        if (path.startsWith('/listmyreservations')) return '/listmyreservations';
         if (path.startsWith('/reservationdetails')) return '/reservationdetails';
         if (path.startsWith('/usagestatus')) return '/usagestatus';
         if (path.startsWith('/usagedetails')) return '/usagedetails';
@@ -87,7 +87,8 @@ GoRouter goRouter(GoRouterRef ref) {
       GoRoute(
         path: '/listreservations',
         builder: (context, state) => ListReservations(
-          reservationList: state.extra! as List<Reservation?>,
+          rt: state.extra! as ReservationsAndText,
+          // reservationList: state.extra! as List<Reservation?>,
         ),
       ),
       GoRoute(
@@ -102,14 +103,19 @@ GoRouter goRouter(GoRouterRef ref) {
           rext: state.extra! as ReservationInputsExt,
         ),
       ),
-      GoRoute(path: '/reservationstatus', builder: (context, state) => const UsageStatusScreen()),
+      GoRoute(
+          path: '/listmyreservations',
+          builder: (context, state) => ListReservations(
+                // reservationList: state.extra! as List<Reservation>,
+                rt: state.extra! as ReservationsAndText,
+              )),
       GoRoute(
         path: '/reservationdetails',
         builder: (context, state) => UsageDetailsScreen(
           id: state.extra! as String,
         ),
       ),
-      GoRoute(path: '/usagestatus', builder: (context, state) => const UsageStatusScreen()),
+      GoRoute(path: '/usagestatus', builder: (context, state) => const ListMyReservations()),
       GoRoute(
         path: '/usagedetails',
         builder: (context, state) => UsageDetailsScreen(

@@ -30,6 +30,7 @@ mixin _$Reservation {
       throw _privateConstructorUsedError; // @Default(ReservationStatus.none) ReservationStatus status,
   String? get status => throw _privateConstructorUsedError;
   List<String>? get reservers => throw _privateConstructorUsedError;
+  String? get firestoreID => throw _privateConstructorUsedError;
 
   /// Serializes this Reservation to a JSON map.
   Map<String, dynamic> toJson() => throw _privateConstructorUsedError;
@@ -55,7 +56,8 @@ abstract class $ReservationCopyWith<$Res> {
       String? tel,
       String? email,
       String? status,
-      List<String>? reservers});
+      List<String>? reservers,
+      String? firestoreID});
 }
 
 /// @nodoc
@@ -81,6 +83,7 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
     Object? email = freezed,
     Object? status = freezed,
     Object? reservers = freezed,
+    Object? firestoreID = freezed,
   }) {
     return _then(_value.copyWith(
       reserveOn: null == reserveOn
@@ -115,6 +118,10 @@ class _$ReservationCopyWithImpl<$Res, $Val extends Reservation>
           ? _value.reservers
           : reservers // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      firestoreID: freezed == firestoreID
+          ? _value.firestoreID
+          : firestoreID // ignore: cast_nullable_to_non_nullable
+              as String?,
     ) as $Val);
   }
 }
@@ -135,7 +142,8 @@ abstract class _$$ReservationImplCopyWith<$Res>
       String? tel,
       String? email,
       String? status,
-      List<String>? reservers});
+      List<String>? reservers,
+      String? firestoreID});
 }
 
 /// @nodoc
@@ -159,6 +167,7 @@ class __$$ReservationImplCopyWithImpl<$Res>
     Object? email = freezed,
     Object? status = freezed,
     Object? reservers = freezed,
+    Object? firestoreID = freezed,
   }) {
     return _then(_$ReservationImpl(
       reserveOn: null == reserveOn
@@ -190,6 +199,10 @@ class __$$ReservationImplCopyWithImpl<$Res>
           ? _value._reservers
           : reservers // ignore: cast_nullable_to_non_nullable
               as List<String>?,
+      firestoreID: freezed == firestoreID
+          ? _value.firestoreID
+          : firestoreID // ignore: cast_nullable_to_non_nullable
+              as String?,
     ));
   }
 }
@@ -205,7 +218,8 @@ class _$ReservationImpl extends _Reservation {
       this.tel,
       this.email,
       this.status,
-      required final List<String>? reservers})
+      required final List<String>? reservers,
+      this.firestoreID})
       : _reservers = reservers,
         super._();
 
@@ -239,8 +253,11 @@ class _$ReservationImpl extends _Reservation {
   }
 
   @override
+  final String? firestoreID;
+
+  @override
   String toString() {
-    return 'Reservation(reserveOn: $reserveOn, reserveMade: $reserveMade, facility: $facility, uid: $uid, tel: $tel, email: $email, status: $status, reservers: $reservers)';
+    return 'Reservation(reserveOn: $reserveOn, reserveMade: $reserveMade, facility: $facility, uid: $uid, tel: $tel, email: $email, status: $status, reservers: $reservers, firestoreID: $firestoreID)';
   }
 
   @override
@@ -258,7 +275,9 @@ class _$ReservationImpl extends _Reservation {
             (identical(other.email, email) || other.email == email) &&
             (identical(other.status, status) || other.status == status) &&
             const DeepCollectionEquality()
-                .equals(other._reservers, _reservers));
+                .equals(other._reservers, _reservers) &&
+            (identical(other.firestoreID, firestoreID) ||
+                other.firestoreID == firestoreID));
   }
 
   @JsonKey(includeFromJson: false, includeToJson: false)
@@ -272,7 +291,8 @@ class _$ReservationImpl extends _Reservation {
       tel,
       email,
       status,
-      const DeepCollectionEquality().hash(_reservers));
+      const DeepCollectionEquality().hash(_reservers),
+      firestoreID);
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
@@ -299,7 +319,8 @@ abstract class _Reservation extends Reservation {
       final String? tel,
       final String? email,
       final String? status,
-      required final List<String>? reservers}) = _$ReservationImpl;
+      required final List<String>? reservers,
+      final String? firestoreID}) = _$ReservationImpl;
   const _Reservation._() : super._();
 
   factory _Reservation.fromJson(Map<String, dynamic> json) =
@@ -323,11 +344,173 @@ abstract class _Reservation extends Reservation {
   String? get status;
   @override
   List<String>? get reservers;
+  @override
+  String? get firestoreID;
 
   /// Create a copy of Reservation
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
   _$$ReservationImplCopyWith<_$ReservationImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+mixin _$ReservationsAndText {
+  String get title => throw _privateConstructorUsedError;
+  List<Reservation>? get reservations => throw _privateConstructorUsedError;
+
+  /// Create a copy of ReservationsAndText
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  $ReservationsAndTextCopyWith<ReservationsAndText> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class $ReservationsAndTextCopyWith<$Res> {
+  factory $ReservationsAndTextCopyWith(
+          ReservationsAndText value, $Res Function(ReservationsAndText) then) =
+      _$ReservationsAndTextCopyWithImpl<$Res, ReservationsAndText>;
+  @useResult
+  $Res call({String title, List<Reservation>? reservations});
+}
+
+/// @nodoc
+class _$ReservationsAndTextCopyWithImpl<$Res, $Val extends ReservationsAndText>
+    implements $ReservationsAndTextCopyWith<$Res> {
+  _$ReservationsAndTextCopyWithImpl(this._value, this._then);
+
+  // ignore: unused_field
+  final $Val _value;
+  // ignore: unused_field
+  final $Res Function($Val) _then;
+
+  /// Create a copy of ReservationsAndText
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? reservations = freezed,
+  }) {
+    return _then(_value.copyWith(
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      reservations: freezed == reservations
+          ? _value.reservations
+          : reservations // ignore: cast_nullable_to_non_nullable
+              as List<Reservation>?,
+    ) as $Val);
+  }
+}
+
+/// @nodoc
+abstract class _$$ReservationsAndTextImplCopyWith<$Res>
+    implements $ReservationsAndTextCopyWith<$Res> {
+  factory _$$ReservationsAndTextImplCopyWith(_$ReservationsAndTextImpl value,
+          $Res Function(_$ReservationsAndTextImpl) then) =
+      __$$ReservationsAndTextImplCopyWithImpl<$Res>;
+  @override
+  @useResult
+  $Res call({String title, List<Reservation>? reservations});
+}
+
+/// @nodoc
+class __$$ReservationsAndTextImplCopyWithImpl<$Res>
+    extends _$ReservationsAndTextCopyWithImpl<$Res, _$ReservationsAndTextImpl>
+    implements _$$ReservationsAndTextImplCopyWith<$Res> {
+  __$$ReservationsAndTextImplCopyWithImpl(_$ReservationsAndTextImpl _value,
+      $Res Function(_$ReservationsAndTextImpl) _then)
+      : super(_value, _then);
+
+  /// Create a copy of ReservationsAndText
+  /// with the given fields replaced by the non-null parameter values.
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? title = null,
+    Object? reservations = freezed,
+  }) {
+    return _then(_$ReservationsAndTextImpl(
+      title: null == title
+          ? _value.title
+          : title // ignore: cast_nullable_to_non_nullable
+              as String,
+      reservations: freezed == reservations
+          ? _value._reservations
+          : reservations // ignore: cast_nullable_to_non_nullable
+              as List<Reservation>?,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$ReservationsAndTextImpl extends _ReservationsAndText {
+  const _$ReservationsAndTextImpl(
+      {required this.title, final List<Reservation>? reservations})
+      : _reservations = reservations,
+        super._();
+
+  @override
+  final String title;
+  final List<Reservation>? _reservations;
+  @override
+  List<Reservation>? get reservations {
+    final value = _reservations;
+    if (value == null) return null;
+    if (_reservations is EqualUnmodifiableListView) return _reservations;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(value);
+  }
+
+  @override
+  String toString() {
+    return 'ReservationsAndText(title: $title, reservations: $reservations)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$ReservationsAndTextImpl &&
+            (identical(other.title, title) || other.title == title) &&
+            const DeepCollectionEquality()
+                .equals(other._reservations, _reservations));
+  }
+
+  @override
+  int get hashCode => Object.hash(
+      runtimeType, title, const DeepCollectionEquality().hash(_reservations));
+
+  /// Create a copy of ReservationsAndText
+  /// with the given fields replaced by the non-null parameter values.
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$ReservationsAndTextImplCopyWith<_$ReservationsAndTextImpl> get copyWith =>
+      __$$ReservationsAndTextImplCopyWithImpl<_$ReservationsAndTextImpl>(
+          this, _$identity);
+}
+
+abstract class _ReservationsAndText extends ReservationsAndText {
+  const factory _ReservationsAndText(
+      {required final String title,
+      final List<Reservation>? reservations}) = _$ReservationsAndTextImpl;
+  const _ReservationsAndText._() : super._();
+
+  @override
+  String get title;
+  @override
+  List<Reservation>? get reservations;
+
+  /// Create a copy of ReservationsAndText
+  /// with the given fields replaced by the non-null parameter values.
+  @override
+  @JsonKey(includeFromJson: false, includeToJson: false)
+  _$$ReservationsAndTextImplCopyWith<_$ReservationsAndTextImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }

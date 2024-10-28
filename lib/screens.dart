@@ -25,6 +25,8 @@ List<String> strunselectable2 = [
 class MainScreen extends ConsumerWidget {
   const MainScreen({super.key});
 
+  final bool b = true;
+
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     // return Text('this is the main screen');
@@ -48,7 +50,7 @@ class MainScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               onTap: () {
-                log.info('MainScreen ListTile Tapped(新規予約)');
+                logmessage(b, log, 'MainScreen ListTile Tapped(新規予約)');
                 context.go('/facilityselection');
               },
               leading: const FlutterLogo(size: 56.0),
@@ -59,9 +61,16 @@ class MainScreen extends ConsumerWidget {
           ),
           Card(
             child: ListTile(
-              onTap: () {
-                log.info('MainScreen ListTile Tapped(予約状況)');
-                context.go('/reservationstatus');
+              onTap: () async {
+                logmessage(b, log, 'MainScreen ListTile Tapped(予約状況)');
+                ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+                List<Reservation>? myReservations =
+                    await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid);
+                logmessage(b, log, "MainScreen myReservations --- ${myReservations}");
+                ReservationsAndText rt = ReservationsAndText(title: "わたしの予約一覧", reservations: myReservations);
+                // context.go('/listmyreservationsr');
+                // context.push('/listmyreservations', extra: myReservations);
+                context.push('/listmyreservations', extra: rt);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('予約どうなった?'),
@@ -72,7 +81,7 @@ class MainScreen extends ConsumerWidget {
           Card(
             child: ListTile(
               onTap: () {
-                log.info('MainScreen ListTile Tapped(利用実績)');
+                logmessage(b, log, 'MainScreen ListTile Tapped(利用実績)');
                 context.go('/usagestatus');
               },
               leading: const FlutterLogo(size: 56.0),
@@ -616,7 +625,7 @@ class ReservationDetailsScreen extends StatelessWidget {
                     // ),
                   ),
                 );
-                context.go('/reservationstatus');
+                context.go('/listmyreservations');
               },
               child: const Text('詳細')),
         ],
@@ -625,8 +634,11 @@ class ReservationDetailsScreen extends StatelessWidget {
   }
 }
 
-class UsageStatusScreen extends StatelessWidget {
-  const UsageStatusScreen({super.key});
+class ListMyReservations extends StatelessWidget {
+  const ListMyReservations({super.key, this.myReservations});
+
+  final List<Reservation>? myReservations;
+  final bool b = true;
 
   @override
   Widget build(BuildContext context) {
@@ -759,14 +771,14 @@ class UserInformationUpdateScreen extends StatelessWidget {
 }
 
 class ListReservations extends ConsumerWidget {
-  const ListReservations({super.key, required this.reservationList});
+  ListReservations({super.key, required this.rt});
 
-  final List<Reservation?> reservationList;
+  final ReservationsAndText rt;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
-      appBar: BaseAppBar(title: 'firestore work', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
+      appBar: BaseAppBar(title: rt.title, appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
           Container(
@@ -775,7 +787,7 @@ class ListReservations extends ConsumerWidget {
             child: Container(
               color: Colors.green,
               child: ListView.builder(
-                itemCount: reservationList.length,
+                itemCount: rt.reservations!.length,
                 itemBuilder: (BuildContext context, int index) {
                   return Center(
                     child: Card.outlined(
@@ -791,29 +803,33 @@ class ListReservations extends ConsumerWidget {
                                 "${index + 1}",
                                 style: const TextStyle(fontSize: 18),
                               ),
-                              title: Text(reservationList[index]!.getrOn),
-                              subtitle: GetFacilityNameStatus(r: reservationList[index]!),
+                              // title: Text(reservationList[index]!.getrOn),
+                              title: Text(rt.reservations![index].getrOn),
+                              subtitle: GetFacilityNameStatus(r: rt.reservations![index]),
                               // tileColor: Colors.lime[100],
                             ),
                           ),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.end,
                             children: <Widget>[
+                              // SizedBox(
+                              //   height: 35,
+                              //   child: TextButton(
+                              //     child: const Text('LISTEN!'),
+                              //     onPressed: () {
+                              //       /* ... */
+                              //     },
+                              //   ),
+                              // ),
+                              // const SizedBox(width: 8),
                               SizedBox(
                                 height: 35,
                                 child: TextButton(
-                                  child: const Text('LISTEN!'),
-                                  onPressed: () {
-                                    /* ... */
-                                  },
-                                ),
-                              ),
-                              const SizedBox(width: 8),
-                              SizedBox(
-                                height: 35,
-                                child: TextButton(
-                                  child: const Text('LISTEN'),
-                                  onPressed: () {
+                                  child: const Text('キャンセル'),
+                                  onPressed: () async {
+                                    ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+                                    bool result = await rr.cancelReservation();
+
                                     /* ... */
                                   },
                                 ),

@@ -193,6 +193,7 @@ class Reservation with _$Reservation {
     // @Default(ReservationStatus.none) ReservationStatus status,
     String? status,
     required List<String>? reservers,
+    String? firestoreID,
 
     // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
     // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
@@ -325,6 +326,7 @@ class ReservationRepository {
 
     final docRef = await db
         .collection("reservations")
+        .orderBy("reserveOn")
         .where("reserveOn", isEqualTo: t)
         .where("facility", isEqualTo: facilityRef)
         .withConverter(
@@ -341,6 +343,7 @@ class ReservationRepository {
       logmessage(b, log, "queryReservationDateFacility docRef.docs : ${docRef.docs}");
       logmessage(b, log, "queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
       result = docRef.docs[0].data();
+      result = result.copyWith(firestoreID: docRef.docs[0].id);
     } else {
       // log.info("queryReservationDateFacility some records exist!");
       logmessage(b, log, "queryReservationDateFacility some records exist!");
@@ -635,6 +638,52 @@ class ReservationRepository {
     return result;
   }
 
+  Future<List<Reservation>?> queryMyReservations(String uid) async {
+    const bool b = false;
+
+    List<Reservation>? result = [];
+
+    await db
+        .collection("reservations")
+        .orderBy("reserveOn")
+        .where("reservers", arrayContains: uid)
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        .get()
+        .then(
+      (querySnapshot) {
+        logmessage(b, log, "queryMyReservations Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          logmessage(b, log, 'queryMyReservations ${docSnapshot.id} => ${docSnapshot.data()}');
+          result.add(docSnapshot.data());
+        }
+      },
+      onError: (e) => logmessage(b, log, "queryMyReservations Error completing: $e"),
+    );
+
+    logmessage(b, log, "queryMyReservations result.length ${result.length}");
+    return result;
+  }
+
+  Future<bool> cancelReservation() async {
+    bool result = true;
+    final bool b = true;
+    DateTime dt = DateTime(2024, 10, 25);
+    Facility f = Facility.mtgR2;
+
+    Reservation? r = await queryReservationDateFacility(dt, f);
+    if (r != null) {
+      logmessage(b, log, "cancelReservations r.reservers   : ${r.reservers}");
+      logmessage(b, log, "cancelReservations r.firestoreID : ${r.firestoreID}");
+    }
+
+    // 予約者一人だけのケース
+    // 予約者複数のケース
+    return result;
+  }
+
   Future<bool> addReserver(String docID, String uid) async {
     bool result = true;
 
@@ -651,3 +700,22 @@ class ReservationRepository {
 }
 
 class ReservationService {}
+
+@freezed
+class ReservationsAndText with _$ReservationsAndText {
+  const ReservationsAndText._();
+  const factory ReservationsAndText({
+    required String title,
+    List<Reservation>? reservations,
+
+    // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
+    // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
+    // @JsonKey(name: "facility") DocumentReference? facility,
+    // @JsonKey(name: "uid") required String uid,
+    // @JsonKey(name: "tel") String? tel,
+    // @JsonKey(name: "email") String? email,
+    // @JsonKey(name: "status") @ReservationStatusConverter() required ReservationStatus status,
+  }) = _ReservationsAndText;
+  // @override
+  // List<Reservation> get reservations => reservations;
+}

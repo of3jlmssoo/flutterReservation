@@ -18,6 +18,7 @@ _$ReservationImpl _$$ReservationImplFromJson(Map<String, dynamic> json) =>
       reservers: (json['reservers'] as List<dynamic>?)
           ?.map((e) => e as String)
           .toList(),
+      firestoreID: json['firestoreID'] as String?,
     );
 
 Map<String, dynamic> _$$ReservationImplToJson(_$ReservationImpl instance) =>
@@ -30,4 +31,5 @@ Map<String, dynamic> _$$ReservationImplToJson(_$ReservationImpl instance) =>
       'email': instance.email,
       'status': instance.status,
       'reservers': instance.reservers,
+      'firestoreID': instance.firestoreID,
     };
