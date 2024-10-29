@@ -826,12 +826,18 @@ class ListReservations extends ConsumerWidget {
                                       ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                                       logmessage(b, log,
                                           "ListReservations rt.reservations[index].facility ${rt.reservations[index].facility.runtimeType} --> ${rt.reservations[index].facility}");
+                                      if (rt.reservations[index].facility.toString() == "facilities/mtgR2") {
+                                        logmessage(b, log,
+                                            "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} then then then then then then then then then then then ");
+                                      } else {
+                                        logmessage(b, log,
+                                            "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} else else else else else else else else else else else ");
+                                      }
 
-                                      // if (rt.reservations[index].facility ){}
-
-                                      // bool result = await rr.cancelReservation(
-                                      //     rt.reservations[index].reserveOn, rt.reservations[index].facility);
-                                      bool result = await rr.cancelReservation();
+                                      bool result = await rr.cancelReservation(rt.reservations[index].reserveOn,
+                                          getFacilitybyDisplayName(await rt.reservations[index].getfName));
+                                      // bool result = await rr.cancelReservation();
+                                      logmessage(b, log, "ListReservations result $result and ${context.mounted}");
                                       if (result && context.mounted) {
                                         myreservations(context);
                                       }

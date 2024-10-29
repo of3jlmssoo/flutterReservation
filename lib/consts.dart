@@ -64,11 +64,6 @@ enum Facility {
         return "mtgR2";
     }
   }
-
-  // int get carbonFootprint => (description / capacity).round();
-  // bool get isTwoWheeled => this == Facility.bicycle;
-  // @override
-  // int compareTo(Facility other) => carbonFootprint - other.carbonFootprint;
 }
 
 Facility getFacilitybyDisplayName(String f) {

@@ -227,27 +227,8 @@ class Reservation with _$Reservation {
     log.info('fromFirestore4 ${data["reservers"]} ----- ${data["reservers"].runtimeType}}');
     log.info('fromFirestore5 ${data["status"]} ----- ${data["status"].runtimeType}}');
 
-    // var m = data["status"].map<String, String>((key, value) => MapEntry<String, String>(key, value.toString()));
     var m = data["status"];
-    // String s = 'none';
-    // for (var v in m.values) {
-    //   s = v;
-    // }
-
-    log.info('fromFirestore6 m : $m ');
-
-    // ReservationStatus rs = ReservationStatus.none;
-    // switch (s) {
-    //   case 'none':
-    //     rs = ReservationStatus.none;
-    //   case 'tentative':
-    //     rs = ReservationStatus.tentative;
-    //   case 'reserved':
-    //     rs = ReservationStatus.reserved;
-    //   default:
-    //     rs = ReservationStatus.notFound;
-    // }
-    // log.info('fromFirestore7 rs : $rs');
+    log.info('fromFirestore7 m : $m ');
     log.info('fromFirestore8 facility : ${data["facility"]} --- ${data["facility"].runtimeType}}');
 
     final r = Reservation(
@@ -260,6 +241,8 @@ class Reservation with _$Reservation {
       reservers: List<String>.from(data["reservers"]),
       status: data["status"],
       facility: data["facility"],
+      // facility: <String, dynamic>{"facility": data["facility"]},
+      // facility: (json.decode(data["facility"])).cast<Map<String, dynamic>>(),
 
       // reservers: data["reservers"] ?? [],
     );
@@ -310,7 +293,7 @@ class Reservation with _$Reservation {
 class ReservationRepository {
   ReservationRepository({required this.db});
   final FirebaseFirestore db;
-  final bool b = true;
+  final bool b = false;
 
   DocumentReference getfacilityRef(Enum facility) {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
@@ -667,12 +650,12 @@ class ReservationRepository {
     return result;
   }
 
-  // Future<bool> cancelReservation(DateTime dt, Facility f) async {
-  Future<bool> cancelReservation() async {
+  Future<bool> cancelReservation(DateTime dt, Facility f) async {
+    // Future<bool> cancelReservation() async {
     bool result = true;
     const bool b = true;
-    DateTime dt = DateTime(2024, 10, 25);
-    Facility f = Facility.mtgR2;
+    // DateTime dt = DateTime(2024, 10, 25);
+    // Facility f = Facility.mtgR2;
 
     Reservation? r = await queryReservationDateFacility(dt, f);
     if (r != null) {
@@ -689,8 +672,27 @@ class ReservationRepository {
             result = false;
           },
         );
-      } else {
+      } else if (r.reservers!.length > 1) {
         // 予約者複数のケース
+
+        // TODO: reservationのuidメンテナンス(リストのindex0のIDがuidを兼ねる)
+        String? docID = await getIDByDateFacility(dt, f);
+        final sfDocRef = db.collection("reservations").doc(docID);
+        await db.runTransaction((transaction) async {
+          final snapshot = await transaction.get(sfDocRef);
+          // Note: this could be done without a transaction
+          //       by updating the population using FieldValue.increment()
+          final newReservers = snapshot.get("reservers");
+          logmessage(b, log, "cancelReservation newPopulation ${newReservers.runtimeType} ${newReservers}");
+          newReservers.remove(FirebaseAuth.instance.currentUser!.uid);
+          transaction.update(sfDocRef, {"reservers": newReservers});
+        }).then(
+          (value) => logmessage(b, log, "cancelReservation DocumentSnapshot successfully updated!"),
+          onError: (e) {
+            logmessage(true, log, "cancelReservation Error updating document $e");
+            result = false;
+          },
+        );
       }
     }
 
