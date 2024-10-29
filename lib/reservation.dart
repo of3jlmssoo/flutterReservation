@@ -669,7 +669,7 @@ class ReservationRepository {
 
   Future<bool> cancelReservation() async {
     bool result = true;
-    final bool b = true;
+    const bool b = true;
     DateTime dt = DateTime(2024, 10, 25);
     Facility f = Facility.mtgR2;
 

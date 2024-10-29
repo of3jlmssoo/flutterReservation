@@ -66,11 +66,11 @@ class MainScreen extends ConsumerWidget {
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                 List<Reservation>? myReservations =
                     await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid);
-                logmessage(b, log, "MainScreen myReservations --- ${myReservations}");
+                logmessage(b, log, "MainScreen myReservations --- $myReservations");
                 ReservationsAndText rt = ReservationsAndText(title: "わたしの予約一覧", reservations: myReservations);
                 // context.go('/listmyreservationsr');
                 // context.push('/listmyreservations', extra: myReservations);
-                context.push('/listmyreservations', extra: rt);
+                if (context.mounted) context.push('/listmyreservations', extra: rt);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('予約どうなった?'),
@@ -542,18 +542,20 @@ class ReservationConfirmationScreen extends StatelessWidget {
                         uid: FirebaseAuth.instance.currentUser!.uid);
                   }
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('予約しました！'),
-                      // action: SnackBarAction(
-                      //   label: 'Action',
-                      //   onPressed: () {
-                      //     // Code to execute.
-                      //   },
-                      // ),
-                    ),
-                  );
-                  context.go('/main');
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('予約しました！'),
+                        // action: SnackBarAction(
+                        //   label: 'Action',
+                        //   onPressed: () {
+                        //     // Code to execute.
+                        //   },
+                        // ),
+                      ),
+                    );
+                    context.go('/main');
+                  }
                 },
                 child: const Text('確定'),
               ),
@@ -771,7 +773,7 @@ class UserInformationUpdateScreen extends StatelessWidget {
 }
 
 class ListReservations extends ConsumerWidget {
-  ListReservations({super.key, required this.rt});
+  const ListReservations({super.key, required this.rt});
 
   final ReservationsAndText rt;
 
