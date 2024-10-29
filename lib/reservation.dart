@@ -638,10 +638,10 @@ class ReservationRepository {
     return result;
   }
 
-  Future<List<Reservation>?> queryMyReservations(String uid) async {
+  Future<List<Reservation>> queryMyReservations(String uid) async {
     const bool b = false;
 
-    List<Reservation>? result = [];
+    List<Reservation> result = [];
 
     await db
         .collection("reservations")
@@ -667,6 +667,7 @@ class ReservationRepository {
     return result;
   }
 
+  // Future<bool> cancelReservation(DateTime dt, Facility f) async {
   Future<bool> cancelReservation() async {
     bool result = true;
     const bool b = true;
@@ -677,10 +678,22 @@ class ReservationRepository {
     if (r != null) {
       logmessage(b, log, "cancelReservations r.reservers   : ${r.reservers}");
       logmessage(b, log, "cancelReservations r.firestoreID : ${r.firestoreID}");
+      logmessage(b, log, "cancelReservations f(Facility) : ${f.runtimeType} $f");
+
+      if (r.reservers!.length == 1) {
+        // 予約者一人だけのケース
+        db.collection("reservations").doc(r.firestoreID).delete().then(
+          (doc) => logmessage(b, log, "cancelReservation Document deleted"),
+          onError: (e) {
+            logmessage(true, log, "cancelReservation Error updating document $e");
+            result = false;
+          },
+        );
+      } else {
+        // 予約者複数のケース
+      }
     }
 
-    // 予約者一人だけのケース
-    // 予約者複数のケース
     return result;
   }
 
@@ -706,16 +719,8 @@ class ReservationsAndText with _$ReservationsAndText {
   const ReservationsAndText._();
   const factory ReservationsAndText({
     required String title,
-    List<Reservation>? reservations,
-
-    // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
-    // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
-    // @JsonKey(name: "facility") DocumentReference? facility,
-    // @JsonKey(name: "uid") required String uid,
-    // @JsonKey(name: "tel") String? tel,
-    // @JsonKey(name: "email") String? email,
-    // @JsonKey(name: "status") @ReservationStatusConverter() required ReservationStatus status,
+    required List<Reservation> reservations,
   }) = _ReservationsAndText;
-  // @override
-  // List<Reservation> get reservations => reservations;
+
+  // String get getrOn => title;
 }

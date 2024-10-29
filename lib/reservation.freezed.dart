@@ -358,7 +358,7 @@ abstract class _Reservation extends Reservation {
 /// @nodoc
 mixin _$ReservationsAndText {
   String get title => throw _privateConstructorUsedError;
-  List<Reservation>? get reservations => throw _privateConstructorUsedError;
+  List<Reservation> get reservations => throw _privateConstructorUsedError;
 
   /// Create a copy of ReservationsAndText
   /// with the given fields replaced by the non-null parameter values.
@@ -373,7 +373,7 @@ abstract class $ReservationsAndTextCopyWith<$Res> {
           ReservationsAndText value, $Res Function(ReservationsAndText) then) =
       _$ReservationsAndTextCopyWithImpl<$Res, ReservationsAndText>;
   @useResult
-  $Res call({String title, List<Reservation>? reservations});
+  $Res call({String title, List<Reservation> reservations});
 }
 
 /// @nodoc
@@ -392,17 +392,17 @@ class _$ReservationsAndTextCopyWithImpl<$Res, $Val extends ReservationsAndText>
   @override
   $Res call({
     Object? title = null,
-    Object? reservations = freezed,
+    Object? reservations = null,
   }) {
     return _then(_value.copyWith(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      reservations: freezed == reservations
+      reservations: null == reservations
           ? _value.reservations
           : reservations // ignore: cast_nullable_to_non_nullable
-              as List<Reservation>?,
+              as List<Reservation>,
     ) as $Val);
   }
 }
@@ -415,7 +415,7 @@ abstract class _$$ReservationsAndTextImplCopyWith<$Res>
       __$$ReservationsAndTextImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({String title, List<Reservation>? reservations});
+  $Res call({String title, List<Reservation> reservations});
 }
 
 /// @nodoc
@@ -432,17 +432,17 @@ class __$$ReservationsAndTextImplCopyWithImpl<$Res>
   @override
   $Res call({
     Object? title = null,
-    Object? reservations = freezed,
+    Object? reservations = null,
   }) {
     return _then(_$ReservationsAndTextImpl(
       title: null == title
           ? _value.title
           : title // ignore: cast_nullable_to_non_nullable
               as String,
-      reservations: freezed == reservations
+      reservations: null == reservations
           ? _value._reservations
           : reservations // ignore: cast_nullable_to_non_nullable
-              as List<Reservation>?,
+              as List<Reservation>,
     ));
   }
 }
@@ -451,20 +451,18 @@ class __$$ReservationsAndTextImplCopyWithImpl<$Res>
 
 class _$ReservationsAndTextImpl extends _ReservationsAndText {
   const _$ReservationsAndTextImpl(
-      {required this.title, final List<Reservation>? reservations})
+      {required this.title, required final List<Reservation> reservations})
       : _reservations = reservations,
         super._();
 
   @override
   final String title;
-  final List<Reservation>? _reservations;
+  final List<Reservation> _reservations;
   @override
-  List<Reservation>? get reservations {
-    final value = _reservations;
-    if (value == null) return null;
+  List<Reservation> get reservations {
     if (_reservations is EqualUnmodifiableListView) return _reservations;
     // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(value);
+    return EqualUnmodifiableListView(_reservations);
   }
 
   @override
@@ -498,14 +496,15 @@ class _$ReservationsAndTextImpl extends _ReservationsAndText {
 
 abstract class _ReservationsAndText extends ReservationsAndText {
   const factory _ReservationsAndText(
-      {required final String title,
-      final List<Reservation>? reservations}) = _$ReservationsAndTextImpl;
+          {required final String title,
+          required final List<Reservation> reservations}) =
+      _$ReservationsAndTextImpl;
   const _ReservationsAndText._() : super._();
 
   @override
   String get title;
   @override
-  List<Reservation>? get reservations;
+  List<Reservation> get reservations;
 
   /// Create a copy of ReservationsAndText
   /// with the given fields replaced by the non-null parameter values.
