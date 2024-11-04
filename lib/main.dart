@@ -38,6 +38,9 @@ Future<void> main() async {
   }
 
   runApp(
-    const ProviderScope(child: MaterialApp(home: MyApp())),
+    ProviderScope(
+        child: MaterialApp(
+            home: const MyApp(),
+            theme: ThemeData(useMaterial3: true, textTheme: const TextTheme(displaySmall: TextStyle(fontSize: 10))))),
   );
 }

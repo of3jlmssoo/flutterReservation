@@ -105,7 +105,10 @@ class Firestorework extends ConsumerWidget {
               } else {
                 // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               }
-              if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
+              ReservationsAndText rt =
+                  ReservationsAndText(title: "firestore work list reservations", reservations: reservationList);
+              // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
+              if (context.mounted) GoRouter.of(context).push('/listreservations', extra: rt);
             },
             child: const Text('予約一覧表示'),
           ),

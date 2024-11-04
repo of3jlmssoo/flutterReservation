@@ -488,26 +488,60 @@ class ReservationConfirmationScreen extends StatelessWidget {
       // body: Container(
       //     child: Text(
       //         'ユーザー : ${ref.read(authRepositoryProvider).currentUser?.displayName != null ? ref.read(authRepositoryProvider).currentUser?.displayName : ref.read(authRepositoryProvider).currentUser!.email}')),
-      body: Row(
-        mainAxisAlignment: MainAxisAlignment.center,
+      body: Column(
         children: [
-          Column(
+          const Row(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('以下で予約します。'),
-              Text("お名前 ${rext.name}"),
-              Text("電話番号 ${rext.tel}"),
-              Text("メール ${rext.emaill}"),
-              Text("予約対象 ${rext.facility}"),
-              Text("予約日 ${dateOnlyString()}"),
+              Text("以下で予約します。"),
+              SizedBox(
+                height: 20,
+              )
+            ],
+          ),
+          Row(
+              // mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                // DONE: 整形
+
+                Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    // mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      // const Align(alignment: Alignment.bottomLeft, child: Text('以下で予約します。')),
+                      const SizedBox(height: 20),
+                      retrunFormatedRow("予約対象\t", rext.facility),
+                      retrunFormatedRow("\t\t\t\t予約日\t", dateOnlyString()),
+                      retrunFormatedRow("\t\t\t\tお名前\t", "${rext.name} さん"),
+                      retrunFormatedRow("電話番号\t", rext.tel),
+                      retrunFormatedRow("\t\t\t\tメール\t", rext.emaill),
+                      const SizedBox(height: 20),
+                      // const Row(children: [Text("abc "), Text("def")]),
+                      // const Row(children: [Text("abc "), Text("def")]),
+                      // const Row(children: [Text("abc "), Text("def")]),
+                      // const Row(children: [Text("abc "), Text("def")]),
+                      // const Text("お名前", style: TextStyle(fontSize: 20)),
+                      // Text("     ${rext.name}"),
+                      // const SizedBox(height: 20),
+                      // Text("電話番号 ${rext.tel}"),
+                      // Text("メール ${rext.emaill}"),
+                    ]),
+              ]),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // DONE: 整形
+              const SizedBox(height: 100),
               FilledButton(
                 onPressed: () {
                   context.pop();
                 },
                 child: const Text('戻る'),
               ),
+              const SizedBox(width: 10),
               FilledButton(
                 onPressed: () async {
-                  // TODO: 予約処理
+                  // DONE: 予約処理
                   ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                   // Reservation? r = await rr.queryReservationDateFacility(DateTime(2024, 10, 29), Facility.kitchen);
                   Reservation? r = await rr.queryReservationDateFacility(
@@ -568,6 +602,14 @@ class ReservationConfirmationScreen extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  Row retrunFormatedRow(String title, String f) {
+    return Row(crossAxisAlignment: CrossAxisAlignment.end, children: [
+      const SizedBox(width: 20),
+      Text(title, style: const TextStyle(fontSize: 20)), // style: Theme.of(context).textTheme.displaySmall,
+      Text(f)
+    ]);
   }
 
   String dateOnlyString() {
@@ -821,27 +863,21 @@ class ListReservations extends ConsumerWidget {
                                 height: 35,
                                 child: TextButton(
                                   child: const Text('キャンセル'),
-                                  onPressed: () async {
-                                    if (rt.reservations.isNotEmpty) {
-                                      ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-                                      logmessage(b, log,
-                                          "ListReservations rt.reservations[index].facility ${rt.reservations[index].facility.runtimeType} --> ${rt.reservations[index].facility}");
-                                      if (rt.reservations[index].facility.toString() == "facilities/mtgR2") {
-                                        logmessage(b, log,
-                                            "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} then then then then then then then then then then then ");
-                                      } else {
-                                        logmessage(b, log,
-                                            "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} else else else else else else else else else else else ");
-                                      }
+                                  onPressed: () {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      SnackBar(
+                                        content: const Text('本当にキャンセルしますか?'),
+                                        duration: const Duration(seconds: 10),
+                                        action: SnackBarAction(
+                                          label: '本当にキャンセルする',
+                                          onPressed: () async {
+                                            // Code to execute.
+                                            await callCancelReservation(index, context);
+                                          },
+                                        ),
+                                      ),
+                                    );
 
-                                      bool result = await rr.cancelReservation(rt.reservations[index].reserveOn,
-                                          getFacilitybyDisplayName(await rt.reservations[index].getfName));
-                                      // bool result = await rr.cancelReservation();
-                                      logmessage(b, log, "ListReservations result $result and ${context.mounted}");
-                                      if (result && context.mounted) {
-                                        myreservations(context);
-                                      }
-                                    }
                                     /* ... */
                                   },
                                 ),
@@ -860,6 +896,29 @@ class ListReservations extends ConsumerWidget {
         ],
       ),
     );
+  }
+
+  Future<void> callCancelReservation(int index, BuildContext context) async {
+    if (rt.reservations.isNotEmpty) {
+      ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+      logmessage(b, log,
+          "ListReservations rt.reservations[index].facility ${rt.reservations[index].facility.runtimeType} --> ${rt.reservations[index].facility}");
+      // if (rt.reservations[index].facility.toString() == "facilities/mtgR2") {
+      //   logmessage(b, log,
+      //       "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} then then then then then then then then then then then ");
+      // } else {
+      //   logmessage(b, log,
+      //       "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} else else else else else else else else else else else ");
+      // }
+
+      bool result = await rr.cancelReservation(
+          rt.reservations[index].reserveOn, getFacilitybyDisplayName(await rt.reservations[index].getfName));
+      // bool result = await rr.cancelReservation();
+      logmessage(b, log, "ListReservations result $result and ${context.mounted}");
+      if (result && context.mounted) {
+        myreservations(context);
+      }
+    }
   }
 
   Icon selectIcon() => const Icon(Icons.album);
