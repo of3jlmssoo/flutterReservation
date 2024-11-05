@@ -621,19 +621,37 @@ class ReservationRepository {
     return result;
   }
 
-  Future<List<Reservation>> queryMyReservations(String uid) async {
+  //  TODO: add before or after
+  //  bool future
+  //    if true query from today
+  //    if false query until today
+  Future<List<Reservation>> queryMyReservations(String uid, bool future) async {
     const bool b = false;
 
     List<Reservation> result = [];
 
+    if (future == true) {
+      await queryGreaterThan(uid, b, result);
+    } else {
+      await queryLessThan(uid, b, result);
+    }
+
+    logmessage(b, log, "queryMyReservations result.length ${result.length}");
+    return result;
+  }
+
+  Future<void> queryLessThan(String uid, bool b, List<Reservation> result) async {
     await db
         .collection("reservations")
         .orderBy("reserveOn")
         .where("reservers", arrayContains: uid)
+        // .where("reserveOn", isGreaterThan: DateTime.now())
+        .where("reserveOn", isLessThan: DateTime.now())
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
+        // .startAt([Timestamp.fromDate(DateTime.now())])
         .get()
         .then(
       (querySnapshot) {
@@ -645,9 +663,31 @@ class ReservationRepository {
       },
       onError: (e) => logmessage(b, log, "queryMyReservations Error completing: $e"),
     );
+  }
 
-    logmessage(b, log, "queryMyReservations result.length ${result.length}");
-    return result;
+  Future<void> queryGreaterThan(String uid, bool b, List<Reservation> result) async {
+    await db
+        .collection("reservations")
+        .orderBy("reserveOn")
+        .where("reservers", arrayContains: uid)
+        .where("reserveOn", isGreaterThan: DateTime.now())
+        // .where("reserveOn", isLessThan: DateTime.now())
+        .withConverter(
+          fromFirestore: Reservation.fromFirestore,
+          toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
+        )
+        // .startAt([Timestamp.fromDate(DateTime.now())])
+        .get()
+        .then(
+      (querySnapshot) {
+        logmessage(b, log, "queryMyReservations Successfully completed");
+        for (var docSnapshot in querySnapshot.docs) {
+          logmessage(b, log, 'queryMyReservations ${docSnapshot.id} => ${docSnapshot.data()}');
+          result.add(docSnapshot.data());
+        }
+      },
+      onError: (e) => logmessage(b, log, "queryMyReservations Error completing: $e"),
+    );
   }
 
   Future<bool> cancelReservation(DateTime dt, Facility f) async {
@@ -683,7 +723,7 @@ class ReservationRepository {
           // Note: this could be done without a transaction
           //       by updating the population using FieldValue.increment()
           final newReservers = snapshot.get("reservers");
-          logmessage(b, log, "cancelReservation newPopulation ${newReservers.runtimeType} ${newReservers}");
+          logmessage(b, log, "cancelReservation newPopulation ${newReservers.runtimeType} $newReservers");
           newReservers.remove(FirebaseAuth.instance.currentUser!.uid);
           transaction.update(sfDocRef, {"reservers": newReservers});
         }).then(
