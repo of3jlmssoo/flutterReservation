@@ -63,7 +63,7 @@ class MainScreen extends ConsumerWidget {
             child: ListTile(
               onTap: () async {
                 logmessage(b, log, 'MainScreen ListTile Tapped(予約状況)');
-                await myFutureReservations(context);
+                await myReservations(context, true);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('予約どうなった?'),
@@ -77,7 +77,7 @@ class MainScreen extends ConsumerWidget {
                 logmessage(b, log, 'MainScreen ListTile Tapped(利用実績)');
                 // context.go('/usagestatus');
                 // TODO: delete usagestatus
-                await myPastReservations(context);
+                await myReservations(context, false);
               },
               leading: const FlutterLogo(size: 56.0),
               title: const Text('使ってよかった！'),
@@ -91,21 +91,26 @@ class MainScreen extends ConsumerWidget {
   }
 }
 
-Future<void> myPastReservations(BuildContext context) async {
-  const bool b = true;
-  ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-  List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, false);
-  logmessage(b, log, "myreservations myReservations --- $myReservations");
-  ReservationsAndText rt = ReservationsAndText(title: "過去の予約一覧", reservations: myReservations);
-  // context.go('/listmyreservations');
-  // context.push('/listmyreservations', extra: myReservations);
-  if (context.mounted) context.push('/listmyreservations', extra: rt);
-}
+// DONE: "no reservation" message when myReservations is empty
+// DONE: merge myPastReservations and myFutureReservations
+// Future<void> myPastReservations(BuildContext context) async {
+//   const bool b = true;
+//   ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
+//   List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, false);
+//   logmessage(b, log, "myreservations myReservations --- $myReservations");
+//   ReservationsAndText rt = ReservationsAndText(title: "過去の予約一覧", reservations: myReservations);
+//   // context.go('/listmyreservations');
+//   // context.push('/listmyreservations', extra: myReservations);
+//   if (context.mounted) context.push('/listmyreservations', extra: rt);
+// }
 
-Future<void> myFutureReservations(BuildContext context) async {
+// TODO: "no reservation" message when myReservations is empty
+Future<void> myReservations(BuildContext context, bool futurePast) async {
+  // bool futurePast    true : future reservations
+  //                    false : past reservations
   const bool b = true;
   ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-  List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, true);
+  List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, futurePast);
   logmessage(b, log, "myreservations myReservations --- $myReservations");
   ReservationsAndText rt = ReservationsAndText(title: "今後の予約一覧", reservations: myReservations);
   // context.go('/listmyreservations');
@@ -938,7 +943,7 @@ class ListReservations extends ConsumerWidget {
       // bool result = await rr.cancelReservation();
       logmessage(b, log, "ListReservations result $result and ${context.mounted}");
       if (result && context.mounted) {
-        myFutureReservations(context);
+        myReservations(context, true);
       }
     }
   }
