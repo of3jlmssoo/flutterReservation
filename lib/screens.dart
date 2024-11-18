@@ -76,7 +76,7 @@ class MainScreen extends ConsumerWidget {
               onTap: () async {
                 logmessage(b, log, 'MainScreen ListTile Tapped(利用実績)');
                 // context.go('/usagestatus');
-                // TODO: delete usagestatus
+                // DONE: delete usagestatus
                 await myReservations(context, false);
               },
               leading: const FlutterLogo(size: 56.0),
@@ -104,7 +104,8 @@ class MainScreen extends ConsumerWidget {
 //   if (context.mounted) context.push('/listmyreservations', extra: rt);
 // }
 
-// TODO: "no reservation" message when myReservations is empty
+// DOEN: "no reservation" message when myReservations is empty SnackBar
+
 Future<void> myReservations(BuildContext context, bool futurePast) async {
   // bool futurePast    true : future reservations
   //                    false : past reservations
@@ -112,6 +113,13 @@ Future<void> myReservations(BuildContext context, bool futurePast) async {
   ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
   List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, futurePast);
   logmessage(b, log, "myreservations myReservations --- $myReservations");
+
+  if (myReservations.isEmpty && context.mounted) {
+    ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+      content: Text('予約がありません'),
+    ));
+  }
+
   ReservationsAndText rt = ReservationsAndText(title: "今後の予約一覧", reservations: myReservations);
   // context.go('/listmyreservations');
   // context.push('/listmyreservations', extra: myReservations);
@@ -146,9 +154,7 @@ class LoginScreen extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () async {
                     log.info('Log in pressed');
-                    ref
-                        .read(firebaseAuthProvider)
-                        .signInWithEmailAndPassword(email: "dummy1@dummy.com", password: "dummy1dummy1");
+                    ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: "dummy1@dummy.com", password: "dummy1dummy1");
                     log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
                   },
                   child: const Text('ログイン1'),
@@ -156,9 +162,7 @@ class LoginScreen extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () async {
                     log.info('Log in pressed');
-                    ref
-                        .read(firebaseAuthProvider)
-                        .signInWithEmailAndPassword(email: "dummy2@dummy.com", password: "dummy2dummy2");
+                    ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: "dummy2@dummy.com", password: "dummy2dummy2");
                     log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
                   },
                   child: const Text('ログイン2'),
@@ -166,9 +170,7 @@ class LoginScreen extends ConsumerWidget {
                 ElevatedButton(
                   onPressed: () async {
                     log.info('Log in pressed');
-                    ref
-                        .read(firebaseAuthProvider)
-                        .signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
+                    ref.read(firebaseAuthProvider).signInWithEmailAndPassword(email: "dummy3@dummy.com", password: "dummy3dummy3");
                     log.info('current User is ${ref.read(firebaseAuthProvider).currentUser}');
                   },
                   child: const Text('ログイン3'),
@@ -278,8 +280,7 @@ class DateSelectionScreen extends ConsumerWidget {
         Locale("ja"),
       ],
       home: Scaffold(
-        appBar: BaseAppBar(
-            title: '日付選択画面(${facility.displayName})', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
+        appBar: BaseAppBar(title: '日付選択画面(${facility.displayName})', appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
         body: ShowDatePickerWidget(facility: facility),
       ),
     );
@@ -432,9 +433,7 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
                           controller: myController,
                           // style: const TextStyle(fontSize: 20),
                           decoration: const InputDecoration(
-                              hintText: "数字のみ入力",
-                              hintStyle: TextStyle(color: Colors.grey, fontSize: 18),
-                              border: OutlineInputBorder()),
+                              hintText: "数字のみ入力", hintStyle: TextStyle(color: Colors.grey, fontSize: 18), border: OutlineInputBorder()),
                           textAlignVertical: TextAlignVertical.center,
                           // onSubmitted: (value) {
                           //   tel = value;
@@ -455,8 +454,7 @@ class _ReservationInputScreenState extends State<ReservationInputScreen> {
                       ),
                       FilledButton(
                         onPressed: () {
-                          logmessage(
-                              b, log, "_ReservationInputScreenState --- myController.text: ${myController.text}");
+                          logmessage(b, log, "_ReservationInputScreenState --- myController.text: ${myController.text}");
 
                           // FirebaseAuth.instance.currentUser.
                           var rext = ReservationInputsExt(
@@ -562,11 +560,9 @@ class ReservationConfirmationScreen extends StatelessWidget {
                   // DONE: 予約処理
                   ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                   // Reservation? r = await rr.queryReservationDateFacility(DateTime(2024, 10, 29), Facility.kitchen);
-                  Reservation? r = await rr.queryReservationDateFacility(
-                      rext.reservationDate, getFacilitybyDisplayName(rext.facility));
+                  Reservation? r = await rr.queryReservationDateFacility(rext.reservationDate, getFacilitybyDisplayName(rext.facility));
                   logmessage(b, log, "reservationconfirmation --- r:$r");
-                  String? id =
-                      await rr.getIDByDateFacility(rext.reservationDate, getFacilitybyDisplayName(rext.facility));
+                  String? id = await rr.getIDByDateFacility(rext.reservationDate, getFacilitybyDisplayName(rext.facility));
                   logmessage(b, log, "reservationconfirmation --- id:$id");
                   // 1) 追加パターン
                   //  facilities/kitchen
@@ -722,8 +718,7 @@ class ListMyReservations extends StatelessWidget {
                 // context.push('/usagedetails', extra: '1234567');
 
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-                List<Reservation> myReservations =
-                    await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, false);
+                List<Reservation> myReservations = await rr.queryMyReservations(FirebaseAuth.instance.currentUser!.uid, false);
                 logmessage(b, log, "利用実績確認 myReservations --- $myReservations");
                 ReservationsAndText rt = ReservationsAndText(title: "わたしの過去の予約一覧", reservations: myReservations);
                 // context.go('/listmyreservations');
@@ -856,8 +851,7 @@ class ListReservations extends ConsumerWidget {
       appBar: BaseAppBar(title: rt.title, appBar: AppBar(), widgets: const <Widget>[Icon(Icons.more_vert)]),
       body: Column(
         children: [
-          Container(
-              width: double.infinity, alignment: Alignment.center, color: Colors.green, child: const Text("予約一覧")),
+          Container(width: double.infinity, alignment: Alignment.center, color: Colors.green, child: const Text("予約一覧")),
           Expanded(
             child: Container(
               color: Colors.green,
@@ -898,7 +892,7 @@ class ListReservations extends ConsumerWidget {
                                         action: SnackBarAction(
                                           label: '本当にキャンセルする',
                                           onPressed: () async {
-                                            // Code to execute.
+                                            // TODO: キャンセル時初期画面に戻る
                                             await callCancelReservation(index, context);
                                           },
                                         ),
@@ -938,8 +932,7 @@ class ListReservations extends ConsumerWidget {
       //       "ListReservations ${getFacilitybyDisplayName(await rt.reservations[index].getfName)} else else else else else else else else else else else ");
       // }
 
-      bool result = await rr.cancelReservation(
-          rt.reservations[index].reserveOn, getFacilitybyDisplayName(await rt.reservations[index].getfName));
+      bool result = await rr.cancelReservation(rt.reservations[index].reserveOn, getFacilitybyDisplayName(await rt.reservations[index].getfName));
       // bool result = await rr.cancelReservation();
       logmessage(b, log, "ListReservations result $result and ${context.mounted}");
       if (result && context.mounted) {

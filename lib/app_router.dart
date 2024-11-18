@@ -4,7 +4,6 @@ import 'package:logging/logging.dart';
 // import 'package:reservations2/appbarcomp.dart';
 import 'package:reservations2/commonclass.dart';
 import 'package:reservations2/consts.dart';
-import 'package:reservations2/datepickerapp.dart';
 import 'package:reservations2/screens.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -76,10 +75,10 @@ GoRouter goRouter(GoRouterRef ref) {
           facility: state.extra! as Facility,
         ),
       ),
-      GoRoute(
-        path: '/datetimepickerapp',
-        builder: (context, state) => const DatePickerApp(),
-      ),
+      // GoRoute(
+      //   path: '/datetimepickerapp',
+      //   builder: (context, state) => const DatePickerApp(),
+      // ),
       GoRoute(
         path: '/firestorework',
         builder: (context, state) => const Firestorework(),

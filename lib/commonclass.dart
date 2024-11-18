@@ -5,8 +5,13 @@ import 'consts.dart';
 part 'commonclass.freezed.dart';
 part 'commonclass.g.dart';
 
+// 予約に必要な情報をクラス化.
+//
+// ReservationInputBaseに名前、eメール、電話番号を追加。予約処理の後半で使用。
+// (freezedでのextends方法が不明のため類似クラスを２つ定義)
 @freezed
 class ReservationInputsExt with _$ReservationInputsExt {
+  //implements ReservationInputsBase {
   const factory ReservationInputsExt({
     required DateTime reservationDate,
     required String facility,
@@ -17,6 +22,9 @@ class ReservationInputsExt with _$ReservationInputsExt {
   factory ReservationInputsExt.fromJson(Map<String, Object?> json) => _$ReservationInputsExtFromJson(json);
 }
 
+// 予約に必要な情報をクラス化.
+//
+// 予約処理の前半で使用。
 @freezed
 class ReservationInputsBase with _$ReservationInputsBase {
   const factory ReservationInputsBase({
@@ -25,23 +33,3 @@ class ReservationInputsBase with _$ReservationInputsBase {
   }) = _ReservationInputsBase;
   factory ReservationInputsBase.fromJson(Map<String, Object?> json) => _$ReservationInputsBaseFromJson(json);
 }
-
-// class ReservationInputsBase with _$ReservationInputsBase{
-//   const ReservationInputsBase({required this.reservationDate, required this.facility});
-//   final DateTime reservationDate;
-//   final String facility;
-// }
-
-// class ReservationInputsExt extends ReservationInputsBase {
-//   ReservationInputsExt(
-//       {required this.name,
-//       required this.emaill,
-//       required this.tel,
-//       required super.reservationDate,
-//       required super.facility});
-//   final String name;
-//   final String emaill;
-//   final String tel;
-// }
-
-

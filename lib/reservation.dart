@@ -470,8 +470,7 @@ class ReservationRepository {
           logmessage(l, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
         }
         for (var docSnapshot in querySnapshot.docs) {
-          logmessage(l, log,
-              'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
+          logmessage(l, log, 'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
           var id = docSnapshot.id;
           var r = docSnapshot.data();
           result.add(<String, Reservation>{id: r});
@@ -574,13 +573,8 @@ class ReservationRepository {
 
     final formattedReserveOn = DateTime(reserveOn.year, reserveOn.month, reserveOn.day);
 
-    final reservation = Reservation(
-        reserveOn: formattedReserveOn,
-        reserveMade: reserveMade,
-        facility: facilityRef,
-        uid: uid,
-        status: status.name,
-        reservers: [uid]);
+    final reservation =
+        Reservation(reserveOn: formattedReserveOn, reserveMade: reserveMade, facility: facilityRef, uid: uid, status: status.name, reservers: [uid]);
 
     db
         .collection(collectionReservation)
