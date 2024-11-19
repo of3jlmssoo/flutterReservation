@@ -46,27 +46,27 @@ class Firestorework extends ConsumerWidget {
             },
             child: const Text('施設登録'),
           ),
-          OutlinedButton(
-            onPressed: () async {
-              makeReservation1(ref);
-            },
-            child: const Text('予約情報登録(3レコードのみ追加)'),
-          ),
-          OutlinedButton(
-              onPressed: () async {
-                makeReservations(ref);
-              },
-              child: const Text('予約情報登録2')),
+          // OutlinedButton(
+          //   onPressed: () async {
+          //     makeReservation1(ref);
+          //   },
+          //   child: const Text('予約情報登録(3レコードのみ追加)'),
+          // ),
+          // OutlinedButton(
+          //     onPressed: () async {
+          //       makeReservations(ref);
+          //     },
+          //     child: const Text('予約情報登録2')),
           OutlinedButton(
               onPressed: () async {
                 makeReservations3(ref);
               },
               child: const Text('予約情報登録3')),
-          OutlinedButton(
-              onPressed: () {
-                checkReservationExist(context);
-              },
-              child: const Text('レコード有無照会')),
+          // OutlinedButton(
+          //     onPressed: () {
+          //       checkReservationExist(context);
+          //     },
+          //     child: const Text('レコード有無照会')),
           OutlinedButton(
               onPressed: () async {
                 logmessage(false, log, '予約データ照会(id特定) 1');
@@ -105,8 +105,7 @@ class Firestorework extends ConsumerWidget {
               } else {
                 // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               }
-              ReservationsAndText rt =
-                  ReservationsAndText(title: "firestore work list reservations", reservations: reservationList);
+              ReservationsAndText rt = ReservationsAndText(title: "firestore work list reservations", reservations: reservationList);
               // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
               if (context.mounted) GoRouter.of(context).push('/listreservations', extra: rt);
             },
@@ -119,12 +118,9 @@ class Firestorework extends ConsumerWidget {
               List<DateTime> reservableMtgR1 = await rr.getFacilityAvailableDates(Facility.mtgR1);
               List<DateTime> reservableMtgR2 = await rr.getFacilityAvailableDates(Facility.mtgR2);
 
-              logmessage(true, log,
-                  "Q unAvailable Date --- kitchen ${reservableKitichen.length} days unavailable $reservableKitichen");
-              logmessage(true, log,
-                  "Q unAvailable Date --- mtgR1   ${reservableMtgR1.length} days unavailable $reservableMtgR1");
-              logmessage(true, log,
-                  "Q unAvailable Date --- mtgR2   ${reservableMtgR2.length} days unavailable $reservableMtgR2");
+              logmessage(true, log, "Q unAvailable Date --- kitchen ${reservableKitichen.length} days unavailable $reservableKitichen");
+              logmessage(true, log, "Q unAvailable Date --- mtgR1   ${reservableMtgR1.length} days unavailable $reservableMtgR1");
+              logmessage(true, log, "Q unAvailable Date --- mtgR2   ${reservableMtgR2.length} days unavailable $reservableMtgR2");
 
               // if (reservationList.isEmpty) {
               //   logmessage(true, log, "appbarcomp listreservations 予約情報が無いか取得できませんでした");
@@ -133,8 +129,7 @@ class Firestorework extends ConsumerWidget {
               //   // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               // }
               // if (context.mounted) GoRouter.of(context).push('/listreservations', extra: reservationList);
-              List<Map<String, Reservation>> result =
-                  await rr.queryRecordsWithDateAndFacility(DateTime(2024, 9, 24), Facility.kitchen);
+              List<Map<String, Reservation>> result = await rr.queryRecordsWithDateAndFacility(DateTime(2024, 9, 24), Facility.kitchen);
               logmessage(true, log, "Q result.length is ${result.length}");
               if (result.isNotEmpty) {
                 var l = List.from(result[0].keys);
@@ -159,8 +154,7 @@ class Firestorework extends ConsumerWidget {
                 if (context.mounted) GoRouter.of(context).go('/firestorework');
               } else {
                 for (var r in reservationList) {
-                  logmessage(true, log,
-                      "予約情報整形 ${DateFormat().add_yMd().format(r.reserveOn)} ${await r.getfName} ${r.status} ${r.reservers}");
+                  logmessage(true, log, "予約情報整形 ${DateFormat().add_yMd().format(r.reserveOn)} ${await r.getfName} ${r.status} ${r.reservers}");
                 }
                 // logmessage(true, log, "appbarcomp listreservations ${reservationList[0].getStatus}");
               }
@@ -204,8 +198,7 @@ class Firestorework extends ConsumerWidget {
       }
 
       try {
-        final credential =
-            await FirebaseAuth.instance.signInWithEmailAndPassword(email: user["email"]!, password: user["password"]!);
+        final credential = await FirebaseAuth.instance.signInWithEmailAndPassword(email: user["email"]!, password: user["password"]!);
         credential.user!.updateDisplayName(user["name"]);
       } catch (e) {
         log.warning(e);

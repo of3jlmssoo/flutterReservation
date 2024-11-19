@@ -16,13 +16,6 @@ class AuthRepository {
 
   User? get currentUser => _auth.currentUser;
 
-  // Future<void> signInWEP() {
-  //   // return _auth.signInAnonymously();
-  //   log.info('--> signInAnonymously()');
-  //   return _auth.signInWithEmailAndPassword(
-  //       email: "dummy1", password: "dummy1");
-  // }
-
   Future<void> signOut() {
     // return _auth.signInAnonymously();
     return FirebaseAuth.instance.signOut();
@@ -39,7 +32,7 @@ AuthRepository authRepository(AuthRepositoryRef ref) {
   return AuthRepository(ref.watch(firebaseAuthProvider));
 }
 
-@riverpod
-Stream<User?> authStateChanges(AuthStateChangesRef ref) {
-  return ref.watch(authRepositoryProvider).authStateChanges();
-}
+// @riverpod
+// Stream<User?> authStateChanges(AuthStateChangesRef ref) {
+//   return ref.watch(authRepositoryProvider).authStateChanges();
+// }
