@@ -104,8 +104,11 @@ class MainScreen extends ConsumerWidget {
 //   if (context.mounted) context.push('/listmyreservations', extra: rt);
 // }
 
-// DOEN: "no reservation" message when myReservations is empty SnackBar
+// DONE: "no reservation" message when myReservations is empty SnackBar
 
+// TODO: futurePastに応じた処理を実現する
+// TODO: pastの場合、キャンセルボタンをdisableする
+// TODO: 戻るボタンでpush popで戻るが初期画面か更新された予約状況確認(今後の予約一覧)に行くようにする
 Future<void> myReservations(BuildContext context, bool futurePast) async {
   // bool futurePast    true : future reservations
   //                    false : past reservations
@@ -317,7 +320,7 @@ class ShowDatePickerWidget extends StatelessWidget {
             onPressed: () async {
               logmessage(l, log, 'ShowDatePickerWidget FacilitySelectionScreen ');
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-              List<DateTime> unreservable = await rr.getFacilityAvailableDates(facility);
+              List<DateTime> unreservable = await rr.getFacilityUnAvailableDates(facility);
 
               // DONE:"日付"以降でquery -> firstDate = now()
               // DONE: 期間設定修正 -> reservablePeriod

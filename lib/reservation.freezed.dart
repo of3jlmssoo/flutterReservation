@@ -26,8 +26,7 @@ mixin _$Reservation {
   dynamic get facility => throw _privateConstructorUsedError;
   String get uid => throw _privateConstructorUsedError;
   String? get tel => throw _privateConstructorUsedError;
-  String? get email =>
-      throw _privateConstructorUsedError; // @Default(ReservationStatus.none) ReservationStatus status,
+  String? get email => throw _privateConstructorUsedError;
   String? get status => throw _privateConstructorUsedError;
   List<String>? get reservers => throw _privateConstructorUsedError;
   String? get firestoreID => throw _privateConstructorUsedError;
@@ -239,7 +238,6 @@ class _$ReservationImpl extends _Reservation {
   final String? tel;
   @override
   final String? email;
-// @Default(ReservationStatus.none) ReservationStatus status,
   @override
   final String? status;
   final List<String>? _reservers;
@@ -338,8 +336,7 @@ abstract class _Reservation extends Reservation {
   @override
   String? get tel;
   @override
-  String?
-      get email; // @Default(ReservationStatus.none) ReservationStatus status,
+  String? get email;
   @override
   String? get status;
   @override

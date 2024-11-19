@@ -29,36 +29,36 @@ enum ReservationStatus {
   final String displayName;
 }
 
-ReservationStatus getReservationStatus(String rstatus) {
-  switch (rstatus) {
-    case "none":
-      return ReservationStatus.none;
-    case "tentative":
-      return ReservationStatus.tentative;
-    case "priority":
-      return ReservationStatus.priority;
-    case "reserved":
-      return ReservationStatus.reserved;
-    // case "notfound":
-    default:
-      return ReservationStatus.notFound;
-  }
-}
+// ReservationStatus getReservationStatus(String rstatus) {
+//   switch (rstatus) {
+//     case "none":
+//       return ReservationStatus.none;
+//     case "tentative":
+//       return ReservationStatus.tentative;
+//     case "priority":
+//       return ReservationStatus.priority;
+//     case "reserved":
+//       return ReservationStatus.reserved;
+//     // case "notfound":
+//     default:
+//       return ReservationStatus.notFound;
+//   }
+// }
 
-String getReservationExpressionOnFirestore(ReservationStatus rstatus) {
-  switch (rstatus) {
-    case ReservationStatus.none:
-      return "none";
-    case ReservationStatus.notFound:
-      return "notFound";
-    case ReservationStatus.priority:
-      return "priority";
-    case ReservationStatus.reserved:
-      return "reserved";
-    case ReservationStatus.tentative:
-      return "tentative";
-  }
-}
+// String getReservationExpressionOnFirestore(ReservationStatus rstatus) {
+//   switch (rstatus) {
+//     case ReservationStatus.none:
+//       return "none";
+//     case ReservationStatus.notFound:
+//       return "notFound";
+//     case ReservationStatus.priority:
+//       return "priority";
+//     case ReservationStatus.reserved:
+//       return "reserved";
+//     case ReservationStatus.tentative:
+//       return "tentative";
+//   }
+// }
 
 String getReservationDisplayName(String rstatus) {
   switch (rstatus) {
@@ -78,7 +78,7 @@ String getReservationDisplayName(String rstatus) {
 
 // extension ReservationStatusExtension on ReservationStatus {
 //   static ReservationStatus statusfromString(String status) {
-//     log.info('ReservationStatusExtension --> fromString called! status : $status');
+//     logmessage(b, log, 'ReservationStatusExtension --> fromString called! status : $status');
 //     switch (status) {
 //       case 'none':
 //         return ReservationStatus.none;
@@ -93,7 +93,7 @@ String getReservationDisplayName(String rstatus) {
 
 //   // static Map<String, dynamic> statusToString(ReservationStatus status) {
 //   static Map<String, dynamic> statusToString(ReservationStatus status) {
-//     log.info('--> statusToString called!');
+//     logmessage(b, log, '--> statusToString called!');
 //     switch (status) {
 //       case ReservationStatus.none:
 //         return {"status": ReservationStatus.none.name};
@@ -107,12 +107,12 @@ String getReservationDisplayName(String rstatus) {
 //   }
 // }
 
-extension FacilityExtension on Facility {
-  static DocumentReference<Object?> fromString(dynamic xxx) {
-    logmessage(true, log, '---> FacilityExtension on Facility xxx.runtimeType ${xxx.runtimeType}');
-    return xxx as DocumentReference;
-  }
-}
+// extension FacilityExtension on Facility {
+//   static DocumentReference<Object?> fromString(dynamic xxx) {
+//     logmessage(true, log, '---> FacilityExtension on Facility xxx.runtimeType ${xxx.runtimeType}');
+//     return xxx as DocumentReference;
+//   }
+// }
 
 class FacilityConverter implements JsonConverter<Facility, Map<String, dynamic>> {
   const FacilityConverter();
@@ -133,7 +133,7 @@ class FacilityConverter implements JsonConverter<Facility, Map<String, dynamic>>
 
 //   @override
 //   ReservationStatus fromJson(dynamic json) {
-//     log.info('ReservationStatusConverter json : $json');
+//     logmessage(b, log, 'ReservationStatusConverter json : $json');
 //     return ReservationStatusExtension.statusfromString(json);
 //   }
 
@@ -143,40 +143,25 @@ class FacilityConverter implements JsonConverter<Facility, Map<String, dynamic>>
 //   }
 // }
 
-class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
-  const DateTimeConverter();
+// class DateTimeConverter implements JsonConverter<DateTime, Timestamp> {
+//   const DateTimeConverter();
 
-  @override
-  DateTime fromJson(Timestamp json) {
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    log.info('-----------------------------------------------');
-    return json.toDate();
-  }
+//   @override
+//   DateTime fromJson(Timestamp json) {
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     logmessage(b, log, '-----------------------------------------------');
+//     return json.toDate();
+//   }
 
-  @override
-  Timestamp toJson(DateTime dateTime) {
-    return Timestamp.fromDate(dateTime);
-  }
-}
-
-// @freezed
-// class Reservation4Display with _$Reservation4Display {
-//   const Reservation4Display._();
-//   const factory Reservation4Display({
-//     required String reserveOn,
-//     required String reserveMade,
-//     required String facility,
-//     required String uid,
-//     String? tel,
-//     String? email,
-//     required String status,
-//     required List<String>? reservers,
-//   }) = _Reservation4Display;
+//   @override
+//   Timestamp toJson(DateTime dateTime) {
+//     return Timestamp.fromDate(dateTime);
+//   }
 // }
 
 @freezed
@@ -190,18 +175,9 @@ class Reservation with _$Reservation {
     required String uid,
     String? tel,
     String? email,
-    // @Default(ReservationStatus.none) ReservationStatus status,
     String? status,
     required List<String>? reservers,
     String? firestoreID,
-
-    // @JsonKey(name: "reserveOn") @DateTimeConverter() required DateTime reserveOn,
-    // @JsonKey(name: "reserveMade") @DateTimeConverter() required DateTime reserveMade,
-    // @JsonKey(name: "facility") DocumentReference? facility,
-    // @JsonKey(name: "uid") required String uid,
-    // @JsonKey(name: "tel") String? tel,
-    // @JsonKey(name: "email") String? email,
-    // @JsonKey(name: "status") @ReservationStatusConverter() required ReservationStatus status,
   }) = _Reservation;
 
   String get getrOn => DateFormat('yyyy年M月d日').format(reserveOn);
@@ -211,25 +187,21 @@ class Reservation with _$Reservation {
   String get getTel => tel ?? "登録なし";
   String get getEmail => email ?? "登録なし";
   String get getStatus => getReservationDisplayName(status!);
-  //       // var tel = r.tel ?? "登録なし";
-//       // var email = r.email ?? "登録なし";
 
   factory Reservation.fromFirestore(
     DocumentSnapshot<Map<String, dynamic>> snapshot,
     SnapshotOptions? options,
   ) {
-    Logger.root.level = Level.OFF;
     final data = snapshot.data();
-    log.info('fromFirestore1 data $data ${data?.keys}');
-    var d = data as Map<String, dynamic>;
-    log.info('fromFirestore2 $d');
-    log.info('fromFirestore3 ${data["reserveOn"]} XXX ${data["reserveOn"].toDate()}');
-    log.info('fromFirestore4 ${data["reservers"]} ----- ${data["reservers"].runtimeType}}');
-    log.info('fromFirestore5 ${data["status"]} ----- ${data["status"].runtimeType}}');
 
-    var m = data["status"];
-    log.info('fromFirestore7 m : $m ');
-    log.info('fromFirestore8 facility : ${data["facility"]} --- ${data["facility"].runtimeType}}');
+    bool b = true;
+    logmessage(b, log, 'fromFirestore1 data $data ${data?.keys}');
+    logmessage(b, log, 'fromFirestore2 data ${data as Map<String, dynamic>}');
+    logmessage(b, log, 'fromFirestore3 reservOn ${data["reserveOn"]} ----- ${data["reserveOn"].toDate()}');
+    logmessage(b, log, 'fromFirestore4 reservers ${data["reservers"]} ----- ${data["reservers"].runtimeType}}');
+    logmessage(b, log, 'fromFirestore5 status ${data["status"]} ----- ${data["status"].runtimeType}}');
+    logmessage(b, log, 'fromFirestore7 status : ${data["status"]}');
+    logmessage(b, log, 'fromFirestore8 facility : ${data["facility"]} --- ${data["facility"].runtimeType}}');
 
     final r = Reservation(
       reserveOn: data["reserveOn"].toDate(),
@@ -237,37 +209,18 @@ class Reservation with _$Reservation {
       uid: data["uid"],
       tel: data["tel"],
       email: data["email"],
-      // reservers: data["reservers"].cast<String>() as List<String>,
       reservers: List<String>.from(data["reservers"]),
       status: data["status"],
       facility: data["facility"],
-      // facility: <String, dynamic>{"facility": data["facility"]},
-      // facility: (json.decode(data["facility"])).cast<Map<String, dynamic>>(),
-
-      // reservers: data["reservers"] ?? [],
     );
-    log.info('fromFirestore9 r : $r');
-    Logger.root.level = Level.OFF;
+    logmessage(b, log, 'fromFirestore9 r : $r');
+    // Logger.root.level = Level.OFF;
     return r;
-    // log.info('XXXXX ${d["reserveOn"]} XXX ${d["reserveOn"].toDate()}');
-    // return Reservation(
-    //   reserveOn: data?["reserveOn"].toDate(),
-    //   reserveMade: data?['reserveMade'].toDate(),
-    //   // reserveOn: data?['reservedOn'],
-    //   // reserveMade: data?['reserveMade'],
-    //   facility: data?['facility'] as DocumentReference,
-    //   uid: data?['uid'],
-    //   tel: data?['tel'],
-    //   email: data?['emal'],
-    //   // status: data?['status'] as ReservationStatus,
-    //   // status: ReservationStatusExtension.statusfromString(data?['status']),
-    //   status: data?["status"].statusfromString(),
-    //   reservers: data?['reservers'] is Iterable ? List.from(data?['regions']) : null,
-    // );
   }
 
   Map<String, dynamic> toFirestore() {
-    log.info('fromFireStore $reserveOn');
+    bool b = true;
+    logmessage(b, log, 'fromFireStore reserveOn --- $reserveOn');
     return {
       "reserveOn": Timestamp.fromDate(reserveOn),
       "reserveMade": Timestamp.fromDate(reserveMade),
@@ -277,13 +230,6 @@ class Reservation with _$Reservation {
       if (email != null) "email": email,
       "status": status,
       if (reservers != null) "reservers": reservers,
-      // "status": status,
-      // if (reserveMade != null) "state": reserveMade,
-      // if (facility != null) "facility": facility,
-      // if (uid != null) "uid": uid,
-      // if (tel != null) "tel": tel,
-      // if (email != null) "email": email,
-      // if (status != null) "status": status,
     };
   }
 
@@ -295,13 +241,16 @@ class ReservationRepository {
   final FirebaseFirestore db;
   final bool b = false;
 
+  /// ファシリティレファレンスを返す
   DocumentReference getfacilityRef(Enum facility) {
     return FirebaseFirestore.instance.collection("facilities").doc(facility.name);
   }
 
+  /// 日付とファシリティの組合せでレコードがあるか。あればそれを返す
+  ///
+  /// - レコード数が1以外はUnimlementedError()
+  /// - レコード数が1の場合、firestoreのレコードIDをセット
   Future<Reservation?> queryReservationDateFacility(DateTime t, Facility f) async {
-    // Logger.root.level = Level.OFF;
-    // log.info('queryReservationDateFacility called $t $f ${f.runtimeType}');
     logmessage(b, log, 'queryReservationDateFacility called $t $f ${f.runtimeType}');
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
@@ -318,35 +267,26 @@ class ReservationRepository {
         )
         .get();
 
-    // log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
     logmessage(b, log, "queryReservationDateFacility docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
-      // log.info("queryReservationDateFacility docRef.docs : ${docRef.docs}");
-      // log.info("queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
       logmessage(b, log, "queryReservationDateFacility docRef.docs : ${docRef.docs}");
       logmessage(b, log, "queryReservationDateFacility docRef.docs.data() : ${docRef.docs[0].data()}");
       result = docRef.docs[0].data();
       result = result.copyWith(firestoreID: docRef.docs[0].id);
     } else {
-      // log.info("queryReservationDateFacility some records exist!");
-      logmessage(b, log, "queryReservationDateFacility some records exist!");
+      logmessage(b, log, "queryReservationDateFacility docRef.size <> 1");
       UnimplementedError();
     }
-    // log.info("queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
-    // log.info('queryReservationDateFacility Exist return');
     logmessage(b, log, "queryReservationDateFacility docRef.runtimeType ${docRef.runtimeType}");
     logmessage(b, log, 'queryReservationDateFacility Exist return');
-
-    // Logger.root.level = Level.OFF;
 
     return result;
   }
 
+  /// firestoreのレコードIDでデータをfirestoreから取得して返す
   Future<Reservation?> queryReservationID(String id) async {
-    Logger.root.level = Level.OFF;
-    log.info('queryReservationID called $id');
+    logmessage(b, log, 'queryReservationID called $id');
 
-    // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(f.name);
     Reservation? result;
 
     final docRef = await db
@@ -359,32 +299,34 @@ class ReservationRepository {
         .get();
 
     result = docRef.data();
-    log.info("queryReservationID docRef.runtimeType ${docRef.runtimeType}");
-    log.info('queryReservationID Exist return');
+    result = result!.copyWith(firestoreID: docRef.id);
 
-    Logger.root.level = Level.OFF;
+    logmessage(b, log, "queryReservationID docRef.runtimeType ${docRef.runtimeType}");
+    logmessage(b, log, 'queryReservationID Exist return');
 
     return result;
   }
 
   // DONE: 修正前はreservedのみを取得=>reservedとpriorityを取得するようにする
   // DONE: 修正後は、reservedの予約日とreserversに自分がいるのをaddする
-  Future<List<DateTime>> getFacilityAvailableDates(Facility facility) async {
+
+  /// 指定されたファシリティで予約できない日をリストで返す
+  ///
+  /// - 既にreservedとなっている
+  /// - 自分が予約している
+  Future<List<DateTime>> getFacilityUnAvailableDates(Facility facility) async {
     List<DateTime> result = [];
     List<Map<String, Reservation>> result2 = [];
 
     const bool l = false;
 
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.getFname(facility));
-    // final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.mtgR1.name);
     await db
         .collection("reservations")
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
-        // .where(Filter.and(Filter("facility", isEqualTo: facilityRef),
-        //     Filter("status", isEqualTo: getReservationExpressionOnFirestore(ReservationStatus.reserved))))
         .where(Filter("facility", isEqualTo: facilityRef))
         .get()
         .then((querySnapshot) {
@@ -397,8 +339,6 @@ class ReservationRepository {
         if (d.status == "reserved" || d.reservers!.contains(FirebaseAuth.instance.currentUser!.uid)) {
           result.add(d.reserveOn);
         }
-
-        // result.add(d.reserveOn);
       }
     }, onError: (e) => logmessage(true, log, "getFacilityAvailableDates error $e"));
 
@@ -409,8 +349,10 @@ class ReservationRepository {
     return result;
   }
 
-  bool queryArrayContains() {
-    bool result = false;
+  /// reserversに自分が含まれているレコードをログする
+  ///
+  /// firestorework用メソッド
+  void queryArrayContains() {
     bool b = true;
 
     final rRef = db.collection("reservations");
@@ -418,39 +360,38 @@ class ReservationRepository {
 
     logmessage(b, log, "queryArrayContains myReservations $myReservations");
     myReservations.get().then((onValue) {
-      // logmessage(b, log, "queryArrayContaines ${onValuea.}");
       for (var docSnapshot in onValue.docs) {
         var d = docSnapshot.data();
         logmessage(b, log, "queryArrayContains data $d");
       }
     });
-
-    return result;
   }
 
-  // TODO: transaction
+  /// 指定されたレコードのreserversを指定されたリストで更新する
+  ///
+  /// リストはチェックせずにそのままで更新する
   bool addUID2Record(String recordID, List<String> lst) {
-    logmessage(true, log, "addUID2Record $recordID $lst");
+    logmessage(b, log, "addUID2Record $recordID $lst");
     bool result = false;
     final docRef = db.collection("reservations").doc(recordID);
     docRef.update({"reservers": lst}).then((value) {
-      logmessage(true, log, "addUID2Record DocumentSnapshot successfully updated!");
+      logmessage(b, log, "addUID2Record DocumentSnapshot successfully updated!");
       result = true;
     }, onError: (e) {
-      logmessage(true, log, "addUID2Record Error updating document $recordID $lst $e");
+      logmessage(b, log, "addUID2Record Error updating document $recordID $lst $e");
       result = false;
     });
 
     return result;
   }
 
-  // Future<List<Reservation>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
+  /// 指定された日付とファシリティのレコードをレコードIDと紐付けて返す.
+  ///
+  /// 新規利用禁止。現状のReservatonにはfirestoreIDがある。
+  /// 現状このメソッドを使っているのはfirestoreworkとmake_dataのみ
   Future<List<Map<String, Reservation>>> queryRecordsWithDateAndFacility(DateTime targetDate, Facility facility) async {
-    const bool l = false;
+    // const bool b = false;
 
-    // docref取得 日付とfacility指定
-    //      2024-09-25 00:00:00.000 DateTime
-    // DateTime targetDate = DateTime(2024, 12, 25);
     final facilityRef = getfacilityRef(facility);
 
     List<Map<String, Reservation>> result = [];
@@ -465,34 +406,27 @@ class ReservationRepository {
 
     await ref.get().then(
       (querySnapshot) {
-        logmessage(l, log, "queryRecordsWithDateAndFacility Successfully completed");
+        logmessage(b, log, "queryRecordsWithDateAndFacility Successfully completed");
         if (querySnapshot.docs.isEmpty) {
-          logmessage(l, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
+          logmessage(b, log, "queryRecordsWithDateAndFacility querySnapshot.docs.isEmpty");
         }
         for (var docSnapshot in querySnapshot.docs) {
-          logmessage(l, log, 'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
+          logmessage(b, log, 'queryRecordsWithDateAndFacility ${docSnapshot.id} => ${docSnapshot.data().runtimeType} ${docSnapshot.data()}');
           var id = docSnapshot.id;
           var r = docSnapshot.data();
           result.add(<String, Reservation>{id: r});
         }
       },
-      onError: (e) => logmessage(l, log, "queryRecordsWithDateAndFacility Error completing: $e"),
+      onError: (e) => logmessage(b, log, "queryRecordsWithDateAndFacility Error completing: $e"),
     );
 
-    logmessage(l, log, "queryRecordsWithDateAndFacility result is $result");
+    logmessage(b, log, "queryRecordsWithDateAndFacility result is $result");
     return result;
-    //   既存が無い可能性あり
-    //     addReservation()
-    //        status=tentative
-    //   ある
-    //      transaction処理
-    //        if status==none or notFound
-    //          status = tentative
-    //        else
-    //          not change the status
-    //      reserversにuid追加
   }
 
+  /// 全レコードを照会し、予約情報をリストで返す
+  ///
+  /// firestoreworkからのみ呼び出されている
   Future<List<Reservation>> getAllDocuments() async {
     bool b = true;
     logmessage(b, log, 'getAllDocuments called');
@@ -516,50 +450,35 @@ class ReservationRepository {
       }
     }, onError: (e) => logmessage(true, log, "getAllDocuments error $e"));
 
-    // result = docRef.data();
     logmessage(b, log, 'getAllDocuments Exist return $result');
 
     return result;
-
-    // db.collection("cities").get().then(
-    //   (querySnapshot) {
-    //     print("Successfully completed");
-    //     for (var docSnapshot in querySnapshot.docs) {
-    //       print('${docSnapshot.id} => ${docSnapshot.data()}');
-    //     }
-    //   },
-    //   onError: (e) => print("Error completing: $e"),
-    // );
   }
 
+  /// status=priorityのレコードをログする
+  ///
+  /// firestorework専用
   Future<void> getDocument() async {
-    Logger.root.level = Level.OFF;
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(Facility.kitchen.name);
-    log.info("getDocument called facilityRef : $facilityRef");
-    final kitchens = db
-        .collection("reservations")
-        // .withConverter(
-        //   fromFirestore: Reservation.fromFirestore,
-        //   toFirestore: (Reservation reservation, options) => reservation.toFirestore(),
-        // )
-        .where("status", isEqualTo: "priority");
-    log.info("getDocument called kitchens : $kitchens");
+    logmessage(b, log, "getDocument called facilityRef : $facilityRef");
+    final docPriorityRef = db.collection("reservations").where("status", isEqualTo: "priority");
+    logmessage(b, log, "getDocument called docPriorityRef : $docPriorityRef");
 
-    kitchens.get().then(
+    docPriorityRef.get().then(
       (querySnapshot) {
         Logger.root.level = Level.OFF;
-        log.info("Successfully completed ------------------------> ${querySnapshot.docs.length}");
+        logmessage(b, log, "getDocument Successfully completed querySnapshot.docs.length ${querySnapshot.docs.length}");
         for (var docSnapshot in querySnapshot.docs) {
-          // log.info('${docSnapshot.id} ===============================> ${docSnapshot.data()}');
-          log.info('----------------> ${docSnapshot.id} ${docSnapshot.data()["status"]}');
+          logmessage(b, log, 'getDocument id: ${docSnapshot.id}, status: ${docSnapshot.data()["status"]}');
         }
-        log.info("Successfully completed -> ${querySnapshot.docs.length}");
+        logmessage(b, log, "getDocument Successfully completed -> ${querySnapshot.docs.length}");
       },
-      onError: (e) => log.info("Error completing: $e"),
+      onError: (e) => logmessage(b, log, "getDocument Error: $e"),
     );
-    log.info("getDocument end of ");
+    logmessage(b, log, "getDocument end");
   }
 
+  /// 指定された情報でfirestoeレコードを追加(set)
   Future<void> addReservation({
     required DateTime reserveOn,
     required DateTime reserveMade,
@@ -568,9 +487,8 @@ class ReservationRepository {
     required String uid,
     // required List<String> reservers,
   }) async {
-    log.info('--> addReservation1 $reserveOn $reserveOn $facility ${facility.name} $status $uid');
+    logmessage(b, log, 'addReservation-1 $reserveOn $reserveOn $facility ${facility.name} $status $uid');
     final facilityRef = FirebaseFirestore.instance.collection("facilities").doc(facility.name);
-
     final formattedReserveOn = DateTime(reserveOn.year, reserveOn.month, reserveOn.day);
 
     final reservation =
@@ -584,9 +502,12 @@ class ReservationRepository {
         )
         .doc()
         .set(reservation);
-    log.info('--> addReservation2');
+    logmessage(b, log, 'addReservation-2');
   }
 
+  /// 指定された日付とファシリティのレコードのfirestore IDを返す
+  ///
+  /// レコード数が１以外の場合はnullを返す
   Future<String?> getIDByDateFacility(DateTime t, Facility f) async {
     String? result;
 
@@ -604,7 +525,6 @@ class ReservationRepository {
         )
         .get();
 
-    // log.info("queryReservationDateFacility docRef.size : ${docRef.size}");
     logmessage(b, log, "getIDByDateFacility docRef.size : ${docRef.size}");
     if (docRef.size == 1) {
       logmessage(b, log, "getIDByDateFacility --- docRef.docs[0].id: ${docRef.docs[0].id}");
@@ -616,9 +536,7 @@ class ReservationRepository {
   }
 
   //  TODO: add before or after
-  //  bool future
-  //    if true query from today
-  //    if false query until today
+  /// queryGreaterThanあるいはqueryLessThanと共に指定されたuidの予約状をリスト形式で返す
   Future<List<Reservation>> queryMyReservations(String uid, bool future) async {
     const bool b = false;
 
@@ -634,18 +552,17 @@ class ReservationRepository {
     return result;
   }
 
+  /// queryMyReservationsから呼ばれる。過去の予約情報を返す.
   Future<void> queryLessThan(String uid, bool b, List<Reservation> result) async {
     await db
         .collection("reservations")
         .orderBy("reserveOn")
         .where("reservers", arrayContains: uid)
-        // .where("reserveOn", isGreaterThan: DateTime.now())
         .where("reserveOn", isLessThan: DateTime.now())
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
-        // .startAt([Timestamp.fromDate(DateTime.now())])
         .get()
         .then(
       (querySnapshot) {
@@ -659,18 +576,17 @@ class ReservationRepository {
     );
   }
 
+  /// queryMyReservationsから呼ばれる。将来の予約情報を返す.
   Future<void> queryGreaterThan(String uid, bool b, List<Reservation> result) async {
     await db
         .collection("reservations")
         .orderBy("reserveOn")
         .where("reservers", arrayContains: uid)
         .where("reserveOn", isGreaterThan: DateTime.now())
-        // .where("reserveOn", isLessThan: DateTime.now())
         .withConverter(
           fromFirestore: Reservation.fromFirestore,
           toFirestore: (Reservation reservation, _) => reservation.toFirestore(),
         )
-        // .startAt([Timestamp.fromDate(DateTime.now())])
         .get()
         .then(
       (querySnapshot) {

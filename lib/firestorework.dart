@@ -77,13 +77,12 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
               onPressed: () async {
                 Logger.root.level = Level.OFF;
-                log.info('firestorework 予約情報照会2-1');
+                log.info('firestorework 予約データ照会2(priorityのみ)');
                 ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
                 await rr.getDocument();
-                log.info('---> 予約情報照会2-2');
                 Logger.root.level = Level.OFF;
               },
-              child: const Text('予約データ照会2')),
+              child: const Text('予約データ照会2(priorityのみ)')),
           OutlinedButton(
             onPressed: () async {},
             child: const Text('ユーザー登録'),
@@ -114,9 +113,9 @@ class Firestorework extends ConsumerWidget {
           OutlinedButton(
             onPressed: () async {
               ReservationRepository rr = ReservationRepository(db: FirebaseFirestore.instance);
-              List<DateTime> reservableKitichen = await rr.getFacilityAvailableDates(Facility.kitchen);
-              List<DateTime> reservableMtgR1 = await rr.getFacilityAvailableDates(Facility.mtgR1);
-              List<DateTime> reservableMtgR2 = await rr.getFacilityAvailableDates(Facility.mtgR2);
+              List<DateTime> reservableKitichen = await rr.getFacilityUnAvailableDates(Facility.kitchen);
+              List<DateTime> reservableMtgR1 = await rr.getFacilityUnAvailableDates(Facility.mtgR1);
+              List<DateTime> reservableMtgR2 = await rr.getFacilityUnAvailableDates(Facility.mtgR2);
 
               logmessage(true, log, "Q unAvailable Date --- kitchen ${reservableKitichen.length} days unavailable $reservableKitichen");
               logmessage(true, log, "Q unAvailable Date --- mtgR1   ${reservableMtgR1.length} days unavailable $reservableMtgR1");
